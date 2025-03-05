@@ -14,6 +14,8 @@ import 'package:navid_e_commerce/core/constants/image_constants.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
 import 'package:navid_e_commerce/presentations/auth/controllers/auth_controller.dart';
+import 'package:navid_e_commerce/presentations/auth/views/add_documentation_page.dart';
+import 'package:navid_e_commerce/presentations/auth/views/forget_pass_page.dart';
 import 'package:navid_e_commerce/presentations/auth/views/signup_page.dart';
 import 'package:navid_e_commerce/presentations/auth/widgets/auth_scaffold_structure_widget.dart';
 
@@ -55,9 +57,9 @@ class LoginPage extends StatelessWidget {
           children: [
             Obx(() {
               return CustomCheckbox(
-                isChecked: AuthController.to.isChecked.value,
+                isChecked: AuthController.to.isAgeChecked.value,
                 onChanged: (value) {
-                  AuthController.to.isChecked.value = value;
+                  AuthController.to.isAgeChecked.value = value;
                 },
               );
             }),
@@ -73,14 +75,18 @@ class LoginPage extends StatelessWidget {
                 flex: 3,
                 child: Align(
                     alignment: Alignment.centerRight,
-                    child: CustomTextButton(
+                    child: CustomTextButton(onPressed: () {
+                      Get.toNamed(ForgetPassPage.routeName);
+                    },
                         title: AppStaticStrings.forgetPassword))),
           ],
         ),
         Padding(
           padding: padding12V,
           child: CustomButton(
-            onTap: () {},
+            onTap: () {
+              Get.toNamed(AddDocumentationPage.routeName);
+            },
             title: AppStaticStrings.signIn,
           ),
         ),

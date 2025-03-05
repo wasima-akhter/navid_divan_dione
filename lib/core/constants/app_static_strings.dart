@@ -6,6 +6,8 @@ class AppStaticStrings {
   static const String createAccount = 'Create a new account';
   static const String signInToYourAccount = 'Sign in to Your \nAccount';
   static const String forgetPassword = 'Forget password?';
+  static const String forgetPasswordAppbar = 'Forget password';
+  static const String enterYourEmail = 'Enter your email and we will send you a verification code';
 
   // OTP Verification
   static const String otp = 'OTP';
@@ -17,7 +19,7 @@ class AppStaticStrings {
 
   // Password Reset
   static const String setNewPassword = 'Set New Password';
-  static const String enterNewPassword = 'Set a new password';
+  static const String otpDescription = 'We sent a reset link to contact@dscode...comenter 6 digit code that mentioned in the email';
   static const String createNewPasswordMessage = 'Create a new password. Ensure it differs from previous ones for security';
 
   // Form Labels

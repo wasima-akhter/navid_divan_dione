@@ -15,7 +15,6 @@ String cartIcon = 'assets/icons/cart_icon.svg';
 String cartFillIcon = 'assets/icons/cart_fill_icon.svg';
 String splashImg = 'assets/images/splash_img.png';
 String signupImg = 'assets/images/signup_img.svg';
-String otpImg = 'assets/images/otp_img.svg';
 String forgetPassImg = 'assets/images/forget_pass_img.svg';
 String drawerImg = 'assets/images/drawer_img.svg';
 String deleteIcon = 'assets/icons/delete_icon.svg';
