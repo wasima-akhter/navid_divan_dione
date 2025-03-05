@@ -21,6 +21,7 @@ String deleteIcon = 'assets/icons/delete_icon.svg';
 String addPhotoIcon = 'assets/icons/add_photo_icon.svg';
 String changePassIcon = 'assets/icons/change_pass_icon.svg';
 String editIcon = 'assets/icons/edit_icon.svg';
+String arrowDownIcon = 'assets/icons/arrow_down.svg';
 String  notificationOutlineIcon ='assets/icons/notification_outline_icon.svg';
 // String  addDocIcon ='';
 // String  addDocIcon ='';

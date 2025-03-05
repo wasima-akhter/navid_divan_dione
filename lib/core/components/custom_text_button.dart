@@ -12,6 +12,7 @@ class CustomTextButton extends StatelessWidget {
   final BorderSide? border;
   final double? borderRadius;
   final double? fontSize;
+  final FontWeight? fontWeight;
   const CustomTextButton({
     super.key,
     required this.title,
@@ -21,7 +22,7 @@ class CustomTextButton extends StatelessWidget {
     this.padding,
     this.border,
     this.borderRadius,
-    this.fontSize,
+    this.fontSize, this.fontWeight,
   });
 
   @override
@@ -40,6 +41,7 @@ class CustomTextButton extends StatelessWidget {
         child: Text(title,
             style: poppinsRegular.copyWith(
               fontSize: fontSize ?? getFontSizeSemiSmall(),
+              fontWeight: fontWeight ?? FontWeight.w500,
             )));
   }
 }

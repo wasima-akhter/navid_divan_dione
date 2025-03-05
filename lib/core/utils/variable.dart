@@ -1,1 +1,2 @@
 String dummyProfile ='https://www.webxcreation.com/event-recruitment/images/profile-1.jpg';
+String dummyCatImg ='https://www.thecardiologyadvisor.com/wp-content/uploads/sites/17/2023/03/Vaping.E-Cigarette_G_1417608370.jpg';

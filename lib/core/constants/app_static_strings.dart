@@ -17,6 +17,8 @@ class AppStaticStrings {
   static const String enterOtp = 'enter 6 digit code that mentioned in the email';
   static const String resendOtp = 'Resend OTP';
   static const String sendCode = 'Send Code';
+  static const String category = 'Category';
+  static const String viewAll = 'View all';
 
   // Password Reset
   static const String setNewPassword = 'Set New Password';

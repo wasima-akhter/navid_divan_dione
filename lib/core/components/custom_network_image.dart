@@ -10,7 +10,8 @@ class CustomNetworkImage extends StatelessWidget {
   final double? height;
   final double? width;
   final Border? border;
-  final double? borderRadius;
+  final double? radius;
+  final BorderRadius? borderRadius;
   final BoxShape boxShape;
   final Color? backgroundColor;
   final Widget? child;
@@ -27,8 +28,8 @@ class CustomNetworkImage extends StatelessWidget {
     this.height,
     this.width,
     this.border,
-    this.borderRadius,
-    this.boxShape = BoxShape.rectangle,
+    this.radius,
+    this.boxShape = BoxShape.rectangle, this.borderRadius,
   });
 
   @override
@@ -41,7 +42,7 @@ class CustomNetworkImage extends StatelessWidget {
           width: width,
           decoration: BoxDecoration(
             border: border,
-            borderRadius:boxShape==BoxShape.circle? null:BorderRadius.circular(borderRadius??8.r),
+            borderRadius:boxShape==BoxShape.circle? null:borderRadius??BorderRadius.circular(radius??8.r),
             shape: boxShape,
             color: backgroundColor,
             image: DecorationImage(
@@ -65,7 +66,7 @@ class CustomNetworkImage extends StatelessWidget {
           width: width,
           decoration: BoxDecoration(
             border: border,
-            borderRadius: BorderRadius.circular(borderRadius??8.r),
+            borderRadius: BorderRadius.circular(radius??8.r),
             shape: boxShape,
             color: Colors.grey.withOpacity(0.6),
             image: DecorationImage(
