@@ -1,0 +1,30 @@
+import 'package:flutter/material.dart';
+import 'package:navid_e_commerce/core/constants/color_constants.dart';
+import 'package:navid_e_commerce/core/constants/custom_text.dart';
+import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
+import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
+
+class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
+  final String title;
+  const CustomAppbar({
+    super.key,
+    required this.title,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      centerTitle: true,
+      title: CustomText(
+        text: title,
+        style: poppinsMedium,
+        fontSize: getFontSizeExtraLarge(),
+        color: AppColors.kPrimaryTextDarkColor,
+      ),
+    );
+  }
+
+  @override
+  // TODO: implement preferredSize
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+}

@@ -4,7 +4,7 @@ class AppStaticStrings {
   static const String signIn = 'Sign In';
   static const String welcomeBack = 'Welcome Back!!!';
   static const String createAccount = 'Create a new account';
-  static const String signInToYourAccount = 'Sign in to Your Account';
+  static const String signInToYourAccount = 'Sign in to Your \nAccount';
   static const String forgetPassword = 'Forget password?';
 
   // OTP Verification
