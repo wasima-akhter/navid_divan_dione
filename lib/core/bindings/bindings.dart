@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:navid_e_commerce/presentations/auth/controllers/auth_controller.dart';
+import 'package:navid_e_commerce/presentations/navigation/controllers/navigation_controller.dart';
 import 'package:navid_e_commerce/presentations/splash/controllers/splash_controller.dart';
 
 class SplashBinding extends Bindings{
@@ -13,6 +14,12 @@ class AuthBinding extends Bindings{
   @override
   void dependencies() {
     Get.put(AuthController());
+  }
+
+}class NavigationBinding extends Bindings{
+  @override
+  void dependencies() {
+    Get.put(NavigationController());
   }
 
 }

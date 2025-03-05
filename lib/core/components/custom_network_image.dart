@@ -41,7 +41,7 @@ class CustomNetworkImage extends StatelessWidget {
           width: width,
           decoration: BoxDecoration(
             border: border,
-            borderRadius: BorderRadius.circular(borderRadius??8.r),
+            borderRadius:boxShape==BoxShape.circle? null:BorderRadius.circular(borderRadius??8.r),
             shape: boxShape,
             color: backgroundColor,
             image: DecorationImage(

@@ -14,7 +14,7 @@ class AuthScaffoldStructureWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppbar(title: appBarTitle),
+      appBar: CustomAuthAppbar(title: appBarTitle),
       body: Column(
         children: [
           Expanded(

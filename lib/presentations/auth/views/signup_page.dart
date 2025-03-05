@@ -12,6 +12,7 @@ import 'package:navid_e_commerce/core/constants/image_constants.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
 import 'package:navid_e_commerce/presentations/auth/views/login_page.dart';
 import 'package:navid_e_commerce/presentations/auth/widgets/auth_scaffold_structure_widget.dart';
+import 'package:navid_e_commerce/presentations/navigation/views/navigation_page.dart';
 
 class SignupPage extends StatelessWidget {
   static const String routeName = '/sign-up';
@@ -67,15 +68,20 @@ class SignupPage extends StatelessWidget {
               style: poppinsRegular,
               fontSize: getFontSizeSemiSmall(),
             ),
-            CustomTextButton(title: AppStaticStrings.signIn,onPressed: () {
-              Get.toNamed(LoginPage.routeName);
-            },)
+            CustomTextButton(
+              title: AppStaticStrings.signIn,
+              onPressed: () {
+                Get.toNamed(LoginPage.routeName);
+              },
+            )
           ],
         ),
         space12H,
-        CustomButton(onTap: () {
-
-        },title: AppStaticStrings.signUp,
+        CustomButton(
+          onTap: () {
+            Get.toNamed(NavigationPage.routeName);
+          },
+          title: AppStaticStrings.signUp,
         )
       ],
     );

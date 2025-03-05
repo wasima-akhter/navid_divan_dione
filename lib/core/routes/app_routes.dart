@@ -10,6 +10,7 @@ import 'package:navid_e_commerce/presentations/auth/views/otp_page.dart';
 import 'package:navid_e_commerce/presentations/auth/views/set_new_password_page.dart';
 import 'package:navid_e_commerce/presentations/auth/views/set_new_password_page.dart';
 import 'package:navid_e_commerce/presentations/auth/views/signup_page.dart';
+import 'package:navid_e_commerce/presentations/navigation/views/navigation_page.dart';
 import 'package:navid_e_commerce/presentations/splash/views/splash_page.dart';
 
 class AppRoutes {
@@ -30,15 +31,21 @@ class AppRoutes {
             name: AddDocumentationPage.routeName,
             page: () => AddDocumentationPage(),
             binding: AuthBinding()),
-    GetPage(
+        GetPage(
             name: ForgetPassPage.routeName,
             page: () => ForgetPassPage(),
-            binding: AuthBinding()),GetPage(
+            binding: AuthBinding()),
+        GetPage(
             name: OtpPage.routeName,
             page: () => OtpPage(),
-            binding: AuthBinding()),GetPage(
+            binding: AuthBinding()),
+        GetPage(
             name: SetNewPasswordPage.routeName,
             page: () => SetNewPasswordPage(),
             binding: AuthBinding()),
+    GetPage(
+            name: NavigationPage.routeName,
+            page: () => NavigationPage(),
+            binding: NavigationBinding()),
       ];
 }

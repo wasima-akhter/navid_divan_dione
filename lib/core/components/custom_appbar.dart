@@ -4,9 +4,9 @@ import 'package:navid_e_commerce/core/constants/custom_text.dart';
 import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
 
-class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
+class CustomAuthAppbar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
-  const CustomAppbar({
+  const CustomAuthAppbar({
     super.key,
     required this.title,
   });
@@ -20,6 +20,34 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
         style: poppinsMedium,
         fontSize: getFontSizeExtraLarge(),
         color: AppColors.kPrimaryTextDarkColor,
+      ),
+    );
+  }
+
+  @override
+  // TODO: implement preferredSize
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+}
+
+class CustomDefaultAppbar extends StatelessWidget
+    implements PreferredSizeWidget {
+  final String title;
+  const CustomDefaultAppbar({
+    super.key,
+    required this.title,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      backgroundColor: AppColors.kPrimaryColor,
+      foregroundColor: AppColors.kWhiteColor,
+      centerTitle: true,
+      title: CustomText(
+        text: title,
+        style: poppinsMedium,
+        fontSize: getFontSizeExtraLarge(),
+        color: AppColors.kWhiteColor,
       ),
     );
   }
