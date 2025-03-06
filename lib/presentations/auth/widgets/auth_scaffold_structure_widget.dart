@@ -18,12 +18,14 @@ class AuthScaffoldStructureWidget extends StatelessWidget {
       body: Column(
         children: [
           Expanded(
-            child: Padding(
-              padding: padding12,
-              child: Column(
-                spacing: 4.h,
-          crossAxisAlignment: CrossAxisAlignment.start,
-                children: children,
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: padding12,
+                child: Column(
+                  spacing: 4.h,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                  children: children,
+                ),
               ),
             ),
           ),

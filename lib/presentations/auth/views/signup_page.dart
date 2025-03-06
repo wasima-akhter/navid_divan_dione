@@ -76,7 +76,7 @@ class SignupPage extends StatelessWidget {
             )
           ],
         ),
-        space12H,
+        space6H,
         CustomButton(
           onTap: () {
             Get.toNamed(NavigationPage.routeName);

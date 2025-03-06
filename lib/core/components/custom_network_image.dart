@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:navid_e_commerce/core/components/custom_button.dart';
 import 'package:navid_e_commerce/core/constants/color_constants.dart';
+import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 
 class CustomNetworkImage extends StatelessWidget {
   final String imageUrl;
@@ -56,9 +57,12 @@ class CustomNetworkImage extends StatelessWidget {
       },
       placeholder: (context, url) {
         return Center(
-            child: DefaultProgressIndicator(
-          color: AppColors.kPrimaryExtraLightColor,
-        ));
+            child: Padding(
+              padding: padding8,
+              child: DefaultProgressIndicator(
+                        color: AppColors.kPrimaryColor,
+                      ),
+            ));
       },
       errorWidget: (context, url, error) {
         return Container(

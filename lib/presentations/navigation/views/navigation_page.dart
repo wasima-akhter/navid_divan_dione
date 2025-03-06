@@ -23,16 +23,23 @@ class NavigationPage extends StatelessWidget {
           return NavigationController.to.currentNavIndex.value == 0
               ? CustomHomeAppbar()
               : CustomDefaultAppbar(
-                  title: NavigationController.to.appbarTitle[NavigationController.to.currentNavIndex.value-1],
+                  title: NavigationController.to.appbarTitle[
+                      NavigationController.to.currentNavIndex.value - 1],
                 );
         }),
       ),
-      body: Obx(() {
-        return IndexedStack(
-          index: NavigationController.to.currentNavIndex.value,
-          children: NavigationController.to.getPages(),
-        );
-      }),
+      body: Column(
+        children: [
+          Expanded(
+            child: Obx(() {
+              return IndexedStack(
+                index: NavigationController.to.currentNavIndex.value,
+                children: NavigationController.to.getPages(),
+              );
+            }),
+          ),
+        ],
+      ),
       bottomNavigationBar: Obx(() {
         return BottomNavigationBar(
           currentIndex: NavigationController.to.currentNavIndex.value,
@@ -85,4 +92,3 @@ class NavigationPage extends StatelessWidget {
     );
   }
 }
-

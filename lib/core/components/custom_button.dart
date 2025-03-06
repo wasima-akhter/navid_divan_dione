@@ -25,7 +25,7 @@ class CustomButton extends StatelessWidget {
       this.icon,
       this.fontSize,
       this.radius,
-      this.isLoading = false});
+      this.isLoading = false, this.padding});
 
   final double? height;
   final double? radius;
@@ -42,6 +42,7 @@ class CustomButton extends StatelessWidget {
   final Widget? child;
   final String? img;
   final IconData? icon;
+  final EdgeInsets? padding;
 
   final double marginVerticel;
   final double? fontSize;
@@ -60,7 +61,7 @@ class CustomButton extends StatelessWidget {
             vertical: marginVerticel, horizontal: marginHorizontal),
         alignment: Alignment.center,
         height: height,
-        padding: padding12V,
+        padding:padding?? padding12V,
         width: width,
         decoration: BoxDecoration(
             border: Border.all(color: borderColor),
