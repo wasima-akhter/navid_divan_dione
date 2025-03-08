@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:navid_e_commerce/core/components/custom_network_image.dart';
+import 'package:navid_e_commerce/core/constants/color_constants.dart';
 import 'package:navid_e_commerce/core/constants/custom_text.dart';
 import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
@@ -70,19 +71,21 @@ class CartCounterWidget extends StatelessWidget {
     return Row(
       spacing: 4.w,
       children: [
-        BlueContainerWithIcon(),
+        BlueContainerWithIcon(
+          icon: 'assets/icons/minius_icon.svg',
+        ),
         BlueContainerWithIcon(
           child: Padding(
             padding: paddingH16V6,
             child: CustomText(
               text: '2',
-              style: poppinsRegular,
+              color: AppColors.kPrimaryTextDarkColor,
               fontSize: getFontSizeSmall(),
             ),
           ),
         ),
         BlueContainerWithIcon(
-          icon: CupertinoIcons.plus,
+          icon: 'assets/icons/plus_icon.svg',
         )
       ],
     );

@@ -115,8 +115,10 @@ class DefaultFadeContainerWidget extends StatelessWidget {
 }
 
 class PriceTextWidget extends StatelessWidget {
+  final double? fontSize;
+  final double? previousPriceFontSize;
   const PriceTextWidget({
-    super.key,
+    super.key, this.fontSize, this.previousPriceFontSize,
   });
 
   @override
@@ -129,12 +131,12 @@ class PriceTextWidget extends StatelessWidget {
               text: 'price: \$120  ',
               style: poppinsMedium.copyWith(
                   color: AppColors.kPrimaryTextDarkColor,
-                  fontSize: getFontSizeSemiSmall())),
+                  fontSize:fontSize?? getFontSizeSemiSmall())),
           TextSpan(
               text: '\$150',
               style: poppinsRegular.copyWith(
                   color: Colors.red,
-                  fontSize: getFontSizeSmall(),
+                  fontSize: previousPriceFontSize??getFontSizeSmall(),
                   decoration: TextDecoration.lineThrough)),
         ]));
   }

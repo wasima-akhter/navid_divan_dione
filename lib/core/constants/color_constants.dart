@@ -4,6 +4,7 @@ class AppColors {
   static const Color kPrimaryColor = Color(0xff3872F0);
   static const Color kWhiteColor = Colors.white;
   static const Color kPrimaryDarkColor = Color(0xff224490);
+  static const Color kPrimaryCartColor = Color(0xffEBF1FE);
   static const Color kPrimaryLightColor = Color(0xffC1D3FA);
   static const Color kPrimaryTextDarkColor = Color(0xff142854);
   static const Color kPrimaryExtraLightColor = Color(0xffEBF1FE);

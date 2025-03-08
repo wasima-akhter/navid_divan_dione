@@ -14,6 +14,7 @@ import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/presentations/auth/views/signup_page.dart';
 import 'package:navid_e_commerce/presentations/profile/views/profile_page.dart';
 import 'package:navid_e_commerce/presentations/settings/views/feedback_page.dart';
+import 'package:navid_e_commerce/presentations/settings/views/privacy_terms_page.dart';
 import 'package:navid_e_commerce/presentations/settings/views/settings_page.dart';
 
 class CustomDrawerWidget extends StatelessWidget {
@@ -67,7 +68,7 @@ class CustomDrawerWidget extends StatelessWidget {
                     DrawerContentWidget(
                       onTap: () {
                         Navigator.pop(context);
-                        Get.toNamed(AppStaticStrings.privacyPolicy,
+                        Get.toNamed(PrivacyTermsPage.routeName,
                             arguments: 'privacy');
                       },
                       icon: privacyIcon,
@@ -76,7 +77,7 @@ class CustomDrawerWidget extends StatelessWidget {
                     DrawerContentWidget(
                       onTap: () {
                         Navigator.pop(context);
-                        Get.toNamed(AppStaticStrings.privacyPolicy,
+                        Get.toNamed(PrivacyTermsPage.routeName,
                             arguments: 'terms');
                       },
                       icon: termsIcon,

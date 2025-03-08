@@ -10,9 +10,31 @@ class AppStaticStrings {
   static const String forgetPassword = 'Forget password?';
   static const String forgetPasswordAppbar = 'Forget password';
   static const String enterYourEmail = 'Enter your email and we will send you a verification code';
+  static const String  description= "Description";
 
   // OTP Verification
+  static const String  currentPass= "Current Password";
+  static const String newPass = "New Password";
+
+  static const String changePass = "Change Password";
+  static const String deleteAcc = "Delete Account";
+  static const String yes = "Yes";
+  static const String cancel = "Cancel";
+  static const String no = "No";
+  static const String confirmPass = "Confirm Password";
+  static const String emailRequired = "Email is required.";
+  static const String nameRequired = "Username is required.";
+  static const String fieldRequired = "Field is required.";
+  static const String otpFieldRequired = "Otp field is required.";
+  static const String passRequired = "Password is required.";
+  static const String enterValidEmail = "Enter a valid email.";
+  static const String passMustbe6 = "Password must be at least 6 characters.";
+  static const String passNotMatch = "Passwords do not match.";
   static const String otp = 'OTP';
+  static const String documentation = 'Documentations:';
+  static const String save = 'Save';
+  static const String buyNow = 'Buy Now';
+  static const String selectColor = 'Select Color:';
   static const String checkYourEmail = 'Check your email';
   static const String otpSentMessage = 'We sent a reset link to contact@dscode...com';
   static const String enterOtp = 'enter 6 digit code that mentioned in the email';
