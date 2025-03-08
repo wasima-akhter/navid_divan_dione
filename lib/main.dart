@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
     return ScreenUtilInit(
       designSize: const Size(375, 888),
       minTextAdapt: true,
-      useInheritedMediaQuery: true,
+      // useInheritedMediaQuery: true,
       builder: (context, child) => GetMaterialApp(
         title: 'E-commerce',
         theme: AppTheme.lightTheme,

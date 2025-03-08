@@ -9,13 +9,15 @@ import 'package:navid_e_commerce/core/constants/image_constants.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
 import 'package:navid_e_commerce/core/utils/variable.dart';
 class CustomHomeAppbar extends StatelessWidget {
+  final Function()? onActionTap;
   const CustomHomeAppbar({
-    super.key,
+    super.key, this.onActionTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      automaticallyImplyLeading: false,
       backgroundColor: AppColors.kPrimaryColor,
       foregroundColor: AppColors.kWhiteColor,
       title: Row(
@@ -48,9 +50,7 @@ class CustomHomeAppbar extends StatelessWidget {
         ],
       ),
       actions: [
-        IconButton(onPressed: () {
-
-        }, icon: SvgPicture.asset(drawerIcon))
+        IconButton(onPressed: onActionTap, icon: SvgPicture.asset(drawerIcon))
       ],
     );
   }

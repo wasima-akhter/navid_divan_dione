@@ -6,11 +6,13 @@ import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
 class AppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
-
-      dialogTheme: DialogThemeData(
-          backgroundColor: AppColors.kWhiteColor
+      dividerTheme: DividerThemeData(color: Color(0xffEEEEEE)),
+      dialogTheme: DialogThemeData(backgroundColor: AppColors.kWhiteColor),
+      drawerTheme: DrawerThemeData(
+        backgroundColor: AppColors.kWhiteColor,
       ),
-      popupMenuTheme: PopupMenuThemeData(surfaceTintColor: AppColors.kWhiteColor,
+      popupMenuTheme: PopupMenuThemeData(
+          surfaceTintColor: AppColors.kWhiteColor,
           color: AppColors.kWhiteColor),
       // switchTheme: SwitchThemeData(
       //
@@ -40,10 +42,10 @@ class AppTheme {
           width: 2, // Border width
         ),
         checkColor: WidgetStateProperty.resolveWith(
-              (states) => Colors.white, // Checkmark color
+          (states) => Colors.white, // Checkmark color
         ),
         fillColor: WidgetStateProperty.resolveWith(
-              (states) {
+          (states) {
             if (states.contains(WidgetState.selected)) {
               return AppColors.kPrimaryColor; // Background color when selected
             }
@@ -51,7 +53,7 @@ class AppTheme {
           },
         ),
         overlayColor: WidgetStateProperty.resolveWith(
-              (states) {
+          (states) {
             if (states.contains(WidgetState.hovered)) {
               return AppColors.kPrimaryColor
                   .withOpacity(0.1); // Hover effect color
@@ -76,10 +78,10 @@ class AppTheme {
       ),
       scaffoldBackgroundColor: AppColors.kWhiteColor,
       textTheme: const TextTheme(
-        /* bodyText1: TextStyle(fontSize: 16, color: Colors.black),
+          /* bodyText1: TextStyle(fontSize: 16, color: Colors.black),
         bodyText2: TextStyle(fontSize: 14, color: Colors.black54),
      */
-      ),
+          ),
     );
   }
 
@@ -88,10 +90,10 @@ class AppTheme {
       brightness: Brightness.dark,
       primarySwatch: Colors.blueGrey,
       textTheme: const TextTheme(
-        /*bodyText1: TextStyle(fontSize: 16, color: Colors.white),
+          /*bodyText1: TextStyle(fontSize: 16, color: Colors.white),
         bodyText2: TextStyle(fontSize: 14, color: Colors.white70),
       */
-      ),
+          ),
     );
   }
 }

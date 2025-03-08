@@ -66,17 +66,7 @@ class HomePage extends StatelessWidget {
             space6H,
 
             ///=================product list=====================///
-            // Wrap(
-            //   spacing: 8.w,
-            //   runSpacing: 8.w,
-            //   children: List.generate(10, (index) {
-            //     return SizedBox(
-            //       width: 210.w,
-            //       height: 250.w,
-            //       child: ProductCardItemWidget(),
-            //     );
-            //   }),
-            // )
+
             LayoutBuilder(
               builder: (context, constraints) {
                 // Calculate dynamic aspect ratio based on available width

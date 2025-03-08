@@ -3,6 +3,7 @@ class AppStaticStrings {
   static const String signUp = 'Sign Up';
   static const String signIn = 'Sign In';
   static const String addToCard = 'Add to card';
+  static const String checkout = 'Check Out';
   static const String welcomeBack = 'Welcome Back!!!';
   static const String createAccount = 'Create a new account';
   static const String signInToYourAccount = 'Sign in to Your \nAccount';
@@ -73,6 +74,7 @@ class AppStaticStrings {
   static const String productsInfo = 'Products Info:';
   static const String price = 'Price';
   static const String total = 'Total';
+  static const String totalAmount = 'Total Amount';
   static const String simplyDummyText = 'Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy see more...';
 
   // Payment

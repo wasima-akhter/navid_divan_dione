@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:navid_e_commerce/core/components/custom_appbar.dart';
+import 'package:navid_e_commerce/core/components/custom_drawer_widget.dart';
 import 'package:navid_e_commerce/core/constants/app_static_strings.dart';
 import 'package:navid_e_commerce/core/constants/color_constants.dart';
 import 'package:navid_e_commerce/core/constants/image_constants.dart';
@@ -15,13 +16,20 @@ class NavigationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // drawer: CustomDrawerWidget(),
-
+      drawer: CustomDrawerWidget(),
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(kToolbarHeight),
         child: Obx(() {
           return NavigationController.to.currentNavIndex.value == 0
-              ? CustomHomeAppbar()
+              ? Builder(
+                builder: (context) {
+                  return CustomHomeAppbar(
+                      onActionTap: () {
+                        Scaffold.of(context).openDrawer();
+                      },
+                    );
+                }
+              )
               : CustomDefaultAppbar(
                   title: NavigationController.to.appbarTitle[
                       NavigationController.to.currentNavIndex.value - 1],
