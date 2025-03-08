@@ -12,6 +12,14 @@ import 'package:navid_e_commerce/presentations/auth/views/set_new_password_page.
 import 'package:navid_e_commerce/presentations/auth/views/signup_page.dart';
 import 'package:navid_e_commerce/presentations/home/views/category_list_page.dart';
 import 'package:navid_e_commerce/presentations/navigation/views/navigation_page.dart';
+import 'package:navid_e_commerce/presentations/profile/views/profile_page.dart';
+import 'package:navid_e_commerce/presentations/settings/views/change_pass_page.dart';
+import 'package:navid_e_commerce/presentations/settings/views/change_pass_page.dart';
+import 'package:navid_e_commerce/presentations/settings/views/feedback_page.dart';
+import 'package:navid_e_commerce/presentations/settings/views/feedback_page.dart';
+import 'package:navid_e_commerce/presentations/settings/views/privacy_terms_page.dart';
+import 'package:navid_e_commerce/presentations/settings/views/privacy_terms_page.dart';
+import 'package:navid_e_commerce/presentations/settings/views/settings_page.dart';
 import 'package:navid_e_commerce/presentations/splash/views/splash_page.dart';
 
 class AppRoutes {
@@ -48,6 +56,26 @@ class AppRoutes {
             name: NavigationPage.routeName,
             page: () => NavigationPage(),
             binding: NavigationBinding()),
+        GetPage(
+            name: ProfilePage.routeName,
+            page: () => ProfilePage(),
+            binding: ProfileBinding()),
+        GetPage(
+            name: SettingPage.routeName,
+            page: () => SettingPage(),
+            binding: SettingsBinding()),
+        GetPage(
+            name: FeedbackPage.routeName,
+            page: () => FeedbackPage(),
+            binding: SettingsBinding()),
+        GetPage(
+            name: ChangePassPage.routeName,
+            page: () => ChangePassPage(),
+            binding: SettingsBinding()),
+        GetPage(
+            name: PrivacyTermsPage.routeName,
+            page: () => PrivacyTermsPage(),
+            binding: SettingsBinding()),
         GetPage(
           name: CategoryListPage.routeName,
           page: () => CategoryListPage(), /*binding: NavigationBinding()*/

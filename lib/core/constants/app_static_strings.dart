@@ -72,6 +72,7 @@ class AppStaticStrings {
   static const String deliveryDate = 'Delivery Date';
   static const String deliveryTime = 'Delivery Time';
   static const String productsInfo = 'Products Info:';
+  static const String productDetails = 'Product Details';
   static const String price = 'Price';
   static const String total = 'Total';
   static const String totalAmount = 'Total Amount';

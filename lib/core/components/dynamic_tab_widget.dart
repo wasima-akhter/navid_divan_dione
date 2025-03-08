@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:navid_e_commerce/core/components/tab_content_view.dart';
 import 'package:navid_e_commerce/core/constants/color_constants.dart';
 import 'package:navid_e_commerce/core/constants/custom_space.dart';
+import 'package:navid_e_commerce/core/constants/custom_text.dart';
 import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
@@ -23,36 +24,37 @@ class DynamicTabWidget extends StatelessWidget {
         // Dynamically set the number of tabs
         child: Column(
           children: [
-            space16H,
             TabBar(
               // padding: EdgeInsets.zero,
               overlayColor: const WidgetStatePropertyAll<Color>(
-                  AppColors.kPrimaryLightColor),
+                  AppColors.kPrimaryExtraLightColor),
               // isScrollable: true,
-              dividerHeight: 4.h,
+              dividerHeight: 2.h,
               indicatorSize: TabBarIndicatorSize.tab,
               indicator: UnderlineTabIndicator(
                 borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
                 borderSide: BorderSide(
-                  color: AppColors.kPrimaryLightColor,
+                  color: AppColors.kPrimaryColor,
                   width: 10.w,
                 ),
               ),
 
               labelColor: AppColors.kPrimaryTextDarkColor,
-              unselectedLabelColor: AppColors.kPrimaryColor,
-              labelStyle:
-                  poppinsRegular.copyWith(fontSize: getFontSizeDefault()),
-              unselectedLabelStyle:
-                  poppinsMedium.copyWith(fontSize: getFontSizeDefault()),
-              dividerColor: AppColors.kExtraLightTextColor,
+              // unselectedLabelColor: AppColors.kPrimaryColor,
+              // labelStyle:
+              //     poppinsRegular.copyWith(fontSize: getFontSizeDefault()),
+              // unselectedLabelStyle:
+              //     poppinsMedium.copyWith(fontSize: getFontSizeDefault()),
+              dividerColor: AppColors.kPrimaryLightColor,
               onTap: function ?? (value) {},
               tabs: tabs
                   .map((tabName) => Padding(
                         padding: padding16b24,
                         child: FittedBox(
-                          child: Text(
-                            tabName,
+                          child: CustomText(
+                           text:  tabName,
+                            fontSize: getFontSizeSemiSmall(),
+                            style: poppinsMedium,
                           ),
                         ),
                       ))

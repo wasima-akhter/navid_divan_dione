@@ -11,8 +11,10 @@ import 'package:navid_e_commerce/core/constants/custom_text.dart';
 import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
 import 'package:navid_e_commerce/core/constants/image_constants.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
-import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
 import 'package:navid_e_commerce/presentations/auth/views/signup_page.dart';
+import 'package:navid_e_commerce/presentations/profile/views/profile_page.dart';
+import 'package:navid_e_commerce/presentations/settings/views/feedback_page.dart';
+import 'package:navid_e_commerce/presentations/settings/views/settings_page.dart';
 
 class CustomDrawerWidget extends StatelessWidget {
   const CustomDrawerWidget({
@@ -43,14 +45,13 @@ class CustomDrawerWidget extends StatelessWidget {
                       text: AppStaticStrings.myProfile,
                       onTap: () {
                         Navigator.pop(context);
-                        // Get.toNamed(HistoryScreen.routeName);
+                        Get.toNamed(ProfilePage.routeName);
                       },
                     ),
                     DrawerContentWidget(
                       onTap: () {
                         Navigator.pop(context);
-                        // Get.toNamed(PrivacyTermsScreen.routeName,
-                        //     arguments: 'terms');
+                        Get.toNamed(SettingPage.routeName);
                       },
                       icon: settingsIcon,
                       text: AppStaticStrings.settings,
@@ -58,8 +59,7 @@ class CustomDrawerWidget extends StatelessWidget {
                     DrawerContentWidget(
                       onTap: () {
                         Navigator.pop(context);
-                        // Get.toNamed(PrivacyTermsScreen.routeName,
-                        //     arguments: 'privacy');
+                        Get.toNamed(FeedbackPage.routeName);
                       },
                       icon: feedbackIcon,
                       text: AppStaticStrings.feedback,
@@ -67,7 +67,8 @@ class CustomDrawerWidget extends StatelessWidget {
                     DrawerContentWidget(
                       onTap: () {
                         Navigator.pop(context);
-                        // Get.toNamed(FeedbackScreen.routeName);
+                        Get.toNamed(AppStaticStrings.privacyPolicy,
+                            arguments: 'privacy');
                       },
                       icon: privacyIcon,
                       text: AppStaticStrings.privacyPolicy,
@@ -75,7 +76,8 @@ class CustomDrawerWidget extends StatelessWidget {
                     DrawerContentWidget(
                       onTap: () {
                         Navigator.pop(context);
-                        // Get.toNamed(SettingsScreen.routeName);
+                        Get.toNamed(AppStaticStrings.privacyPolicy,
+                            arguments: 'terms');
                       },
                       icon: termsIcon,
                       text: AppStaticStrings.termsOfUse,
