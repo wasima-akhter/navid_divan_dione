@@ -43,16 +43,16 @@ class ProfilePage extends StatelessWidget {
                     ? ClipOval(
                         child: Image.file(
                           File(ProfileController.to.uploadProfileImg.value),
-                          height: 70.w,
-                          width: 70.w,
+                          height: 85.w,
+                          width: 85.w,
                           fit: BoxFit.cover,
                         ),
                       )
                     : CustomNetworkImage(
                         imageUrl: dummyProfile,
                         boxShape: BoxShape.circle,
-                        height: 70.w,
-                        width: 70.w),
+                        height: 85.w,
+                        width: 85.w),
               ),
               /*argument != null && argument == 'edit'
                   ? */
@@ -61,13 +61,16 @@ class ProfilePage extends StatelessWidget {
                 right: -10.w,
                 child: IconButton(
                     onPressed: () async {
-                      if (argument != null && argument == 'edit') {
-                        await pickImages(
-                            singleImagePath:
-                                ProfileController.to.uploadProfileImg);
-                      } else {
-                        Get.toNamed(ProfilePage.routeName, arguments: 'edit');
-                      }
+                      await pickImages(
+                          singleImagePath:
+                              ProfileController.to.uploadProfileImg);
+                      // if (argument != null && argument == 'edit') {
+                      //   await pickImages(
+                      //       singleImagePath:
+                      //           ProfileController.to.uploadProfileImg);
+                      // } else {
+                      //   Get.toNamed(ProfilePage.routeName, arguments: 'edit');
+                      // }
                     },
                     icon: SvgPicture.asset(editIcon)),
               )
@@ -157,15 +160,15 @@ class UserInfoText extends StatelessWidget {
   const UserInfoText({
     super.key,
     required this.text,
-    this.fontSize, this.style,
+    this.fontSize,
+    this.style,
   });
 
   @override
   Widget build(BuildContext context) {
     return CustomText(
-      text: text,
-      fontSize: fontSize ?? getFontSizeSmall(),
-      style:style?? poppinsMedium
-    );
+        text: text,
+        fontSize: fontSize ?? getFontSizeSmall(),
+        style: style ?? poppinsMedium);
   }
 }
