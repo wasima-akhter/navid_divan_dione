@@ -7,7 +7,7 @@ class SplashController extends GetxController{
   @override
   void onInit() {
     Future.delayed(Duration(seconds: 3),(){
-      Get.offAllNamed(SignupPage.routeName);
+      Get.offAllNamed(LoginPage.routeName);
     });
     super.onInit();
   }

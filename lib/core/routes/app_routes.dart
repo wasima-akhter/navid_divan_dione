@@ -12,6 +12,10 @@ import 'package:navid_e_commerce/presentations/auth/views/set_new_password_page.
 import 'package:navid_e_commerce/presentations/auth/views/signup_page.dart';
 import 'package:navid_e_commerce/presentations/home/views/category_list_page.dart';
 import 'package:navid_e_commerce/presentations/navigation/views/navigation_page.dart';
+import 'package:navid_e_commerce/presentations/product/views/deliver_address_page.dart';
+import 'package:navid_e_commerce/presentations/product/views/deliver_address_page.dart';
+import 'package:navid_e_commerce/presentations/product/views/pickup_address_page.dart';
+import 'package:navid_e_commerce/presentations/product/views/pickup_address_page.dart';
 import 'package:navid_e_commerce/presentations/product/views/product_details_page.dart';
 import 'package:navid_e_commerce/presentations/product/views/product_details_page.dart';
 import 'package:navid_e_commerce/presentations/profile/views/profile_page.dart';
@@ -85,7 +89,15 @@ class AppRoutes {
         ), GetPage(
           name: ProductDetailsPage.routeName,
           page: () => ProductDetailsPage(),
-          /*binding: NavigationBinding()*/
+          binding: ProductBinding()
+        ),GetPage(
+          name: PickupAddressPage.routeName,
+          page: () => PickupAddressPage(),
+          binding: ProductBinding()
+        ),GetPage(
+          name: DeliverAddressPage.routeName,
+          page: () => DeliverAddressPage(),
+          binding: ProductBinding()
         ),
       ];
 }

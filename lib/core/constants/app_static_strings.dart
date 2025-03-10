@@ -87,6 +87,7 @@ class AppStaticStrings {
 
   // Pick Up Address
   static const String pickUpAddress = 'Pick Up Address';
+  static const String pickUp = 'Pick Up';
   static const String pickUpFrom = 'Pick Up From:';
   static const String pickUpInfo = 'Pick Up Info:';
   static const String name = 'Name';
@@ -124,6 +125,7 @@ class AppStaticStrings {
 
   // Delivery & Address
   static const String address = 'Address';
+  static const String delivery = 'Delivery';
   static const String deliveryAddress = 'Delivery Address';
   static const String editAddress = 'Edit Address';
   static const String location = 'Location';
@@ -138,6 +140,26 @@ class AppStaticStrings {
   static const String userName = 'User Name';
   static const String userEmail = 'Email';
   static const String userContact = 'Contact Number';
+  static const String title = "Pick Up Address";
+  static const String pickUpFromLabel = "Pick Up From:";
+  static const String pickUpInfoLabel = "Pick Up Info:";
+  static const String nameLabel = "Name";
+  static const String contactNumberLabel = "Contact Number";
+  static const String deliveryDateLabel = "Delivery Date";
+  static const String deliveryTimeLabel = "Delivery Time";
+  static const String productsInfoLabel = "Products Info:";
+  static const String totalLabel = "Total:";
+  static const String paymentLabel = "Payment";
+  static const String defaultName = "Md. Navid Hassan";
+  static const String defaultContact = "+999 4515154 415445";
+  static const String defaultDeliveryDate = "dd/mm/yyyy";
+  static const String defaultDeliveryTime = "mm:hh";
+  static const String defaultProduct = "THC Gummy";
+  static const String defaultPrice = "Price: \$120";
+  static const String defaultProductInfo = "Simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy ";
+  static const String seeMore = "see more...";
+  static const String defaultTotal = "\$771.00";
+  static const String pickUpDummyAddress = "13th Street. 47 W 13th St, New York, NY 10011";
 
 
 }

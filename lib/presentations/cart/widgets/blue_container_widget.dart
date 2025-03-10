@@ -8,10 +8,11 @@ import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 class BlueContainerWithIcon extends StatelessWidget {
   final Widget? child;
   final String? icon;
+  final Function()? onTap;
   const BlueContainerWithIcon({
     super.key,
     this.child,
-    this.icon,
+    this.icon, this.onTap,
   });
 
   @override
@@ -23,7 +24,7 @@ class BlueContainerWithIcon extends StatelessWidget {
         child: child ??
             ButtonTapWidget(
               radius: 8.r,
-              onTap: () {},
+              onTap:onTap?? () {},
               child: Padding(
                 padding: padding8,
                 child: SvgPicture.asset(

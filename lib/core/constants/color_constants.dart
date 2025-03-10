@@ -14,6 +14,7 @@ class AppColors {
   static const Color kTextDarkColor = Color(0xff101010);
   static const Color kLightTextColor = Color(0xff515151);
   static const Color kExtraLightTextColor = Color(0xff757575);
+  static const Color kExtraLightGreyTextColor = Color(0xff929394);
   static const Color kDividerColor = Color(0xffCFCFCF);
   static const Color kTextFieldColor = Color(0xffF7F7F7);
 }

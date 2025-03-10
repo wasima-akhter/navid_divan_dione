@@ -18,6 +18,7 @@ import 'package:navid_e_commerce/presentations/auth/views/add_documentation_page
 import 'package:navid_e_commerce/presentations/auth/views/forget_pass_page.dart';
 import 'package:navid_e_commerce/presentations/auth/views/signup_page.dart';
 import 'package:navid_e_commerce/presentations/auth/widgets/auth_scaffold_structure_widget.dart';
+import 'package:navid_e_commerce/presentations/navigation/views/navigation_page.dart';
 
 class LoginPage extends StatelessWidget {
   static const String routeName = '/login';
@@ -85,7 +86,7 @@ class LoginPage extends StatelessWidget {
           padding: padding12V,
           child: CustomButton(
             onTap: () {
-              Get.toNamed(AddDocumentationPage.routeName);
+              Get.toNamed(NavigationPage.routeName);
             },
             title: AppStaticStrings.signIn,
           ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:navid_e_commerce/core/components/custom_button.dart';
 import 'package:navid_e_commerce/core/components/custom_network_image.dart';
 import 'package:navid_e_commerce/core/constants/app_static_strings.dart';
@@ -12,6 +13,8 @@ import 'package:navid_e_commerce/core/utils/variable.dart';
 import 'package:navid_e_commerce/presentations/cart/widgets/cart_item_widget.dart';
 import 'package:navid_e_commerce/presentations/home/widgets/default_scaffold_structure_widget.dart';
 import 'package:navid_e_commerce/presentations/home/widgets/product_card_item_widget.dart';
+import 'package:navid_e_commerce/presentations/product/views/deliver_address_page.dart';
+import 'package:navid_e_commerce/presentations/product/views/pickup_address_page.dart';
 import 'package:navid_e_commerce/presentations/product/widgets/color_item_widget.dart';
 import 'package:navid_e_commerce/presentations/product/widgets/expand_able_text.dart';
 
@@ -74,7 +77,34 @@ class ProductDetailsPage extends StatelessWidget {
             maxLines: 3,
           ),
           CustomButton(
-            onTap: () {},
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  content: Column(
+                    spacing: 6.h,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CustomButton(
+                        onTap: () {
+                          Get.toNamed(PickupAddressPage.routeName);
+                        },
+                        title: AppStaticStrings.pickUp,
+                      ),
+                      CustomText(text: 'or'),
+                      CustomButton(
+                        onTap: () {
+                          Get.toNamed(DeliverAddressPage.routeName);
+                        },
+                        fillColor: AppColors.kPrimaryDarkColor,
+                        borderColor: AppColors.kPrimaryDarkColor,
+                        title: AppStaticStrings.deliveryAddress,
+                      )
+                    ],
+                  ),
+                ),
+              );
+            },
             title: AppStaticStrings.buyNow,
           ),
           CustomText(
