@@ -7,6 +7,13 @@ import 'package:navid_e_commerce/presentations/notification/views/notification_p
 import 'package:navid_e_commerce/presentations/orders/controllers/order_controller.dart';
 import 'package:navid_e_commerce/presentations/orders/views/order_page.dart';
 
+import '../../../core/api-client/api_endpoints.dart';
+import '../../../core/api-client/api_service.dart';
+import '../../../core/helper/helper_function.dart';
+import '../../../core/utils/hive_boxes.dart';
+import '../../../core/utils/variable.dart';
+import '../../auth/views/login_page.dart';
+
 class NavigationController extends GetxController {
   static NavigationController get to => Get.find();
   RxInt currentNavIndex = 0.obs;
@@ -25,5 +32,29 @@ class NavigationController extends GetxController {
       AppStaticStrings.orders,
       AppStaticStrings.notifications,
     ];
+  Rx<bool> isLoadingLogout = false.obs;
 
+
+  ///------------------------------ log out method -------------------------///
+
+  Future<void> logoutRequest() async{
+    try{
+      isLoadingLogout.value= true;
+      final response = await ApiService().request(endpoint: logoutEndPoint,
+        method: 'POST',
+      );
+      isLoadingLogout.value= false;
+      if (response['success'] == true) {
+        logger.d(response);
+        showCustomSnackbar(title: 'Success', message:  response['message'],);
+        Boxes.getUserData().delete(tokenKey);
+        Get.offAllNamed(LoginPage.routeName);
+      }else{
+        logger.e(response);
+        showCustomSnackbar(title: 'Failed', message:  response['message'],type: SnackBarType.failed);
+      }
+    }catch(e){
+      logger.e(e.toString());
+    }
+  }
 }

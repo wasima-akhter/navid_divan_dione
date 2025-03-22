@@ -6,7 +6,6 @@ import 'package:navid_e_commerce/core/api-client/api_service.dart';
 import 'package:navid_e_commerce/core/helper/helper_function.dart';
 import 'package:navid_e_commerce/core/utils/hive_boxes.dart';
 import 'package:navid_e_commerce/core/utils/variable.dart';
-import 'package:navid_e_commerce/presentations/auth/views/forget_pass_page.dart';
 import 'package:navid_e_commerce/presentations/auth/views/login_page.dart';
 import 'package:navid_e_commerce/presentations/auth/views/otp_page.dart';
 import 'package:navid_e_commerce/presentations/navigation/views/navigation_page.dart';
@@ -29,6 +28,7 @@ class AuthController extends GetxController {
   final List<FocusNode> focusNodes = List.generate(6, (index) => FocusNode());
   Rx<bool> isLoadingSignUp = false.obs;
   Rx<bool> isLoadingLogin = false.obs;
+  Rx<bool> isLoadingLogout = false.obs;
   Rx<bool> isLoadingActiveAcc = false.obs;
   Rx<bool> isLoadingForgetPass = false.obs;
   Rx<bool> isLoadingResetPass = false.obs;
@@ -100,8 +100,8 @@ class AuthController extends GetxController {
 
   reinitializeSignUpControllers() {
     if (kDebugMode) {
-      emailSignUpController.value.text = 'cayoj38393@evluence.com';
-      nameSignUpController.text = 'cayoj38393';
+      emailSignUpController.value.text = 'pihoner651@eligou.com';
+      nameSignUpController.text = 'pihoner651';
       passSignUpController.text = '12345678S';
       confirmPassSignUpController.text = '12345678S';
       ageSignUpController.value.text = formattedDateOfBirth;
@@ -144,7 +144,7 @@ class AuthController extends GetxController {
   Future<void> signUpRequest() async{
     try{
       isLoadingSignUp.value= true;
-      final response = await ApiService().request(endpoint: signupEndPont,
+      final response = await ApiService().request(endpoint: signupEndPoint,
           method: 'POST',
         body: {
           "name": nameSignUpController.text,
@@ -172,14 +172,14 @@ class AuthController extends GetxController {
 
   ///------------------------------ verify email method -------------------------///
 
-  Future<void> verifyEmailRequest() async{
+  Future<void> verifyEmailRequest({required String email}) async{
     try{
       isLoadingActiveAcc.value= true;
-      final response = await ApiService().request(endpoint: verifyEmailEndPont,
+      final response = await ApiService().request(endpoint: verifyEmailEndPoint,
           method: 'POST',
         body: {
 
-          "email": emailSignUpController.value.text,
+          "email": email,
           "code": otpControllers.map((e) => e.value.text).join()
         }
       );
@@ -187,6 +187,7 @@ class AuthController extends GetxController {
       if (response['success'] == true) {
         logger.d(response);
         showCustomSnackbar(title: 'Success', message:  response['message'],);
+
         Get.offAllNamed(LoginPage.routeName);
       }else{
         logger.e(response);
@@ -202,11 +203,11 @@ class AuthController extends GetxController {
   Future<void> signInRequest() async{
     try{
       isLoadingLogin.value= true;
-      final response = await ApiService().request(endpoint: signInEndPont,
+      final response = await ApiService().request(endpoint: signInEndPoint,
           method: 'POST',
         body: {
-          "email": "siyamoffice0273@gmail.com",
-          "password": "1234567S"
+          "email": AuthController.to.emailLoginController.text,
+          "password": AuthController.to.passLoginController.text
         }
       );
       isLoadingLogin.value= false;
@@ -224,11 +225,38 @@ class AuthController extends GetxController {
     }
   }
 
+  ///------------------------------ forget password method -------------------------///
+
+  Future<void> forgetPasswordRequest({required String email}) async{
+    try{
+      isLoadingLogin.value= true;
+      final response = await ApiService().request(endpoint: forgetPassEndPoint,
+          method: 'POST',
+        body: {
+          "email": email,
+
+        }
+      );
+      isLoadingLogin.value= false;
+      if (response['success'] == true) {
+        logger.d(response);
+        showCustomSnackbar(title: 'Success', message:  response['message'],);
+        Boxes.getUserData().put(tokenKey, response['token']);
+        Get.toNamed(OtpPage.routeName);
+      }else{
+        logger.e(response);
+        showCustomSnackbar(title: 'Failed', message:  response['message'],type: SnackBarType.failed);
+      }
+    }catch(e){
+      logger.e(e.toString());
+    }
+  }
+  
+
+
+
+
   clearSignUpController() {
-    // emailSignUpController.value.value.dispose();
-    // nameSignUpController.value.dispose();
-    // passSignUpController.value.dispose();
-    // confirmPassSignUpController.value.dispose();
     emailSignUpController.value.clear();
     nameSignUpController.clear();
     passSignUpController.clear();
@@ -237,9 +265,6 @@ class AuthController extends GetxController {
 
   @override
   void onClose() {
-    // emailLoginController.dispose();
-    // passLoginController.dispose();
-    // emailForgetController.dispose();
     emailSignUpController.value.dispose();
     nameSignUpController.dispose();
     passSignUpController.dispose();

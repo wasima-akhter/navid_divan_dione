@@ -13,6 +13,7 @@ import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
 import 'package:navid_e_commerce/core/constants/image_constants.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
+import 'package:navid_e_commerce/core/helper/helper_function.dart';
 import 'package:navid_e_commerce/presentations/auth/controllers/auth_controller.dart';
 import 'package:navid_e_commerce/presentations/auth/views/add_documentation_page.dart';
 import 'package:navid_e_commerce/presentations/auth/views/forget_pass_page.dart';
@@ -122,7 +123,7 @@ class LoginPage extends StatelessWidget {
                   if (formKey.currentState!.validate()&&AuthController.to.isAgeChecked.value) {
                     AuthController.to.signInRequest();
                   }else if(!AuthController.to.isAgeChecked.value){
-
+showCustomSnackbar(title: 'Failed', message: 'Age must be more then 21',type: SnackBarType.failed);
                   }
                 },
                 title: AppStaticStrings.signIn,

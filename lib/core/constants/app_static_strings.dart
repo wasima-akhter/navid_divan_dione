@@ -13,6 +13,8 @@ class AppStaticStrings {
   static const String forgetPasswordAppbar = 'Forget password';
   static const String enterYourEmail = 'Enter your email and we will send you a verification code';
   static const String  description= "Description";
+  static const String  failed= 'Failed';
+  static const String  ageMu= 'Age must be more then 21';
 
   // OTP Verification
   static const String  currentPass= "Current Password";

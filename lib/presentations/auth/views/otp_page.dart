@@ -28,7 +28,7 @@ class OtpPage extends StatelessWidget {
         bottom: CustomButton(
           onTap: () {
         if(AuthController.to.checkOtpProvided()){
-AuthController.to.verifyEmailRequest();
+AuthController.to.verifyEmailRequest(email: AuthController.to.emailSignUpController.value.text);
         }else{
           showCustomSnackbar(title: 'Failed', message: AppStaticStrings.otpFieldRequired,type: SnackBarType.failed);
         }

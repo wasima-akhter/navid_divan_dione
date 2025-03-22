@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:navid_e_commerce/core/components/custom_button.dart';
 import 'package:navid_e_commerce/core/components/custom_button_tap.dart';
 import 'package:navid_e_commerce/core/constants/app_static_strings.dart';
 import 'package:navid_e_commerce/core/constants/color_constants.dart';
@@ -11,7 +12,9 @@ import 'package:navid_e_commerce/core/constants/custom_text.dart';
 import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
 import 'package:navid_e_commerce/core/constants/image_constants.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
+import 'package:navid_e_commerce/presentations/auth/controllers/auth_controller.dart';
 import 'package:navid_e_commerce/presentations/auth/views/signup_page.dart';
+import 'package:navid_e_commerce/presentations/navigation/controllers/navigation_controller.dart';
 import 'package:navid_e_commerce/presentations/profile/views/profile_page.dart';
 import 'package:navid_e_commerce/presentations/settings/views/feedback_page.dart';
 import 'package:navid_e_commerce/presentations/settings/views/privacy_terms_page.dart';
@@ -87,9 +90,11 @@ class CustomDrawerWidget extends StatelessWidget {
                 ),
               ),
             ),
-            ButtonTapWidget(
+            NavigationController.to.isLoadingLogout.value?
+            DefaultProgressIndicator(color: AppColors.kPrimaryColor,)
+                :   ButtonTapWidget(
               onTap: () {
-                Get.offAllNamed(SignupPage.routeName);
+               NavigationController.to.logoutRequest();
               },
               child: Padding(
                 padding: padding12,
