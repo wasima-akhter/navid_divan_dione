@@ -3,6 +3,9 @@ import 'package:get/get.dart';
 import 'package:navid_e_commerce/core/components/custom_button.dart';
 import 'package:navid_e_commerce/core/components/custom_text_button.dart';
 import 'package:navid_e_commerce/core/constants/app_static_strings.dart';
+import 'package:navid_e_commerce/core/helper/helper_function.dart';
+import 'package:navid_e_commerce/core/utils/variable.dart';
+import 'package:navid_e_commerce/presentations/auth/controllers/auth_controller.dart';
 import 'package:navid_e_commerce/presentations/auth/views/set_new_password_page.dart';
 import 'package:navid_e_commerce/presentations/auth/widgets/auth_scaffold_structure_widget.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -19,11 +22,16 @@ class OtpPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String? arg = Get.arguments;
     return AuthScaffoldStructureWidget(
         appBarTitle: AppStaticStrings.otp,
         bottom: CustomButton(
           onTap: () {
-            Get.toNamed(SetNewPasswordPage.routeName);
+        if(AuthController.to.checkOtpProvided()){
+AuthController.to.verifyEmailRequest();
+        }else{
+          showCustomSnackbar(title: 'Failed', message: AppStaticStrings.otpFieldRequired,type: SnackBarType.failed);
+        }
           },
           title: AppStaticStrings.sendCode,
         ),
@@ -34,10 +42,15 @@ class OtpPage extends StatelessWidget {
             text: AppStaticStrings.checkYourEmail,
             fontSize: getButtonFontSizeLarge(),
           ),
-          CustomText(
-            text: AppStaticStrings.otpDescription,
-            fontSize: getFontSizeSmall(),
-            style: poppinsRegular,
+          Obx(
+           () {
+              return CustomText(
+                text:
+                    'We sent a reset link to ${arg != null && arg == verifyEmail ? AuthController.to.emailSignUpController.value.text : ''} 6 digit code that mentioned in the email',
+                fontSize: getFontSizeSmall(),
+                style: poppinsRegular,
+              );
+            }
           ),
           space12H,
           OtpTextField(),

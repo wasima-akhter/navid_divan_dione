@@ -29,10 +29,10 @@ class AuthScaffoldStructureWidget extends StatelessWidget {
               ),
             ),
           ),
-          Padding(
-            padding: padding12.copyWith(bottom: 20.w ),
+         bottom!=null? Padding(
+            padding: padding12.copyWith(bottom: 12.h),
             child: bottom??SizedBox.shrink(),
-          )
+          ):SizedBox.shrink()
         ],
       ),
 

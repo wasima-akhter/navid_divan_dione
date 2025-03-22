@@ -23,7 +23,7 @@ class OtpTextField extends StatelessWidget {
             margin: EdgeInsets.symmetric(horizontal: 5),
             child: Obx(() {
               return TextField(
-                controller: AuthController.to.controllers[index].value,
+                controller: AuthController.to.otpControllers[index].value,
                 focusNode: AuthController.to.focusNodes[index],
                 keyboardType: TextInputType.number,
                 textAlign: TextAlign.center,
@@ -36,7 +36,7 @@ class OtpTextField extends StatelessWidget {
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.zero,
                     fillColor:
-                        AuthController.to.controllers[index].value.text.isNotEmpty
+                        AuthController.to.otpControllers[index].value.text.isNotEmpty
                             ? AppColors.kPrimaryColor
                             : Colors.transparent,
                     filled: true,
@@ -52,7 +52,7 @@ class OtpTextField extends StatelessWidget {
                         borderSide: BorderSide(color: AppColors.kPrimaryColor))),
                 onChanged: (value)
                 {AuthController.to.onOtpChanged(value, index);
-                AuthController.to.controllers[index].refresh();
+                AuthController.to.otpControllers[index].refresh();
                   },
               );
             }),

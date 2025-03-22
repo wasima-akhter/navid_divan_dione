@@ -20,6 +20,7 @@ class AppTheme {
       //   overlayColor: WidgetStateProperty.all(AppColors.kSubTextColor), // Overlay color when pressed
       //
       // ),
+
       splashColor: AppColors.kPrimaryLightColor,
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: AppColors.kWhiteColor,

@@ -203,7 +203,48 @@ async {
     return null;
   }
 }
+enum SnackBarType { success, failed, alert }
 
+void showCustomSnackbar({
+  required String title,
+  required String message,
+   SnackBarType type=SnackBarType.success,
+  SnackPosition position = SnackPosition.BOTTOM, // Default position
+}) {
+  Color backgroundColor= AppColors.kWhiteColor.withValues(alpha: .5);
+  Color textColor= AppColors.kTextDarkColor;
+
+  switch (type) {
+    case SnackBarType.success:
+  backgroundColor= AppColors.kWhiteColor.withValues(alpha: .5);
+
+      break;
+    case SnackBarType.failed:
+      backgroundColor = Color(0xff8a0600);
+      textColor =AppColors.kWhiteColor;
+
+      break;
+  // TODO: Handle this case.
+    case SnackBarType.alert:
+      backgroundColor =Color(0xffc86900);
+      textColor=AppColors.kWhiteColor;
+      break;
+  // TODO: Handle this case.
+  }
+  Get.snackbar(
+    title,
+    message,
+    backgroundColor: backgroundColor,
+    padding: const EdgeInsets.all(12),
+    margin: const EdgeInsets.all(12),
+    colorText:textColor,
+    dismissDirection: DismissDirection.horizontal,
+
+    snackPosition: position,
+    duration: const Duration(
+        seconds: 3),
+  );
+}
 Future<String> selectDate(
     BuildContext context,
     )

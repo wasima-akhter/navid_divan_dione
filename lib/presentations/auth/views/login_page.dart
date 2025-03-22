@@ -22,7 +22,8 @@ import 'package:navid_e_commerce/presentations/navigation/views/navigation_page.
 
 class LoginPage extends StatelessWidget {
   static const String routeName = '/login';
-  const LoginPage({super.key});
+  LoginPage({super.key});
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -44,14 +45,42 @@ class LoginPage extends StatelessWidget {
           style: poppinsRegular,
         ),
         space6H,
-        CustomTextField(
-          title: AppStaticStrings.email,
-          hintText: AppStaticStrings.enterEmail,
-        ),
-        CustomTextField(
-          title: AppStaticStrings.password,
-          hintText: AppStaticStrings.enterPassword,
-          isPassword: true,
+        Form(
+          key: formKey,
+          child: Column(
+            spacing: 6.h,
+            children: [
+              CustomTextField(
+                textEditingController: AuthController.to.emailLoginController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return AppStaticStrings.emailRequired;
+                  } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                    return AppStaticStrings.enterValidEmail;
+                  }
+                  return null;
+                },
+                title: AppStaticStrings.email,
+                hintText: AppStaticStrings.enterEmail,
+              ),
+              CustomTextField(
+                textEditingController: AuthController.to.passLoginController,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return AppStaticStrings.passRequired;
+                  } else if (value.length < 8) {
+                    return AppStaticStrings.passMustbe6;
+                  } else if (!value.contains(RegExp(r'[A-Z]'))) {
+                    return AppStaticStrings.passMustContain;
+                  }
+                  return null;
+                },
+                title: AppStaticStrings.password,
+                hintText: AppStaticStrings.enterPassword,
+                isPassword: true,
+              ),
+            ],
+          ),
         ),
         Row(
           spacing: 6.w,
@@ -76,19 +105,29 @@ class LoginPage extends StatelessWidget {
                 flex: 3,
                 child: Align(
                     alignment: Alignment.centerRight,
-                    child: CustomTextButton(onPressed: () {
-                      Get.toNamed(ForgetPassPage.routeName);
-                    },
+                    child: CustomTextButton(
+                        onPressed: () {
+                          Get.toNamed(ForgetPassPage.routeName);
+                        },
                         title: AppStaticStrings.forgetPassword))),
           ],
         ),
         Padding(
           padding: padding12V,
-          child: CustomButton(
-            onTap: () {
-              Get.toNamed(NavigationPage.routeName);
-            },
-            title: AppStaticStrings.signIn,
+          child: Obx(
+           () {
+              return CustomButton(
+                isLoading: AuthController.to.isLoadingLogin.value,
+                onTap: () {
+                  if (formKey.currentState!.validate()&&AuthController.to.isAgeChecked.value) {
+                    AuthController.to.signInRequest();
+                  }else if(!AuthController.to.isAgeChecked.value){
+
+                  }
+                },
+                title: AppStaticStrings.signIn,
+              );
+            }
           ),
         ),
         Row(

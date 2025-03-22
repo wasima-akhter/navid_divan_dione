@@ -8,6 +8,8 @@ class AppStaticStrings {
   static const String createAccount = 'Create a new account';
   static const String signInToYourAccount = 'Sign in to Your \nAccount';
   static const String forgetPassword = 'Forget password?';
+  static const String verifyEmail = 'Verify Your Email';
+  static const String confirmYourEmail = 'First, confirm your email to create your account.';
   static const String forgetPasswordAppbar = 'Forget password';
   static const String enterYourEmail = 'Enter your email and we will send you a verification code';
   static const String  description= "Description";
@@ -24,12 +26,14 @@ class AppStaticStrings {
   static const String confirmPass = "Confirm Password";
   static const String emailRequired = "Email is required.";
   static const String nameRequired = "Username is required.";
+  static const String ageRequired = "Age is required.";
   static const String fieldRequired = "Field is required.";
   static const String otpFieldRequired = "Otp field is required.";
   static const String passRequired = "Password is required.";
   static const String enterValidEmail = "Enter a valid email.";
-  static const String passMustbe6 = "Password must be at least 6 characters.";
+  static const String passMustbe6 = "Password must be at least 8 characters.";
   static const String passNotMatch = "Passwords do not match.";
+  static const String passMustContain = "Password must contain at least one uppercase letter";
   static const String otp = 'OTP';
   static const String documentation = 'Documentations:';
   static const String save = 'Save';
@@ -45,12 +49,13 @@ class AppStaticStrings {
 
   // Password Reset
   static const String setNewPassword = 'Set New Password';
-  static const String otpDescription = 'We sent a reset link to contact@dscode...comenter 6 digit code that mentioned in the email';
+  static const String otpDescription = 'We sent a reset link to 6 digit code that mentioned in the email';
   static const String createNewPasswordMessage = 'Create a new password. Ensure it differs from previous ones for security';
 
   // Form Labels
   static const String fullName = 'Full Name';
   static const String email = 'Email';
+  static const String phone = 'Phone';
   static const String password = 'Password';
   static const String confirmPassword = 'Confirm Password';
   static const String age = 'Age';
@@ -60,6 +65,7 @@ class AppStaticStrings {
   // Placeholders
   static const String enterUserName = 'enter your user name here...';
   static const String enterEmail = 'enter your email here...';
+  static const String enterPhone = 'enter your phone here...';
   static const String enterPassword = 'enter your password here';
   static const String enterAge = 'dd/mm/yy';
   static const String enterTaxId = 'enter your tax here...';

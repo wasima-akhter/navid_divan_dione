@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:navid_e_commerce/core/constants/color_constants.dart';
 import 'package:navid_e_commerce/core/constants/custom_space.dart';
 import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
+import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
 
 
@@ -146,11 +147,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             obscureText: widget.isPassword ? obscureText : false,
             validator: widget.validator,
             decoration: InputDecoration(
-              contentPadding: EdgeInsets.symmetric(
-                  horizontal: 16.sp,
-                  vertical: widget.maxLines! > 1
-                      ? 12.sp
-                      : 12.sp), // Adjust vertical padding
+              contentPadding: padding12H,  // Adjust vertical padding
               fillColor: widget.fillColor,
               isCollapsed: widget.isCollapsed,
               isDense: widget.isDense,
@@ -166,17 +163,13 @@ class _CustomTextFieldState extends State<CustomTextField> {
               suffixIcon: widget.isPassword
                   ? GestureDetector(
                       onTap: toggle,
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            left: 16, right: 16, top: 16, bottom: 16),
-                        child: obscureText
-                            ? const Icon(
-                                Icons.visibility_off_outlined,
-                                color: AppColors.kExtraLightTextColor,
-                              )
-                            : const Icon(Icons.visibility_outlined,
-                                color: AppColors.kExtraLightTextColor),
-                      ),
+                      child: obscureText
+                          ? const Icon(
+                              Icons.visibility_off_outlined,
+                              color: AppColors.kExtraLightTextColor,
+                            )
+                          : const Icon(Icons.visibility_outlined,
+                              color: AppColors.kExtraLightTextColor),
                     )
                   : widget.suffixIcon,
               suffixIconColor: widget.suffixIconColor,

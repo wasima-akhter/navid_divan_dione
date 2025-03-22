@@ -9,28 +9,36 @@ import 'package:navid_e_commerce/core/constants/custom_text.dart';
 import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
 import 'package:navid_e_commerce/core/constants/image_constants.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
+import 'package:navid_e_commerce/core/utils/variable.dart';
+import 'package:navid_e_commerce/presentations/auth/controllers/auth_controller.dart';
 import 'package:navid_e_commerce/presentations/auth/views/otp_page.dart';
 import 'package:navid_e_commerce/presentations/auth/widgets/auth_scaffold_structure_widget.dart';
 
 class ForgetPassPage extends StatelessWidget {
   static const String routeName = '/forget-pass';
-  const ForgetPassPage({super.key});
+  ForgetPassPage({super.key});
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+
 
   @override
   Widget build(BuildContext context) {
+    final String? arg = Get.arguments;
     return AuthScaffoldStructureWidget(
-        appBarTitle: AppStaticStrings.forgetPasswordAppbar,
+        appBarTitle:arg!=null&& arg==verifyEmail?AppStaticStrings.verifyEmail: AppStaticStrings.forgetPasswordAppbar,
     bottom:   CustomButton(
       onTap: () {
-        Get.toNamed(OtpPage.routeName);
-      },
+        if(formKey.currentState!.validate()){
+            Get.toNamed(OtpPage.routeName);
+          }
+        },
       title: AppStaticStrings.sendCode,
     ),
         children: [
           Center(child: SvgPicture.asset(forgetPassImg)),
           space12H,
           CustomText(
-            text: AppStaticStrings.forgetPassword,
+            text:arg!=null&& arg==verifyEmail?AppStaticStrings.verifyEmail: AppStaticStrings.forgetPassword,
             fontSize: getButtonFontSizeLarge(),
           ),
           CustomText(
@@ -39,9 +47,26 @@ class ForgetPassPage extends StatelessWidget {
             style: poppinsRegular,
           ),
           space6H,
-          CustomTextField(
-            title: AppStaticStrings.email,
-            hintText: AppStaticStrings.enterEmail,
+          Form(
+            key: formKey,
+            child: Obx(
+                     () {
+                return CustomTextField(
+                  textEditingController: arg!=null&& arg==verifyEmail?AuthController.to.emailSignUpController.value:AuthController.to.emailForgetController.value,
+                  title: AppStaticStrings.email,
+                  hintText: AppStaticStrings.enterEmail,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return AppStaticStrings.emailRequired;
+                    }
+                    if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                      return AppStaticStrings.enterValidEmail;
+                    }
+                    return null;
+                  },
+                );
+              }
+            ),
           ),
 
         ],);
