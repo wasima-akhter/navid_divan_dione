@@ -25,16 +25,27 @@ class OtpPage extends StatelessWidget {
     final String? arg = Get.arguments;
     return AuthScaffoldStructureWidget(
         appBarTitle: AppStaticStrings.otp,
-        bottom: CustomButton(
-          onTap: () {
-        if(AuthController.to.checkOtpProvided()){
-AuthController.to.verifyEmailRequest(email: AuthController.to.emailSignUpController.value.text);
-        }else{
-          showCustomSnackbar(title: 'Failed', message: AppStaticStrings.otpFieldRequired,type: SnackBarType.failed);
-        }
-          },
-          title: AppStaticStrings.sendCode,
-        ),
+        bottom: Obx(() {
+          return CustomButton(
+            isLoading: AuthController.to.isLoadingActiveAcc.value,
+            onTap: () {
+              if (AuthController.to.checkOtpProvided()) {
+                AuthController.to.verifyEmailRequest(
+                    isAccVerify:
+                        arg != null && arg == verifyEmail ? true : false,
+                    email: arg != null && arg == verifyEmail
+                        ? AuthController.to.emailSignUpController.value.text
+                        : AuthController.to.emailForgetController.value.text);
+              } else {
+                showCustomSnackbar(
+                    title: 'Failed',
+                    message: AppStaticStrings.otpFieldRequired,
+                    type: SnackBarType.failed);
+              }
+            },
+            title: AppStaticStrings.sendCode,
+          );
+        }),
         children: [
           Center(child: SvgPicture.asset(signupImg)),
           space12H,
@@ -42,21 +53,25 @@ AuthController.to.verifyEmailRequest(email: AuthController.to.emailSignUpControl
             text: AppStaticStrings.checkYourEmail,
             fontSize: getButtonFontSizeLarge(),
           ),
-          Obx(
-           () {
-              return CustomText(
-                text:
-                    'We sent a reset link to ${arg != null && arg == verifyEmail ? AuthController.to.emailSignUpController.value.text : ''} 6 digit code that mentioned in the email',
-                fontSize: getFontSizeSmall(),
-                style: poppinsRegular,
-              );
-            }
-          ),
+          Obx(() {
+            return CustomText(
+              text:
+                  'We sent a reset link to ${arg != null && arg == verifyEmail ? AuthController.to.emailSignUpController.value.text : AuthController.to.emailForgetController.value.text} 6 digit code that mentioned in the email',
+              fontSize: getFontSizeSmall(),
+              style: poppinsRegular,
+            );
+          }),
           space12H,
           OtpTextField(),
           Align(
             alignment: Alignment.centerRight,
             child: CustomTextButton(
+              onPressed: () {
+                AuthController.to.forgetPasswordRequest(email:arg != null && arg == verifyEmail
+                    ? AuthController.to.emailSignUpController.value.text
+                    : AuthController.to.emailForgetController.value.text);
+
+              },
               title: AppStaticStrings.resendOtp,
               fontSize: getFontSizeSmall(),
             ),

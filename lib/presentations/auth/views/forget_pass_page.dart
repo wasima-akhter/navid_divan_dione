@@ -26,13 +26,18 @@ class ForgetPassPage extends StatelessWidget {
     final String? arg = Get.arguments;
     return AuthScaffoldStructureWidget(
         appBarTitle:arg!=null&& arg==verifyEmail?AppStaticStrings.verifyEmail: AppStaticStrings.forgetPasswordAppbar,
-    bottom:   CustomButton(
-      onTap: () {
-        if(formKey.currentState!.validate()){
-            Get.toNamed(OtpPage.routeName);
-          }
-        },
-      title: AppStaticStrings.sendCode,
+    bottom:   Obx(
+     () {
+        return CustomButton(
+          isLoading: AuthController.to.isLoadingForgetPass.value,
+          onTap: () {
+            if(formKey.currentState!.validate()){
+              AuthController.to.forgetPasswordRequest(email: AuthController.to.emailForgetController.value.text);
+              }
+            },
+          title: AppStaticStrings.sendCode,
+        );
+      }
     ),
         children: [
           Center(child: SvgPicture.asset(forgetPassImg)),
