@@ -13,6 +13,7 @@ import '../../../core/helper/helper_function.dart';
 import '../../../core/utils/hive_boxes.dart';
 import '../../../core/utils/variable.dart';
 import '../../auth/views/login_page.dart';
+import '../../profile/controllers/profile_controller.dart';
 
 class NavigationController extends GetxController {
   static NavigationController get to => Get.find();
@@ -20,7 +21,7 @@ class NavigationController extends GetxController {
   @override
   void onInit() {
     Get.put(OrderController());
-    // Get.put(ProfileController());
+  Get.put(ProfileController());
     super.onInit();
   }
 

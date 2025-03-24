@@ -15,6 +15,7 @@ class AppStaticStrings {
   static const String  description= "Description";
   static const String  failed= 'Failed';
   static const String  ageMu= 'Age must be more then 21';
+  static const String  noInternet= 'No internet connection';
 
   // OTP Verification
   static const String  currentPass= "Current Password";

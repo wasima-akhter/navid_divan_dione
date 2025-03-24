@@ -1,29 +1,18 @@
 import 'package:get/get.dart';
 import 'package:navid_e_commerce/core/bindings/bindings.dart';
-import 'package:navid_e_commerce/presentations/auth/views/add_documentation_page.dart';
-import 'package:navid_e_commerce/presentations/auth/views/add_documentation_page.dart';
-import 'package:navid_e_commerce/presentations/auth/views/forget_pass_page.dart';
 import 'package:navid_e_commerce/presentations/auth/views/forget_pass_page.dart';
 import 'package:navid_e_commerce/presentations/auth/views/login_page.dart';
 import 'package:navid_e_commerce/presentations/auth/views/otp_page.dart';
-import 'package:navid_e_commerce/presentations/auth/views/otp_page.dart';
-import 'package:navid_e_commerce/presentations/auth/views/set_new_password_page.dart';
 import 'package:navid_e_commerce/presentations/auth/views/set_new_password_page.dart';
 import 'package:navid_e_commerce/presentations/auth/views/signup_page.dart';
 import 'package:navid_e_commerce/presentations/home/views/category_list_page.dart';
 import 'package:navid_e_commerce/presentations/navigation/views/navigation_page.dart';
 import 'package:navid_e_commerce/presentations/product/views/deliver_address_page.dart';
-import 'package:navid_e_commerce/presentations/product/views/deliver_address_page.dart';
 import 'package:navid_e_commerce/presentations/product/views/pickup_address_page.dart';
-import 'package:navid_e_commerce/presentations/product/views/pickup_address_page.dart';
-import 'package:navid_e_commerce/presentations/product/views/product_details_page.dart';
 import 'package:navid_e_commerce/presentations/product/views/product_details_page.dart';
 import 'package:navid_e_commerce/presentations/profile/views/profile_page.dart';
 import 'package:navid_e_commerce/presentations/settings/views/change_pass_page.dart';
-import 'package:navid_e_commerce/presentations/settings/views/change_pass_page.dart';
 import 'package:navid_e_commerce/presentations/settings/views/feedback_page.dart';
-import 'package:navid_e_commerce/presentations/settings/views/feedback_page.dart';
-import 'package:navid_e_commerce/presentations/settings/views/privacy_terms_page.dart';
 import 'package:navid_e_commerce/presentations/settings/views/privacy_terms_page.dart';
 import 'package:navid_e_commerce/presentations/settings/views/settings_page.dart';
 import 'package:navid_e_commerce/presentations/splash/views/splash_page.dart';
@@ -42,10 +31,7 @@ class AppRoutes {
             name: SignupPage.routeName,
             page: () => SignupPage(),
             binding: AuthBinding()),
-        GetPage(
-            name: AddDocumentationPage.routeName,
-            page: () => AddDocumentationPage(),
-            binding: AuthBinding()),
+
         GetPage(
             name: ForgetPassPage.routeName,
             page: () => ForgetPassPage(),

@@ -171,6 +171,8 @@ class AuthController extends GetxController {
             type: SnackBarType.failed);
       }
     } catch (e) {
+      isLoadingSignUp.value = false;
+
       logger.e(e.toString());
     }
   }
@@ -211,6 +213,8 @@ class AuthController extends GetxController {
             type: SnackBarType.failed);
       }
     } catch (e) {
+      isLoadingActiveAcc.value = false;
+
       logger.e(e.toString());
     }
   }
@@ -243,6 +247,8 @@ class AuthController extends GetxController {
             type: SnackBarType.failed);
       }
     } catch (e) {
+      isLoadingLogin.value = false;
+
       logger.e(e.toString());
     }
   }
@@ -273,6 +279,8 @@ class AuthController extends GetxController {
             type: SnackBarType.failed);
       }
     } catch (e) {
+      isLoadingForgetPass.value = false;
+
       logger.e(e.toString());
     }
   }
@@ -306,6 +314,7 @@ class AuthController extends GetxController {
             type: SnackBarType.failed);
       }
     } catch (e) {
+      isLoadingResetPass.value = false;
       logger.e(e.toString());
     }
   }

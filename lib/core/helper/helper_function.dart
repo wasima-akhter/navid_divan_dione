@@ -11,15 +11,6 @@ import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
 
 void showPopupMenu(BuildContext context, Offset offset) async {
-  final result = await showMenu(
-    context: context,
-
-    position: RelativeRect.fromLTRB(
-        offset.dx, offset.dy, offset.dx + 200, offset.dy + 300),
-    items: items, // Pass the list here
-    elevation: 8.0,
-    color: AppColors.kPrimaryLightColor, // Popup background color
-  );
 
   // if (result != null) {
   //   setState(() {
@@ -47,16 +38,6 @@ List<PopupMenuEntry<dynamic>> items = [
   ),
 ];
 
-PopupMenuItem<String> _buildPopupMenuItem(String colorName) {
-  return PopupMenuItem(
-    value: colorName,
-    child: CustomText(
-      text: colorName,
-      style: poppinsMedium,
-      fontSize: getFontSizeSemiSmall(),
-    ),
-  );
-}
 
 Future<dynamic> defaultAlertDialog(BuildContext context,
     {required Widget child, String? title, Color? backgroundColor}) {
@@ -96,15 +77,23 @@ Future<dynamic> defaultAlertDialog(BuildContext context,
     },
   );
 }
-
+void removeImage(
+    {required RxList<String> uploadImages, required String imagePath}) {
+  if (uploadImages.contains(imagePath)) {
+    uploadImages.remove(imagePath);
+  } else {
+    debugPrint("Image not found in the list.");
+  }
+}
 Future<void> pickImages({
   bool allowMultiple = false,
   RxList<String>? uploadImages,
   RxString? singleImagePath,
+  FileType fileType= FileType.image
 }) async {
   try {
     final result = await FilePicker.platform.pickFiles(
-        type: FileType.image, // Restrict to image files
+        type: fileType, // Restrict to image files
         allowMultiple: allowMultiple,
         allowCompression: true,
         compressionQuality: 50 // Allow multiple selection
@@ -208,6 +197,8 @@ enum SnackBarType { success, failed, alert }
 void showCustomSnackbar({
   required String title,
   required String message,
+ bool noInternet =false,
+  Function()? retryTap,
    SnackBarType type=SnackBarType.success,
   SnackPosition position = SnackPosition.BOTTOM, // Default position
 }) {
@@ -239,10 +230,12 @@ void showCustomSnackbar({
     margin: const EdgeInsets.all(12),
     colorText:textColor,
     dismissDirection: DismissDirection.horizontal,
-
     snackPosition: position,
     duration: const Duration(
         seconds: 3),
+    mainButton:noInternet==true? TextButton(onPressed: retryTap??() {
+
+    }, child: CustomText(text: 'Retry',color: AppColors.kWhiteColor,)):null
   );
 }
 Future<String> selectDate(

@@ -73,9 +73,10 @@ class AppTheme {
         backgroundColor: AppColors.kWhiteColor,
       ),
       appBarTheme: AppBarTheme(
-        surfaceTintColor: AppColors.kWhiteColor,
+        surfaceTintColor:Colors.transparent,
         backgroundColor: AppColors.kWhiteColor,
         foregroundColor: AppColors.kPrimaryTextDarkColor,
+
       ),
       scaffoldBackgroundColor: AppColors.kWhiteColor,
       textTheme: const TextTheme(

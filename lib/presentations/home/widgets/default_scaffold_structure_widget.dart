@@ -7,14 +7,15 @@ class DefaultScaffoldStructureWidget extends StatelessWidget {
   final double? spacing;
   final CrossAxisAlignment? crossAxisAlignment;
   final List<Widget> children;
+  final List<Widget>? action;
   const DefaultScaffoldStructureWidget({
-    super.key, required this.appBarTitle, required this.children, this.spacing, this.crossAxisAlignment,
+    super.key, required this.appBarTitle, required this.children, this.spacing, this.crossAxisAlignment, this.action,
   });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomDefaultAppbar(title: appBarTitle),
+      appBar: CustomDefaultAppbar(title: appBarTitle,action: action,),
 
       body: SingleChildScrollView(
         child: Padding(

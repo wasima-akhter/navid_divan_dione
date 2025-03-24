@@ -33,9 +33,10 @@ class CustomDefaultAppbar extends StatelessWidget
     implements PreferredSizeWidget {
   final String title;
   final Widget? leading;
+  final List<Widget>? action;
   const CustomDefaultAppbar({
     super.key,
-    required this.title, this.leading,
+    required this.title, this.leading, this.action,
   });
 
   @override
@@ -45,6 +46,7 @@ class CustomDefaultAppbar extends StatelessWidget
       foregroundColor: AppColors.kWhiteColor,
       centerTitle: true,
       leading:leading ,
+      actions: action,
       title: CustomText(
         text: title,
         style: poppinsMedium,

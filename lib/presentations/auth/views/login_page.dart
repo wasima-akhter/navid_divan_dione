@@ -15,11 +15,9 @@ import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
 import 'package:navid_e_commerce/core/helper/helper_function.dart';
 import 'package:navid_e_commerce/presentations/auth/controllers/auth_controller.dart';
-import 'package:navid_e_commerce/presentations/auth/views/add_documentation_page.dart';
 import 'package:navid_e_commerce/presentations/auth/views/forget_pass_page.dart';
 import 'package:navid_e_commerce/presentations/auth/views/signup_page.dart';
 import 'package:navid_e_commerce/presentations/auth/widgets/auth_scaffold_structure_widget.dart';
-import 'package:navid_e_commerce/presentations/navigation/views/navigation_page.dart';
 
 class LoginPage extends StatelessWidget {
   static const String routeName = '/login';

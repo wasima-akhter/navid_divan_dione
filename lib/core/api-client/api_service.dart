@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'package:logger/logger.dart';
-import 'package:logger/logger.dart';
+import 'dart:io';
+import 'package:http_parser/http_parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:connectivity_plus/connectivity_plus.dart';
 
@@ -39,7 +39,7 @@ class ApiService {
   // Check internet connectivity
   Future<bool> checkInternetConnection() async {
     var connectivityResult = await Connectivity().checkConnectivity();
-    if (connectivityResult == ConnectivityResult.none) {
+    if (connectivityResult.contains(ConnectivityResult.none)) {
       return false;
     }
 
@@ -59,7 +59,8 @@ class ApiService {
     required String method,
     Map<String, dynamic>? body,
     Map<String, String>? queryParams,
-  }) async {
+  })
+  async {
     // Check internet connection first
     bool isConnected = await checkInternetConnection();
     if (!isConnected) {
@@ -129,6 +130,121 @@ if(body!=null){
               'Request failed with status: ${response.statusCode}',
           'statusCode': response.statusCode,
           'data': responseData,
+        };
+      }
+    } catch (e) {
+      return {
+        'success': false,
+        'message': 'Request failed: ${e.toString()}',
+      };
+    }
+  }
+
+
+  Future<dynamic> multipartRequest({
+    required String endpoint,
+    required String method,
+    required Map<String, String> fields,
+    required Map<String, dynamic> files, // Use dynamic to support both single files and lists
+  })
+  async {
+    // Check internet connection first
+    bool isConnected = await checkInternetConnection();
+    if (!isConnected) {
+      return {
+        'success': false,
+        'message': 'No internet connection',
+      };
+    }
+
+    var uri = Uri.parse('$baseUrl/$endpoint');
+    var request = http.MultipartRequest(method, uri);
+
+    // Add headers (including auth token if available)
+    request.headers.addAll(_headers);
+
+    // Add fields (text data)
+    fields.forEach((key, value) {
+      request.fields[key] = value;
+    });
+
+    // Function to determine MediaType based on file extension
+    MediaType getMediaType(String path) {
+      final extension = path.split('.').last.toLowerCase();
+      switch (extension) {
+        case 'pdf':
+          return MediaType('application', 'pdf');
+        case 'jpg':
+        case 'jpeg':
+          return MediaType('image', 'jpeg');
+        case 'png':
+          return MediaType('image', 'png');
+        case 'gif':
+          return MediaType('image', 'gif');
+        case 'webp':
+          return MediaType('image', 'webp');
+        case 'doc':
+          return MediaType('application', 'msword');
+        case 'docx':
+          return MediaType('application', 'vnd.openxmlformats-officedocument.wordprocessingml.document');
+        default:
+          return MediaType('application', 'octet-stream'); // Default binary data
+      }
+    }
+
+    // Add files
+    for (var key in files.keys) {
+      var value = files[key];
+
+      if (value is File) {
+        // Single file
+        var fileStream = http.ByteStream(value.openRead());
+        var length = await value.length();
+        var fileName = value.path.split('/').last;
+
+        var multipartFile = http.MultipartFile(
+          key,
+          fileStream,
+          length,
+          filename: fileName,
+          contentType: getMediaType(value.path),
+        );
+        request.files.add(multipartFile);
+      }
+      else if (value is List) {
+        // List of files
+        for (var file in value) {
+          if (file is File) {
+            var fileStream = http.ByteStream(file.openRead());
+            var length = await file.length();
+            var fileName = file.path.split('/').last;
+
+            var multipartFile = http.MultipartFile(
+              key, // Use the same key for all files in the list
+              fileStream,
+              length,
+              filename: fileName,
+              contentType: getMediaType(file.path),
+            );
+            request.files.add(multipartFile);
+          }
+        }
+      }
+    }
+
+    try {
+      var response = await request.send();
+      var responseData = await response.stream.bytesToString();
+      var jsonResponse = json.decode(responseData);
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        return jsonResponse;
+      } else {
+        return {
+          'success': false,
+          'message': jsonResponse['message'] ?? 'Request failed with status: ${response.statusCode}',
+          'statusCode': response.statusCode,
+          'data': jsonResponse,
         };
       }
     } catch (e) {

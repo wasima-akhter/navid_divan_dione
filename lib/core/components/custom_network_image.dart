@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:navid_e_commerce/core/components/custom_button.dart';
 import 'package:navid_e_commerce/core/constants/color_constants.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
@@ -68,16 +69,19 @@ class CustomNetworkImage extends StatelessWidget {
         return Container(
           height: height,
           width: width,
+          clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(
             border: border,
-            borderRadius: BorderRadius.circular(radius??8.r),
+            borderRadius:boxShape==BoxShape.circle?null: BorderRadius.circular(radius??8.r),
             shape: boxShape,
             color: Colors.grey.withOpacity(0.6),
-            image: DecorationImage(
-              image: AssetImage(imageErrorUrl ?? ''),
-              fit: BoxFit.cover,
-            ),
+            // image: DecorationImage(
+            //   image: Svg(imageErrorUrl ?? ''),
+            //   fit: BoxFit.cover,
+            // ),
           ),
+          child: SvgPicture.asset(imageErrorUrl ?? '',fit: BoxFit.cover, height: height,
+            width: width,),
         );
       },
     );

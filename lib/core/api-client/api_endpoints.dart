@@ -4,3 +4,6 @@ String signInEndPoint ='auth/sign-in';
 String logoutEndPoint ='auth/logout';
 String resetPasswordEndPoint ='auth/reset-password';
 String forgetPassEndPoint ='verification/create';
+String getProfileEndPoint ='auth/profile';
+String updateProfileEndPoint ='auth/update-profile';
+String changePassEndPoint ='auth/change-password';
