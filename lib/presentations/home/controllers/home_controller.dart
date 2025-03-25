@@ -10,19 +10,19 @@ import '../../../core/helper/helper_function.dart';
 import '../../../core/utils/hive_boxes.dart';
 import '../../../core/utils/variable.dart';
 
-class HomeController extends GetxController{
+class HomeController extends GetxController {
   static HomeController get to => Get.find();
 
   RxBool isLoadingCategory = false.obs;
-RxList<CategoryModel> catList =<CategoryModel>[].obs;
+  RxList<CategoryModel> catList = <CategoryModel>[].obs;
   final RxInt currentPage = 1.obs;
   final RxInt totalPages = 1.obs;
   final RxInt totalItems = 0.obs;
   final RxInt itemsPerPage = 10.obs;
   final RxBool isLoadingMore = false.obs;
-@override
+  @override
   void onInit() {
-getCategoryListRequest();
+    getCategoryListRequest();
     super.onInit();
   }
 
@@ -30,23 +30,25 @@ getCategoryListRequest();
 
   Future<void> getCategoryListRequest({bool loadMore = false}) async {
     try {
-    if(loadMore){
-      isLoadingMore.value = true;
-      currentPage.value++;
-    }else{
-      isLoadingCategory.value = true;
-      currentPage.value=1;
-    }
+      if (loadMore) {
+        isLoadingMore.value = true;
+        currentPage.value++;
+      } else {
+        isLoadingCategory.value = true;
+        currentPage.value = 1;
+      }
       ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
 
       final response = await ApiService()
-          .request(endpoint: catGetAllEndPoint, method: 'GET',queryParams: {
+          .request(endpoint: catGetAllEndPoint, method: 'GET', queryParams: {
         'page': currentPage.value.toString(),
         'limit': itemsPerPage.value.toString(),
+        'sort': 'updatedAt',
+        'order': 'desc',
       });
 
-    isLoadingCategory.value = false;
-    isLoadingMore.value = false;
+      isLoadingCategory.value = false;
+      isLoadingMore.value = false;
       if (response['success'] == true) {
         if (response['pagination'] != null) {
           currentPage.value = response['pagination']['currentPage'] ?? 1;
@@ -64,7 +66,6 @@ getCategoryListRequest();
           catList.value = newCategories; // Replace for refresh
         }
         logger.d(response);
-
       } else if (response['message'] == AppStaticStrings.noInternet) {
         showCustomSnackbar(
           title: 'Failed',
@@ -87,5 +88,4 @@ getCategoryListRequest();
       isLoadingCategory.value = false;
     }
   }
-
 }
