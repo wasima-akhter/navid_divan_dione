@@ -6,6 +6,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:navid_e_commerce/core/components/custom_button.dart';
 import 'package:navid_e_commerce/core/constants/color_constants.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
+import 'package:navid_e_commerce/presentations/profile/widgets/custom_loading_widget.dart';
+
+import '../constants/image_constants.dart';
 
 class CustomNetworkImage extends StatelessWidget {
   final String imageUrl;
@@ -57,13 +60,9 @@ class CustomNetworkImage extends StatelessWidget {
         );
       },
       placeholder: (context, url) {
-        return Center(
-            child: Padding(
-              padding: padding8,
-              child: DefaultProgressIndicator(
-                        color: AppColors.kPrimaryColor,
-                      ),
-            ));
+        return CustomLoadingWidget(  height: height,
+          size: 30.sp,
+          width: width,);
       },
       errorWidget: (context, url, error) {
         return Container(
@@ -80,7 +79,7 @@ class CustomNetworkImage extends StatelessWidget {
             //   fit: BoxFit.cover,
             // ),
           ),
-          child: SvgPicture.asset(imageErrorUrl ?? '',fit: BoxFit.cover, height: height,
+          child: SvgPicture.asset(imageErrorUrl ?? placeholderImage,fit: BoxFit.cover, height: height,
             width: width,),
         );
       },

@@ -48,7 +48,7 @@ class ProfilePage extends StatelessWidget {
         children: [
           space12H,
           Obx(() {
-            return ProfileController.to.isLoadingProfile.value
+            return !ProfileController.to.isLoadingProfile.value
                 ? CustomLoadingWidget()
                 : Column(
                     spacing: 6.h,
@@ -76,7 +76,7 @@ class ProfilePage extends StatelessWidget {
                                         '${ApiService().baseUrl}/${ProfileController.to.userModel.value.img ?? ''}',
                                     boxShape: BoxShape.circle,
                                     height: 100.w,
-                                    imageErrorUrl: dummyProfileImage,
+                                    imageErrorUrl: placeholderImage,
                                     width: 100.w),
                           ),
                           argument != null && argument == 'edit'

@@ -3,20 +3,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:navid_e_commerce/core/constants/image_constants.dart';
 class CustomLoadingWidget extends StatelessWidget {
+  final double? height;
+  final double? width;
+  final double? size;
   const CustomLoadingWidget({
-    super.key,
+    super.key, this.height, this.width, this.size,
   });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-        height: ScreenUtil().screenHeight -
+      width: width?? ScreenUtil().screenWidth,
+        height:height?? ScreenUtil().screenHeight -
             (kToolbarHeight +
-                MediaQuery.of(context).viewPadding.top),
+                MediaQuery.of(context).viewPadding.top+MediaQuery.of(context).viewPadding.bottom+80.sp),
         child: Center(
             child: Image.asset(
               loadingImg,
-              height: 100.w,
+              height:size?? 100.w,
             )));
   }
 }

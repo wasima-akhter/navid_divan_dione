@@ -107,7 +107,7 @@ class AuthController extends GetxController {
       confirmPassSignUpController.text = '12345678S';
       ageSignUpController.value.text = formattedDateOfBirth;
       emailLoginController.text = 'cayoj38393@evluence.com';
-      emailForgetController.value.text = 'pihoner651@eligou.com';
+      emailForgetController.value.text ='cayoj38393@evluence.com' /*'pihoner651@eligou.com'*/;
       passLoginController.text = '12345678S';
       passNewController.text = '1234567A';
       confirmPassNewController.text = '1234567A';
