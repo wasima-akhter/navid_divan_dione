@@ -18,18 +18,17 @@ class CategoryListPage extends StatelessWidget {
     return DefaultScaffoldStructureWidget(
       appBarTitle: AppStaticStrings.category,
       children: [
-        Expanded(
-            child: GridView.builder(
-              padding: EdgeInsets.zero,
-          shrinkWrap: true,
-          primary: false,
-          itemCount: 10,
-          gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-              crossAxisSpacing: 8.w,
-              mainAxisSpacing: 8.w,
-              maxCrossAxisExtent: 200.w),
-          itemBuilder: (context, index) => CategoryCardItemWidget(),
-        ))
+        GridView.builder(
+          padding: EdgeInsets.zero,
+                  shrinkWrap: true,
+                  primary: false,
+                  itemCount: 10,
+                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+          crossAxisSpacing: 8.w,
+          mainAxisSpacing: 8.w,
+          maxCrossAxisExtent: 200.w),
+                  itemBuilder: (context, index) => CategoryCardItemWidget(),
+                )
       ],
     );
   }

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:navid_e_commerce/core/constants/app_static_strings.dart';
 import 'package:navid_e_commerce/presentations/cart/views/cart_page.dart';
+import 'package:navid_e_commerce/presentations/home/controllers/home_controller.dart';
 import 'package:navid_e_commerce/presentations/home/views/home_page.dart';
 import 'package:navid_e_commerce/presentations/notification/views/notification_page.dart';
 import 'package:navid_e_commerce/presentations/orders/controllers/order_controller.dart';
@@ -22,6 +23,7 @@ class NavigationController extends GetxController {
   void onInit() {
     Get.put(OrderController());
   Get.put(ProfileController());
+  Get.put(HomeController());
     super.onInit();
   }
 

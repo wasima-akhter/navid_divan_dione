@@ -34,7 +34,8 @@ class CustomNetworkImage extends StatelessWidget {
     this.width,
     this.border,
     this.radius,
-    this.boxShape = BoxShape.rectangle, this.borderRadius,
+    this.boxShape = BoxShape.rectangle,
+    this.borderRadius,
   });
 
   @override
@@ -47,7 +48,9 @@ class CustomNetworkImage extends StatelessWidget {
           width: width,
           decoration: BoxDecoration(
             border: border,
-            borderRadius:boxShape==BoxShape.circle? null:borderRadius??BorderRadius.circular(radius??8.r),
+            borderRadius: boxShape == BoxShape.circle
+                ? null
+                : borderRadius ?? BorderRadius.circular(radius ?? 8.r),
             shape: boxShape,
             color: backgroundColor,
             image: DecorationImage(
@@ -60,9 +63,11 @@ class CustomNetworkImage extends StatelessWidget {
         );
       },
       placeholder: (context, url) {
-        return CustomLoadingWidget(  height: height,
+        return CustomLoadingWidget(
+          height: height,
           size: 30.sp,
-          width: width,);
+          width: width,
+        );
       },
       errorWidget: (context, url, error) {
         return Container(
@@ -71,7 +76,9 @@ class CustomNetworkImage extends StatelessWidget {
           clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(
             border: border,
-            borderRadius:boxShape==BoxShape.circle?null: BorderRadius.circular(radius??8.r),
+            borderRadius: boxShape == BoxShape.circle
+                ? null
+                : BorderRadius.circular(radius ?? 8.r),
             shape: boxShape,
             color: Colors.grey.withOpacity(0.6),
             // image: DecorationImage(
@@ -79,8 +86,12 @@ class CustomNetworkImage extends StatelessWidget {
             //   fit: BoxFit.cover,
             // ),
           ),
-          child: SvgPicture.asset(imageErrorUrl ?? placeholderImage,fit: BoxFit.cover, height: height,
-            width: width,),
+          child: SvgPicture.asset(
+            imageErrorUrl ?? placeholderImage,
+            fit: BoxFit.cover,
+            height: height,
+            width: width,
+          ),
         );
       },
     );

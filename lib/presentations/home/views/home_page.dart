@@ -10,11 +10,13 @@ import 'package:navid_e_commerce/core/constants/custom_text.dart';
 import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
+import 'package:navid_e_commerce/presentations/home/controllers/home_controller.dart';
 import 'package:navid_e_commerce/presentations/home/views/category_list_page.dart';
 
 import 'package:navid_e_commerce/presentations/home/widgets/category_list_card_item_widget.dart';
 import 'package:navid_e_commerce/presentations/home/widgets/product_card_item_widget.dart';
 import 'package:navid_e_commerce/presentations/home/widgets/search_text_field_widget.dart';
+import 'package:navid_e_commerce/presentations/profile/widgets/custom_loading_widget.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -29,7 +31,11 @@ class HomePage extends StatelessWidget {
           children: [
             ///=================search button=====================///
             SearchTextFieldWidget(),
-            Row(
+            HomeController.to.isLoadingCategory.value?
+            CustomLoadingWidget(
+              height: 200.h,
+            )
+                :   Row(
               children: [
                 Expanded(
                   child: CustomText(
@@ -51,18 +57,28 @@ class HomePage extends StatelessWidget {
             ),
 
             ///=================category list=====================///
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                spacing: 12.w,
-                children: List.generate(
-                  10,
-                  (index) => CategoryListCardItemWidget(
-                    isDropDown: index == 1 ? true : false,
+           Obx(
+             () { 
+               return HomeController.to.isLoadingCategory.value?
+                   CustomLoadingWidget(
+                     height: 200.h,
+                   )
+                   :  HomeController.to.catList.isEmpty?
+                   CustomText(text: 'There is no Categ')
+                   :SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    spacing: 12.w,
+                    children: List.generate(
+                      HomeController.to.catList.length,
+                      (index) => CategoryListCardItemWidget(
+                        categoryModel: HomeController.to.catList[index],
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ),
+                );
+             }
+           ),
             space6H,
 
             ///=================product list=====================///

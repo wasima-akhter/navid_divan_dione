@@ -8,6 +8,7 @@ import 'package:navid_e_commerce/core/constants/color_constants.dart';
 import 'package:navid_e_commerce/core/constants/custom_space.dart';
 import 'package:navid_e_commerce/core/constants/custom_text.dart';
 import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
+import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
 import 'package:navid_e_commerce/core/helper/helper_function.dart';
 import 'package:navid_e_commerce/core/utils/variable.dart';
@@ -27,9 +28,21 @@ class DeliverAddressPage extends StatelessWidget {
         spacing: 6.h,
         appBarTitle: AppStaticStrings.address,
         children: [
-          CustomText(
-            text: AppStaticStrings.deliveryAddress,
-            fontSize: getFontSizeDefault(),
+          Row(
+            children: [
+              Expanded(
+                child: CustomText(
+                  text: AppStaticStrings.deliveryAddress,
+                  fontSize: getFontSizeDefault(),
+                ),
+              ),
+
+              Flexible(
+                child: CustomButton(onTap: () {
+
+                },fillColor: AppColors.kPrimaryDarkColor,title: AppStaticStrings.editAddress,padding: padding6,),
+              )
+            ],
           ),
           CustomText(
             text:

@@ -48,7 +48,7 @@ class ProfilePage extends StatelessWidget {
         children: [
           space12H,
           Obx(() {
-            return !ProfileController.to.isLoadingProfile.value
+            return ProfileController.to.isLoadingProfile.value
                 ? CustomLoadingWidget()
                 : Column(
                     spacing: 6.h,
