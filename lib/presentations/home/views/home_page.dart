@@ -29,83 +29,77 @@ class HomePage extends StatelessWidget {
         child: Column(
           spacing: 6.h,
           children: [
+
             ///=================search button=====================///
+
             SearchTextFieldWidget(),
-            HomeController.to.isLoadingCategory.value?
-            CustomLoadingWidget(
-              height: 200.h,
-            )
-                :   Row(
-              children: [
-                Expanded(
-                  child: CustomText(
-                    text: AppStaticStrings.category,
-                    style: poppinsMedium,
-                    fontSize: getFontSizeDefault(),
-                    color: AppColors.kPrimaryTextDarkColor,
-                  ),
-                ),
-                CustomTextButton(
-                  onPressed: () {
-                    Get.toNamed(CategoryListPage.routeName);
-                  },
-                  title: AppStaticStrings.viewAll,
-                  fontSize: getFontSizeSemiSmall(),
-                  textColor: AppColors.kPrimaryTextDarkColor,
-                )
-              ],
+            Obx(
+             () {
+                return HomeController.to.isLoadingCategory.value ||
+                        HomeController.to.catList.isEmpty
+                    ? SizedBox.shrink()
+                    : Row(
+                        children: [
+                          Expanded(
+                            child: CustomText(
+                              text: AppStaticStrings.category,
+                              style: poppinsMedium,
+                              fontSize: getFontSizeDefault(),
+                              color: AppColors.kPrimaryTextDarkColor,
+                            ),
+                          ),
+                          CustomTextButton(
+                            onPressed: () {
+                              Get.toNamed(CategoryListPage.routeName);
+                            },
+                            title: AppStaticStrings.viewAll,
+                            fontSize: getFontSizeSemiSmall(),
+                            textColor: AppColors.kPrimaryTextDarkColor,
+                          )
+                        ],
+                      );
+              }
             ),
 
             ///=================category list=====================///
-           Obx(
-             () { 
-               return HomeController.to.isLoadingCategory.value?
-                   CustomLoadingWidget(
-                     height: 200.h,
-                   )
-                   :  HomeController.to.catList.isEmpty?
-                   CustomText(text: 'There is no Categ')
-                   :SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    spacing: 12.w,
-                    children: List.generate(
-                      HomeController.to.catList.length,
-                      (index) => CategoryListCardItemWidget(
-                        categoryModel: HomeController.to.catList[index],
-                      ),
-                    ),
-                  ),
-                );
-             }
-           ),
+            Obx(() {
+              return HomeController.to.isLoadingCategory.value
+                  ? CustomLoadingWidget(
+                      height: 200.h,
+                    )
+                  : HomeController.to.catList.isEmpty
+                      ? CustomText(text: 'There is no Category available!!')
+                      : SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            spacing: 12.w,
+                            children: List.generate(
+                              HomeController.to.catList.length,
+                              (index) => CategoryListCardItemWidget(
+                                categoryModel: HomeController.to.catList[index],
+                              ),
+                            ),
+                          ),
+                        );
+            }),
             space6H,
 
             ///=================product list=====================///
 
-            LayoutBuilder(
-              builder: (context, constraints) {
-                // Calculate dynamic aspect ratio based on available width
-                double width = constraints.maxWidth;
-                double calculatedAspectRatio =
-                    width / (200.w * 2.5); // Adjust multiplier as needed
-
-                return GridView.builder(
-                  padding: EdgeInsets.zero,
-                  shrinkWrap: true,
-                  primary: false,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: 10,
-                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                    crossAxisSpacing: 8.w,
-                    mainAxisSpacing: 8.w,
-                    mainAxisExtent: 265.w,
-                    // childAspectRatio: .5,
-                    maxCrossAxisExtent: 210.w,
-                  ),
-                  itemBuilder: (context, index) => ProductCardItemWidget(),
-                );
-              },
+            GridView.builder(
+              padding: EdgeInsets.zero,
+              shrinkWrap: true,
+              primary: false,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: 10,
+              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                crossAxisSpacing: 8.w,
+                mainAxisSpacing: 8.w,
+                mainAxisExtent: 265.w,
+                // childAspectRatio: .5,
+                maxCrossAxisExtent: 210.w,
+              ),
+              itemBuilder: (context, index) => ProductCardItemWidget(),
             )
           ],
         ),

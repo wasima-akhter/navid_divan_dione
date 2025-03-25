@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:navid_e_commerce/core/api-client/api_service.dart';
 import 'package:navid_e_commerce/core/components/custom_network_image.dart';
 import 'package:navid_e_commerce/core/constants/color_constants.dart';
 import 'package:navid_e_commerce/core/constants/custom_space.dart';
@@ -35,7 +36,7 @@ class CategoryListCardItemWidget extends StatelessWidget {
         child: Row(
           children: [
             CustomNetworkImage(
-              imageUrl: dummyCatImg,
+              imageUrl: '${ApiService().baseUrl}/${categoryModel.img}',
               height: 47.w,
               width: 52.w,
               borderRadius:
@@ -47,7 +48,7 @@ class CategoryListCardItemWidget extends StatelessWidget {
             Padding(
               padding: padding8,
               child: CustomText(
-                text: 'hookah',
+                text: categoryModel.name??'n/a',
                 style: poppinsRegular,
                 fontSize: getFontSizeDefault(),
                 color: AppColors.kPrimaryTextDarkColor,

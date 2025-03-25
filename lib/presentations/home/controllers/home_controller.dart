@@ -33,7 +33,7 @@ getCategoryListRequest();
       isLoadingCategory.value = false;
       if (response['success'] == true) {
         logger.d(response);
-        catList.value =response['data'].map((e)=>CategoryModel.fromJson(e)).toList();
+        catList.value =(response['data']as List).map((e)=>CategoryModel.fromJson(e)).toList();
 
       } else if (response['message'] == AppStaticStrings.noInternet) {
         showCustomSnackbar(

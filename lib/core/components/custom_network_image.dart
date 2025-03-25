@@ -10,7 +10,7 @@ import 'package:navid_e_commerce/presentations/profile/widgets/custom_loading_wi
 
 import '../constants/image_constants.dart';
 
-class CustomNetworkImage extends StatelessWidget {
+class CustomNetworkImage extends StatefulWidget {
   final String imageUrl;
   final double? height;
   final double? width;
@@ -39,61 +39,123 @@ class CustomNetworkImage extends StatelessWidget {
   });
 
   @override
+  State<CustomNetworkImage> createState() => _CustomNetworkImageState();
+}
+
+class _CustomNetworkImageState extends State<CustomNetworkImage> {
+  @override
   Widget build(BuildContext context) {
-    return CachedNetworkImage(
-      imageUrl: imageUrl,
-      imageBuilder: (context, imageProvider) {
-        return Container(
-          height: height,
-          width: width,
-          decoration: BoxDecoration(
-            border: border,
-            borderRadius: boxShape == BoxShape.circle
-                ? null
-                : borderRadius ?? BorderRadius.circular(radius ?? 8.r),
-            shape: boxShape,
-            color: backgroundColor,
-            image: DecorationImage(
-              image: imageProvider,
-              fit: BoxFit.cover,
-              colorFilter: colorFilter,
+    // final cleanedUrl = widget.imageUrl.replaceAll(RegExp(r'/+'), '/');
+
+    bool isSvgUrl(String url) {
+      final uri = Uri.tryParse(url);
+      if (uri == null) return false;
+
+      final path = uri.path.toLowerCase();
+      return path.endsWith('.svg');
+    }
+
+    return isSvgUrl(widget.imageUrl)
+        ? Container(
+            height: widget.height,
+            width: widget.width,
+            decoration: BoxDecoration(
+              border: widget.border,
+              borderRadius: widget.boxShape == BoxShape.circle
+                  ? null
+                  : widget.borderRadius ??
+                      BorderRadius.circular(widget.radius ?? 8.r),
+              shape: widget.boxShape,
+              color: widget.backgroundColor,
             ),
-          ),
-          child: child,
-        );
-      },
-      placeholder: (context, url) {
-        return CustomLoadingWidget(
-          height: height,
-          size: 30.sp,
-          width: width,
-        );
-      },
-      errorWidget: (context, url, error) {
-        return Container(
-          height: height,
-          width: width,
-          clipBehavior: Clip.antiAlias,
-          decoration: BoxDecoration(
-            border: border,
-            borderRadius: boxShape == BoxShape.circle
-                ? null
-                : BorderRadius.circular(radius ?? 8.r),
-            shape: boxShape,
-            color: Colors.grey.withOpacity(0.6),
-            // image: DecorationImage(
-            //   image: Svg(imageErrorUrl ?? ''),
-            //   fit: BoxFit.cover,
-            // ),
-          ),
-          child: SvgPicture.asset(
-            imageErrorUrl ?? placeholderImage,
-            fit: BoxFit.cover,
-            height: height,
-            width: width,
-          ),
-        );
-      },
-    );
+            child: SvgPicture.network(
+              widget.imageUrl,
+              fit: BoxFit.cover,
+              placeholderBuilder: (context) => CustomLoadingWidget(
+                height: widget.height,
+                size: 30.sp,
+                width: widget.width,
+              ),
+              errorBuilder: (context, error, stackTrace) => Container(
+                height: widget.height,
+                width: widget.width,
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(
+                  border: widget.border,
+                  borderRadius: widget.boxShape == BoxShape.circle
+                      ? null
+                      : BorderRadius.circular(widget.radius ?? 8.r),
+                  shape: widget.boxShape,
+                  color: Colors.grey.withOpacity(0.6),
+                  // image: DecorationImage(
+                  //   image: Svg(imageErrorUrl ?? ''),
+                  //   fit: BoxFit.cover,
+                  // ),
+                ),
+                child: SvgPicture.asset(
+                  widget.imageErrorUrl ?? placeholderImage,
+                  fit: BoxFit.cover,
+                  height: widget.height,
+                  width: widget.width,
+                ),
+              ),
+            ),
+          )
+        : CachedNetworkImage(
+            imageUrl: widget.imageUrl,
+            imageBuilder: (context, imageProvider) {
+              return Container(
+                height: widget.height,
+                width: widget.width,
+                decoration: BoxDecoration(
+                  border: widget.border,
+                  borderRadius: widget.boxShape == BoxShape.circle
+                      ? null
+                      : widget.borderRadius ??
+                          BorderRadius.circular(widget.radius ?? 8.r),
+                  shape: widget.boxShape,
+                  color: widget.backgroundColor,
+                  image: DecorationImage(
+                    image: imageProvider,
+                    fit: BoxFit.cover,
+                    colorFilter: widget.colorFilter,
+                  ),
+                ),
+                child: widget.child,
+              );
+            },
+            placeholder: (context, url) {
+              return CustomLoadingWidget(
+                height: widget.height,
+                size: 30.sp,
+                width: widget.width,
+              );
+            },
+            errorWidget: (context, url, error) {
+              return Container(
+                height: widget.height,
+                width: widget.width,
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(
+                  border: widget.border,
+                  borderRadius: widget.boxShape == BoxShape.circle
+                      ? null
+                      : BorderRadius.circular(widget.radius ?? 8.r),
+                  shape: widget.boxShape,
+                  color: Colors.grey.withOpacity(0.6),
+                  // image: DecorationImage(
+                  //   image: Svg(imageErrorUrl ?? ''),
+                  //   fit: BoxFit.cover,
+                  // ),
+                ),
+                child: SvgPicture.asset(
+                  widget.imageErrorUrl ?? placeholderImage,
+                  fit: BoxFit.cover,
+                  height: widget.height,
+                  width: widget.width,
+                ),
+              );
+            },
+          );
   }
 }

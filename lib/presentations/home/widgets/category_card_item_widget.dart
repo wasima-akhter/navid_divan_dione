@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:navid_e_commerce/core/api-client/api_service.dart';
 import 'package:navid_e_commerce/core/components/custom_network_image.dart';
 import 'package:navid_e_commerce/core/constants/color_constants.dart';
 import 'package:navid_e_commerce/core/constants/custom_text.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/core/utils/variable.dart';
+import 'package:navid_e_commerce/presentations/home/model/category_model.dart';
 class CategoryCardItemWidget extends StatelessWidget {
+  final CategoryModel categoryModel;
   const CategoryCardItemWidget({
-    super.key,
+    super.key, required this.categoryModel,
   });
 
   @override
@@ -21,8 +24,10 @@ class CategoryCardItemWidget extends StatelessWidget {
       child: Column(
         spacing: 8.h,
         children: [
-          Expanded(child: CustomNetworkImage(imageUrl: dummyCatImg)),
-          CustomText(text: 'Cigar'),
+          Expanded(child: CustomNetworkImage(
+            width: double.infinity,
+              imageUrl: '${ApiService().baseUrl}/${categoryModel.img}')),
+          CustomText(text: categoryModel.name??'n/a'),
         ],
       ),
     );

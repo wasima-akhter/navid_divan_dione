@@ -7,6 +7,8 @@ import 'package:navid_e_commerce/presentations/settings/controllers/settings_con
 import 'package:navid_e_commerce/presentations/splash/controllers/common_controller.dart';
 import 'package:navid_e_commerce/presentations/splash/controllers/splash_controller.dart';
 
+import '../../presentations/home/controllers/home_controller.dart';
+
 class SplashBinding extends Bindings {
   @override
   void dependencies() {
@@ -39,6 +41,11 @@ class NavigationBinding extends Bindings {
   @override
   void dependencies() {
     Get.put(NavigationController());
+  }
+}class HomeBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.put(HomeController());
   }
 }
 
