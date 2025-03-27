@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:navid_e_commerce/core/api-client/api_service.dart';
 import 'package:navid_e_commerce/core/components/custom_button.dart';
 import 'package:navid_e_commerce/core/components/custom_button_tap.dart';
 import 'package:navid_e_commerce/core/components/custom_network_image.dart';
@@ -14,15 +15,25 @@ import 'package:navid_e_commerce/core/constants/image_constants.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
 import 'package:navid_e_commerce/core/utils/variable.dart';
+import 'package:navid_e_commerce/presentations/product/model/product_model.dart';
 import 'package:navid_e_commerce/presentations/product/views/product_details_page.dart';
 
 class ProductCardItemWidget extends StatelessWidget {
+  final ProductModel product;
   const ProductCardItemWidget({
     super.key,
+    required this.product,
   });
 
   @override
   Widget build(BuildContext context) {
+    String imgUrl = product.banner != null && product.banner!.isNotEmpty
+        ? '${ApiService().baseUrl}/${product.banner!.first.toString()}'
+        : '';
+    String productName =product.name ?? 'n/a';
+    String productPrice =product.price.toString();
+    String productPreviousPrice =product.previousPrice.toString();
+    String productQuantity =product.quantity.toString() ;
     return DefaultFadeContainerWidget(
       child: ButtonTapWidget(
         onTap: () {
@@ -34,7 +45,7 @@ class ProductCardItemWidget extends StatelessWidget {
 
                 ///===================dynamic img=================///
                 child: CustomNetworkImage(
-              imageUrl: dummyCatImg,
+              imageUrl: imgUrl,
             )),
             Expanded(
                 child: Column(
@@ -47,13 +58,13 @@ class ProductCardItemWidget extends StatelessWidget {
                   children: [
                     Expanded(
                         child: CustomText(
-                      text: 'Thc gummy' * 5,
+                      text: productName,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       color: AppColors.kPrimaryTextDarkColor,
                     )),
                     CustomText(
-                      text: '12 pis',
+                      text: '$productQuantity pis',
                       fontSize: getFontSizeSmall(),
                       style: poppinsLight,
                     )
@@ -61,7 +72,7 @@ class ProductCardItemWidget extends StatelessWidget {
                 ),
 
                 ///================ dynamic product price ==================///
-                PriceTextWidget(),
+                PriceTextWidget(price: productPrice,previousPrice: productPreviousPrice,),
 
                 CustomButton(
                   padding: padding8,
@@ -117,10 +128,14 @@ class DefaultFadeContainerWidget extends StatelessWidget {
 class PriceTextWidget extends StatelessWidget {
   final double? fontSize;
   final double? previousPriceFontSize;
+  final String? price;
+  final String? previousPrice;
   const PriceTextWidget({
     super.key,
     this.fontSize,
     this.previousPriceFontSize,
+    this.price,
+    this.previousPrice,
   });
 
   @override
@@ -130,12 +145,12 @@ class PriceTextWidget extends StatelessWidget {
         overflow: TextOverflow.ellipsis,
         text: TextSpan(children: [
           TextSpan(
-              text: 'price: \$120  ',
+              text: 'price: \$$price  ',
               style: poppinsMedium.copyWith(
                   color: AppColors.kPrimaryTextDarkColor,
                   fontSize: fontSize ?? getFontSizeSemiSmall())),
-          TextSpan(
-              text: '\$150',
+        if(previousPrice!='0.0')  TextSpan(
+              text: '\$$previousPrice',
               style: poppinsRegular.copyWith(
                   color: Colors.red,
                   fontSize: previousPriceFontSize ?? getFontSizeSmall(),

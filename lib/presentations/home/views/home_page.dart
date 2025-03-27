@@ -18,54 +18,73 @@ import 'package:navid_e_commerce/presentations/home/widgets/product_card_item_wi
 import 'package:navid_e_commerce/presentations/home/widgets/search_text_field_widget.dart';
 import 'package:navid_e_commerce/presentations/profile/widgets/custom_loading_widget.dart';
 
-class HomePage extends StatelessWidget {
+import '../widgets/pagination_loading_widget.dart';
+
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final ScrollController scrollController = ScrollController();
+  @override
+  void initState() {
+    scrollController.addListener(
+      () {
+        if (scrollController.position.pixels ==
+            scrollController.position.maxScrollExtent) {
+          HomeController.to.getProductListRequest(loadMore: true);
+        }
+      },
+    );
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      controller: scrollController,
       child: Padding(
         padding: padding12,
         child: Column(
           spacing: 6.h,
           children: [
-
             ///=================search button=====================///
 
             SearchTextFieldWidget(),
-            Obx(
-             () {
-                return HomeController.to.isLoadingCategory.value ||
-                        HomeController.to.catList.isEmpty
-                    ? SizedBox.shrink()
-                    : Row(
-                        children: [
-                          Expanded(
-                            child: CustomText(
-                              text: AppStaticStrings.category,
-                              style: poppinsMedium,
-                              fontSize: getFontSizeDefault(),
-                              color: AppColors.kPrimaryTextDarkColor,
-                            ),
+            Obx(() {
+              return HomeController.to.isLoadingCategory.value ||
+                      HomeController.to.catList.isEmpty
+                  ? SizedBox.shrink()
+                  : Row(
+                      children: [
+                        Expanded(
+                          child: CustomText(
+                            text: AppStaticStrings.category,
+                            style: poppinsMedium,
+                            fontSize: getFontSizeDefault(),
+                            color: AppColors.kPrimaryTextDarkColor,
                           ),
-                          CustomTextButton(
-                            onPressed: () {
-                              Get.toNamed(CategoryListPage.routeName);
-                            },
-                            title: AppStaticStrings.viewAll,
-                            fontSize: getFontSizeSemiSmall(),
-                            textColor: AppColors.kPrimaryTextDarkColor,
-                          )
-                        ],
-                      );
-              }
-            ),
+                        ),
+                        CustomTextButton(
+                          onPressed: () {
+                            Get.toNamed(CategoryListPage.routeName);
+                          },
+                          title: AppStaticStrings.viewAll,
+                          fontSize: getFontSizeSemiSmall(),
+                          textColor: AppColors.kPrimaryTextDarkColor,
+                        )
+                      ],
+                    );
+            }),
 
             ///=================category list=====================///
             Obx(() {
               return HomeController.to.isLoadingCategory.value
                   ? CustomLoadingWidget(
-                      height: 200.h,
+                      height: 40.h,
                     )
                   : HomeController.to.catList.isEmpty
                       ? CustomText(text: 'There is no Category available!!')
@@ -86,20 +105,39 @@ class HomePage extends StatelessWidget {
 
             ///=================product list=====================///
 
-            GridView.builder(
-              padding: EdgeInsets.zero,
-              shrinkWrap: true,
-              primary: false,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: 10,
-              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                crossAxisSpacing: 8.w,
-                mainAxisSpacing: 8.w,
-                mainAxisExtent: 265.w,
-                // childAspectRatio: .5,
-                maxCrossAxisExtent: 210.w,
-              ),
-              itemBuilder: (context, index) => ProductCardItemWidget(),
+            Obx(() {
+              return HomeController.to.isLoadingProduct.value
+                  ? CustomLoadingWidget(
+                      height: 200.h,
+                    )
+                  : HomeController.to.productList.isEmpty
+                      ? CustomText(text: 'There is no product available!!')
+                      : GridView.builder(
+                          padding: EdgeInsets.zero,
+                          shrinkWrap: true,
+                          primary: false,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: HomeController.to.productList.length,
+                          gridDelegate:
+                              SliverGridDelegateWithMaxCrossAxisExtent(
+                            crossAxisSpacing: 8.w,
+                            mainAxisSpacing: 8.w,
+                            mainAxisExtent: 265.w,
+                            // childAspectRatio: .5,
+                            maxCrossAxisExtent: 210.w,
+                          ),
+                          itemBuilder: (context, index) =>
+                              ProductCardItemWidget(
+                            product: HomeController.to.productList[index],
+                          ),
+                        );
+            }),
+            Obx(
+                  () {
+                return HomeController.to.isProductLoadingMore.value
+                    ? PaginationLoadingWidget()
+                    : SizedBox.shrink();
+              },
             )
           ],
         ),

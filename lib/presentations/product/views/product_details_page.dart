@@ -13,6 +13,7 @@ import 'package:navid_e_commerce/core/utils/variable.dart';
 import 'package:navid_e_commerce/presentations/cart/widgets/cart_item_widget.dart';
 import 'package:navid_e_commerce/presentations/home/widgets/default_scaffold_structure_widget.dart';
 import 'package:navid_e_commerce/presentations/home/widgets/product_card_item_widget.dart';
+import 'package:navid_e_commerce/presentations/product/model/product_model.dart';
 import 'package:navid_e_commerce/presentations/product/views/deliver_address_page.dart';
 import 'package:navid_e_commerce/presentations/product/views/pickup_address_page.dart';
 import 'package:navid_e_commerce/presentations/product/widgets/color_item_widget.dart';
@@ -123,7 +124,7 @@ class ProductDetailsPage extends StatelessWidget {
                   (index) => SizedBox(
                       width: 200.w,
                       // height: 200.w,
-                      child: ProductCardItemWidget()),
+                      child: ProductCardItemWidget(product: ProductModel(),)),
                 ),
               ),
             ),
