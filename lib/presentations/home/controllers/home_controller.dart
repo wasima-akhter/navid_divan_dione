@@ -1,4 +1,6 @@
 
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:navid_e_commerce/presentations/home/model/category_model.dart';
 import 'package:navid_e_commerce/presentations/product/model/product_model.dart';
@@ -12,16 +14,19 @@ import '../../../core/utils/variable.dart';
 
 class HomeController extends GetxController {
   static HomeController get to => Get.find();
-
+  RxString category =''.obs;
   RxBool isLoadingCategory = false.obs;
   RxBool isLoadingProduct = false.obs;
+
+ ///=======================dynamic list==========================///
+
   RxList<CategoryModel> catList = <CategoryModel>[].obs;
   RxList<ProductModel> productList = <ProductModel>[].obs;
 
   ///====================category pagination variable========================///
 
   final RxInt currentPage = 1.obs;
-  final RxInt itemsPerPage = 5.obs;
+  final RxInt itemsPerPage = 10.obs;
   final RxInt totalCategoryPages = 5.obs;
   final RxBool isLoadingMore = false.obs;
 
@@ -31,16 +36,27 @@ class HomeController extends GetxController {
   final RxInt itemsProductPerPage = 5.obs;
   final RxInt totalProductPages = 5.obs;
   final RxBool isProductLoadingMore = false.obs;
+
+  ///=======================search controller============================///
+
+  Rx<TextEditingController> searchController = TextEditingController().obs;
   @override
   void onInit() {
     getCategoryListRequest();
     getProductListRequest();
+
     super.onInit();
+  }
+  Future<void> refreshCall() async{
+    searchController.value.clear();
+    category.value='';
+    await  getCategoryListRequest();
+   await getProductListRequest();
   }
 
   ///------------------------------ get category list method -------------------------///
 
-  Future<void> getCategoryListRequest({bool loadMore = false}) async {
+  Future<void> getCategoryListRequest({bool loadMore = false }) async {
     try {
       if (loadMore && currentPage.value >= totalCategoryPages.value) {
         return;
@@ -108,7 +124,7 @@ class HomeController extends GetxController {
 
   ///------------------------------ get category list method -------------------------///
 
-  Future<void> getProductListRequest({bool loadMore = false}) async {
+  Future<void> getProductListRequest({bool loadMore = false, }) async {
     try {
       // Don't load more if we've reached the last page
       if (loadMore && currentProductPage.value >= totalProductPages.value) {
@@ -131,6 +147,9 @@ class HomeController extends GetxController {
         queryParams: {
           'page': currentProductPage.value.toString(),
           'limit': itemsProductPerPage.value.toString(),
+          'search':searchController.value.text,
+          'category':category.value
+
         },
       );
 

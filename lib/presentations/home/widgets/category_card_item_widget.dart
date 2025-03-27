@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:navid_e_commerce/core/api-client/api_service.dart';
+import 'package:navid_e_commerce/core/components/custom_button_tap.dart';
 import 'package:navid_e_commerce/core/components/custom_network_image.dart';
 import 'package:navid_e_commerce/core/constants/color_constants.dart';
 import 'package:navid_e_commerce/core/constants/custom_text.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/core/utils/variable.dart';
+import 'package:navid_e_commerce/presentations/home/controllers/home_controller.dart';
 import 'package:navid_e_commerce/presentations/home/model/category_model.dart';
 class CategoryCardItemWidget extends StatelessWidget {
   final CategoryModel categoryModel;
@@ -16,19 +18,28 @@ class CategoryCardItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: padding8,
+
       decoration: BoxDecoration(
         color: AppColors.kPrimaryExtraLightColor,
         borderRadius: BorderRadius.circular(8.r),
       ),
-      child: Column(
-        spacing: 8.h,
-        children: [
-          Expanded(child: CustomNetworkImage(
-            width: double.infinity,
-              imageUrl: '${ApiService().baseUrl}/${categoryModel.img}')),
-          CustomText(text: categoryModel.name??'n/a'),
-        ],
+      child: ButtonTapWidget(
+        radius:8.r ,
+        onTap: () {
+          HomeController.to.category.value=categoryModel.sId??'';
+        },
+        child: Padding(
+          padding: padding8,
+          child: Column(
+            spacing: 8.h,
+            children: [
+              Expanded(child: CustomNetworkImage(
+                width: double.infinity,
+                  imageUrl: '${ApiService().baseUrl}/${categoryModel.img}')),
+              CustomText(text: categoryModel.name??'n/a'),
+            ],
+          ),
+        ),
       ),
     );
   }

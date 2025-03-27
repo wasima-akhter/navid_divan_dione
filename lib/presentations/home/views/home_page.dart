@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:navid_e_commerce/core/components/custom_refresh_indicator.dart';
 
 import 'package:navid_e_commerce/core/components/custom_text_button.dart';
 import 'package:navid_e_commerce/core/constants/app_static_strings.dart';
@@ -44,104 +45,124 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      controller: scrollController,
-      child: Padding(
-        padding: padding12,
-        child: Column(
-          spacing: 6.h,
-          children: [
-            ///=================search button=====================///
+    return CustomRefreshIndicatorWidget(
+      onRefresh: () {
+        return HomeController.to.refreshCall();
+      },
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
 
-            SearchTextFieldWidget(),
-            Obx(() {
-              return HomeController.to.isLoadingCategory.value ||
-                      HomeController.to.catList.isEmpty
-                  ? SizedBox.shrink()
-                  : Row(
-                      children: [
-                        Expanded(
-                          child: CustomText(
-                            text: AppStaticStrings.category,
-                            style: poppinsMedium,
-                            fontSize: getFontSizeDefault(),
-                            color: AppColors.kPrimaryTextDarkColor,
-                          ),
-                        ),
-                        CustomTextButton(
-                          onPressed: () {
-                            Get.toNamed(CategoryListPage.routeName);
-                          },
-                          title: AppStaticStrings.viewAll,
-                          fontSize: getFontSizeSemiSmall(),
-                          textColor: AppColors.kPrimaryTextDarkColor,
-                        )
-                      ],
-                    );
-            }),
+        controller: scrollController,
+        child: Padding(
+          padding: padding12,
+          child: Column(
+            spacing: 6.h,
+            children: [
+              ///=================search button=====================///
 
-            ///=================category list=====================///
-            Obx(() {
-              return HomeController.to.isLoadingCategory.value
-                  ? CustomLoadingWidget(
-                      height: 40.h,
-                    )
-                  : HomeController.to.catList.isEmpty
-                      ? CustomText(text: 'There is no Category available!!')
-                      : SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            spacing: 12.w,
-                            children: List.generate(
-                              HomeController.to.catList.length,
-                              (index) => CategoryListCardItemWidget(
-                                categoryModel: HomeController.to.catList[index],
-                              ),
+              SearchTextFieldWidget(
+                searchController: HomeController.to.searchController.value,
+              ),
+              Obx(() {
+                return HomeController.to.isLoadingCategory.value ||
+                        HomeController.to.catList.isEmpty
+                    ? SizedBox.shrink()
+                    : Row(
+                        children: [
+                          Expanded(
+                            child: CustomText(
+                              text: AppStaticStrings.category,
+                              style: poppinsMedium,
+                              fontSize: getFontSizeDefault(),
+                              color: AppColors.kPrimaryTextDarkColor,
                             ),
                           ),
-                        );
-            }),
-            space6H,
+                          CustomTextButton(
+                            onPressed: () {
+                              Get.toNamed(CategoryListPage.routeName);
+                            },
+                            title: AppStaticStrings.viewAll,
+                            fontSize: getFontSizeSemiSmall(),
+                            textColor: AppColors.kPrimaryTextDarkColor,
+                          )
+                        ],
+                      );
+              }),
 
-            ///=================product list=====================///
+              ///=================category list=====================///
+              Obx(() {
+                return HomeController.to.isLoadingCategory.value
+                    ? CustomLoadingWidget(
+                        height: 40.h,
+                      )
+                    : HomeController.to.catList.isEmpty
+                        ? CustomText(text: 'There is no Category available!!')
+                        : SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              spacing: 12.w,
+                              children: List.generate(
+                                HomeController.to.catList.length,
+                                (index) => CategoryListCardItemWidget(
+                                  categoryModel: HomeController.to.catList[index],
+                                ),
+                              ),
+                            ),
+                          );
+              }),
+              space6H,
 
-            Obx(() {
-              return HomeController.to.isLoadingProduct.value
-                  ? CustomLoadingWidget(
-                      height: 200.h,
-                    )
-                  : HomeController.to.productList.isEmpty
-                      ? CustomText(text: 'There is no product available!!')
-                      : GridView.builder(
-                          padding: EdgeInsets.zero,
-                          shrinkWrap: true,
-                          primary: false,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: HomeController.to.productList.length,
-                          gridDelegate:
-                              SliverGridDelegateWithMaxCrossAxisExtent(
-                            crossAxisSpacing: 8.w,
-                            mainAxisSpacing: 8.w,
-                            mainAxisExtent: 265.w,
-                            // childAspectRatio: .5,
-                            maxCrossAxisExtent: 210.w,
-                          ),
-                          itemBuilder: (context, index) =>
-                              ProductCardItemWidget(
-                            product: HomeController.to.productList[index],
-                          ),
-                        );
-            }),
-            Obx(
-                  () {
-                return HomeController.to.isProductLoadingMore.value
-                    ? PaginationLoadingWidget()
-                    : SizedBox.shrink();
-              },
-            )
-          ],
+              ///=================product list=====================///
+
+              DynamicProductList(),
+              Obx(
+                () {
+                  return HomeController.to.isProductLoadingMore.value
+                      ? PaginationLoadingWidget()
+                      : SizedBox.shrink();
+                },
+              )
+            ],
+          ),
         ),
       ),
     );
+  }
+}
+
+class DynamicProductList extends StatelessWidget {
+  const DynamicProductList({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      return HomeController.to.isLoadingProduct.value
+          ? CustomLoadingWidget(
+              height: 200.h,
+            )
+          : HomeController.to.productList.isEmpty
+              ? CustomText(text: 'There is no product available!!')
+              : GridView.builder(
+                  padding: EdgeInsets.zero,
+                  shrinkWrap: true,
+                  primary: false,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: HomeController.to.productList.length,
+                  gridDelegate:
+                      SliverGridDelegateWithMaxCrossAxisExtent(
+                    crossAxisSpacing: 8.w,
+                    mainAxisSpacing: 8.w,
+                    mainAxisExtent: 265.w,
+                    // childAspectRatio: .5,
+                    maxCrossAxisExtent: 210.w,
+                  ),
+                  itemBuilder: (context, index) =>
+                      ProductCardItemWidget(
+                    product: HomeController.to.productList[index],
+                  ),
+                );
+    });
   }
 }

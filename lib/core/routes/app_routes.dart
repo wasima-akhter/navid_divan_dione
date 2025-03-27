@@ -6,6 +6,8 @@ import 'package:navid_e_commerce/presentations/auth/views/otp_page.dart';
 import 'package:navid_e_commerce/presentations/auth/views/set_new_password_page.dart';
 import 'package:navid_e_commerce/presentations/auth/views/signup_page.dart';
 import 'package:navid_e_commerce/presentations/home/views/category_list_page.dart';
+import 'package:navid_e_commerce/presentations/home/views/product_list_page.dart';
+import 'package:navid_e_commerce/presentations/home/views/product_list_page.dart';
 import 'package:navid_e_commerce/presentations/navigation/views/navigation_page.dart';
 import 'package:navid_e_commerce/presentations/product/views/deliver_address_page.dart';
 import 'package:navid_e_commerce/presentations/product/views/pickup_address_page.dart';
@@ -31,7 +33,6 @@ class AppRoutes {
             name: SignupPage.routeName,
             page: () => SignupPage(),
             binding: AuthBinding()),
-
         GetPage(
             name: ForgetPassPage.routeName,
             page: () => ForgetPassPage(),
@@ -69,21 +70,24 @@ class AppRoutes {
             page: () => PrivacyTermsPage(),
             binding: SettingsBinding()),
         GetPage(
-          name: CategoryListPage.routeName,
-          page: () => CategoryListPage(),
-          binding: HomeBinding()
-        ), GetPage(
-          name: ProductDetailsPage.routeName,
-          page: () => ProductDetailsPage(),
-          binding: ProductBinding()
-        ),GetPage(
-          name: PickupAddressPage.routeName,
-          page: () => PickupAddressPage(),
-          binding: ProductBinding()
-        ),GetPage(
-          name: DeliverAddressPage.routeName,
-          page: () => DeliverAddressPage(),
-          binding: ProductBinding()
-        ),
+            name: CategoryListPage.routeName,
+            page: () => CategoryListPage(),
+            binding: HomeBinding()),
+        GetPage(
+            name: ProductListPage.routeName,
+            page: () => ProductListPage(),
+            binding: HomeBinding()),
+        GetPage(
+            name: ProductDetailsPage.routeName,
+            page: () => ProductDetailsPage(),
+            binding: ProductBinding()),
+        GetPage(
+            name: PickupAddressPage.routeName,
+            page: () => PickupAddressPage(),
+            binding: ProductBinding()),
+        GetPage(
+            name: DeliverAddressPage.routeName,
+            page: () => DeliverAddressPage(),
+            binding: ProductBinding()),
       ];
 }

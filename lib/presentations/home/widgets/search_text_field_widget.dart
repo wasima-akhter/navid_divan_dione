@@ -6,14 +6,20 @@ import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
 import 'package:navid_e_commerce/core/constants/image_constants.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
+import 'package:navid_e_commerce/presentations/home/controllers/home_controller.dart';
 class SearchTextFieldWidget extends StatelessWidget {
+  final TextEditingController searchController;
   const SearchTextFieldWidget({
-    super.key,
+    super.key, required this.searchController,
   });
 
   @override
   Widget build(BuildContext context) {
     return CustomTextField(
+      textEditingController: searchController,
+   onChanged: (p0) {
+     HomeController.to.getProductListRequest();
+   },
       prefixIcon: Padding(
         padding: padding8,
         child: SvgPicture.asset(searchIcon),

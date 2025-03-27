@@ -72,7 +72,7 @@ class ApiService {
 
     // Build the URL with query parameters if provided
     var uri = Uri.parse('$baseUrl/$endpoint');
-    if (queryParams != null) {
+    if (queryParams != null && queryParams.isNotEmpty) {
       uri = uri.replace(queryParameters: queryParams);
     }
 

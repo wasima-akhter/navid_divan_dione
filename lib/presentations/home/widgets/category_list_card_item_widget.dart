@@ -10,8 +10,7 @@ import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
 import 'package:navid_e_commerce/core/constants/image_constants.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
-import 'package:navid_e_commerce/core/helper/helper_function.dart';
-import 'package:navid_e_commerce/core/utils/variable.dart';
+import 'package:navid_e_commerce/presentations/home/controllers/home_controller.dart';
 import 'package:navid_e_commerce/presentations/home/model/category_model.dart';
 class CategoryListCardItemWidget extends StatelessWidget {
   final bool? isDropDown;
@@ -23,11 +22,10 @@ class CategoryListCardItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      // onTapDown: (TapDownDetails details) {
-      //  if(isDropDown==true) {
-      //     showPopupMenu(context, details.globalPosition);
-      //   }
-      // },
+   onTap: () {
+     HomeController.to.category.value=categoryModel.sId??'';
+     HomeController.to.getProductListRequest();
+   },
       child: Container(
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(4.r),
