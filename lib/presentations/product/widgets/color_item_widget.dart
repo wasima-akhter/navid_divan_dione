@@ -6,8 +6,10 @@ import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
 class ColorItemWidget extends StatelessWidget {
+  final String color;
+  final bool isSelected;
   const ColorItemWidget({
-    super.key,
+    super.key, required this.color, required this.isSelected,
   });
 
   @override
@@ -15,14 +17,15 @@ class ColorItemWidget extends StatelessWidget {
     return Container(
       padding: padding8,
       decoration: BoxDecoration(
+        color: isSelected?AppColors.kPrimaryColor:Colors.transparent,
           borderRadius: BorderRadius.circular(4.r),
           border: Border.all(
               color: AppColors.kPrimaryLightColor, width: 2)),
       child: CustomText(
-        text: 'Blue',
+        text: color,
         style: poppinsRegular,
         fontSize: getFontSizeSmall(),
-        color: AppColors.kPrimaryColor,
+        color:isSelected?AppColors.kWhiteColor: AppColors.kPrimaryColor,
       ),
     );
   }

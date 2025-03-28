@@ -1,95 +1,106 @@
 class ProductModel {
-  String? sId;
+  String? id;
   String? name;
   String? description;
-  num? price; // Changed from int? to num?
-  num? previousPrice; // Changed from int? to num?
+  num? price;
+  Category? category;
   bool? wholeSale;
   int? quantity;
-  VariantImages? variantImages;
+  num? previousPrice;
+  Map<String, List<String>>? variantImages;
   List<String>? banner;
   List<String>? variantColors;
 
   ProductModel({
-    this.sId,
+    this.id,
     this.name,
     this.description,
     this.price,
-    this.previousPrice,
+    this.category,
     this.wholeSale,
     this.quantity,
+    this.previousPrice,
     this.variantImages,
     this.banner,
     this.variantColors,
   });
 
-  factory ProductModel.fromJson(Map<String, dynamic> json) {
+  // FromJson Constructor
+  factory ProductModel.fromJson(Map<String, dynamic>? json) {
+    if (json == null) return ProductModel();
+
     return ProductModel(
-      sId: json['_id'],
+      id: json['_id'],
       name: json['name'],
       description: json['description'],
-      price: _parseNumber(json['price']),
-      previousPrice: _parseNumber(json['previous_price']),
+      price: json['price'],
+      category: json['category'] != null
+          ? Category.fromJson(json['category'])
+          : null,
       wholeSale: json['whole_sale'],
       quantity: json['quantity'],
-      variantImages: json['variantImages'] != null
-          ? VariantImages.fromJson(json['variantImages'])
+      previousPrice: json['previous_price'],
+      variantImages: (json['variantImages'] as Map<String, dynamic>?)?.map(
+            (key, value) => MapEntry(key,
+            value != null
+                ? List<String>.from(value)
+                : <String>[]),
+      ),
+      banner: json['banner'] != null
+          ? List<String>.from(json['banner'])
           : null,
-      banner: _parseStringList(json['banner']),
-      variantColors: _parseStringList(json['variantColors']),
+      variantColors: json['variantColors'] != null
+          ? List<String>.from(json['variantColors'])
+          : null,
     );
   }
 
-  static num? _parseNumber(dynamic value) {
-    if (value == null) return 0.0;
-    if (value is num) return value;
-    if (value is String) return num.tryParse(value);
-    return null;
-  }
-
-  static List<String>? _parseStringList(dynamic value) {
-    if (value == null) return null;
-    if (value is List) {
-      return value.whereType<String>().toList();
-    }
-    return null;
-  }
-
+  // ToJson Method
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['_id'] = sId;
-    data['name'] = name;
-    data['description'] = description;
-    data['price'] = price;
-    data['previous_price'] = previousPrice;
-    data['whole_sale'] = wholeSale;
-    data['quantity'] = quantity;
-    if (variantImages != null) {
-      data['variantImages'] = variantImages!.toJson();
-    }
-    data['banner'] = banner;
-    data['variantColors'] = variantColors;
-    return data;
+    return {
+      '_id': id,
+      'name': name,
+      'description': description,
+      'price': price,
+      'category': category?.toJson(),
+      'whole_sale': wholeSale,
+      'quantity': quantity,
+      'previous_price': previousPrice,
+      'variantImages': variantImages,
+      'banner': banner,
+      'variantColors': variantColors,
+    };
   }
 }
 
-class VariantImages {
-  List<String>? red;
-  List<String>? blue;
+class Category {
+  String? id;
+  String? name;
+  String? img;
 
-  VariantImages({this.red, this.blue});
+  Category({
+    this.id,
+    this.name,
+    this.img,
+  });
 
-  factory VariantImages.fromJson(Map<String, dynamic> json) {
-    return VariantImages(
-      red: ProductModel._parseStringList(json['red']),
-      blue: ProductModel._parseStringList(json['blue']),
+  // FromJson Constructor
+  factory Category.fromJson(Map<String, dynamic>? json) {
+    if (json == null) return Category();
+
+    return Category(
+      id: json['_id'],
+      name: json['name'],
+      img: json['img'],
     );
   }
 
+  // ToJson Method
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['red'] = red;
-    data['blue'] = blue;
-    return data;
+    return {
+      '_id': id,
+      'name': name,
+      'img': img,
+    };
   }
 }

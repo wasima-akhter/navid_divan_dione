@@ -20,6 +20,7 @@ class DefaultScaffoldStructureWidget extends StatelessWidget {
 
       body: SingleChildScrollView(
         controller:scrollController ,
+        physics: AlwaysScrollableScrollPhysics(),
         child: Padding(
           padding: padding12,
           child: Column(

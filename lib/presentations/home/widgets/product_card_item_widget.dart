@@ -15,6 +15,7 @@ import 'package:navid_e_commerce/core/constants/image_constants.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
 import 'package:navid_e_commerce/core/utils/variable.dart';
+import 'package:navid_e_commerce/presentations/product/controllers/product_controller.dart';
 import 'package:navid_e_commerce/presentations/product/model/product_model.dart';
 import 'package:navid_e_commerce/presentations/product/views/product_details_page.dart';
 
@@ -30,13 +31,16 @@ class ProductCardItemWidget extends StatelessWidget {
     String imgUrl = product.banner != null && product.banner!.isNotEmpty
         ? '${ApiService().baseUrl}/${product.banner!.first.toString()}'
         : '';
-    String productName =product.name ?? 'n/a';
-    String productPrice =product.price.toString();
-    String productPreviousPrice =product.previousPrice.toString();
-    String productQuantity =product.quantity.toString() ;
+    String productName = product.name ?? 'n/a';
+    String productPrice = product.price.toString();
+    String productPreviousPrice = product.previousPrice.toString();
+    String productQuantity = product.quantity.toString();
     return DefaultFadeContainerWidget(
       child: ButtonTapWidget(
         onTap: () {
+          Get.lazyPut(() => ProductController(),);
+          ProductController.to
+              .getProductDetailsRequest(productID: product.id ?? '');
           Get.toNamed(ProductDetailsPage.routeName);
         },
         child: Column(
@@ -72,7 +76,10 @@ class ProductCardItemWidget extends StatelessWidget {
                 ),
 
                 ///================ dynamic product price ==================///
-                PriceTextWidget(price: productPrice,previousPrice: productPreviousPrice,),
+                PriceTextWidget(
+                  price: productPrice,
+                  previousPrice: productPreviousPrice,
+                ),
 
                 CustomButton(
                   padding: padding8,
@@ -149,12 +156,13 @@ class PriceTextWidget extends StatelessWidget {
               style: poppinsMedium.copyWith(
                   color: AppColors.kPrimaryTextDarkColor,
                   fontSize: fontSize ?? getFontSizeSemiSmall())),
-        if(previousPrice!='0.0')  TextSpan(
-              text: '\$$previousPrice',
-              style: poppinsRegular.copyWith(
-                  color: Colors.red,
-                  fontSize: previousPriceFontSize ?? getFontSizeSmall(),
-                  decoration: TextDecoration.lineThrough)),
+          if (previousPrice != '0.0')
+            TextSpan(
+                text: '\$$previousPrice',
+                style: poppinsRegular.copyWith(
+                    color: Colors.red,
+                    fontSize: previousPriceFontSize ?? getFontSizeSmall(),
+                    decoration: TextDecoration.lineThrough)),
         ]));
   }
 }

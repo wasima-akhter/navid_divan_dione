@@ -33,7 +33,7 @@ class HomeController extends GetxController {
   ///====================category pagination variable========================///
 
   final RxInt currentProductPage = 1.obs;
-  final RxInt itemsProductPerPage = 5.obs;
+  final RxInt itemsProductPerPage = 10.obs;
   final RxInt totalProductPages = 5.obs;
   final RxBool isProductLoadingMore = false.obs;
 

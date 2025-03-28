@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:navid_e_commerce/core/api-client/api_service.dart';
 import 'package:navid_e_commerce/core/components/custom_button_tap.dart';
 import 'package:navid_e_commerce/core/components/custom_network_image.dart';
@@ -9,6 +10,7 @@ import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/core/utils/variable.dart';
 import 'package:navid_e_commerce/presentations/home/controllers/home_controller.dart';
 import 'package:navid_e_commerce/presentations/home/model/category_model.dart';
+import 'package:navid_e_commerce/presentations/home/views/product_list_page.dart';
 class CategoryCardItemWidget extends StatelessWidget {
   final CategoryModel categoryModel;
   const CategoryCardItemWidget({
@@ -27,6 +29,9 @@ class CategoryCardItemWidget extends StatelessWidget {
         radius:8.r ,
         onTap: () {
           HomeController.to.category.value=categoryModel.sId??'';
+          HomeController.to.getProductListRequest();
+          Get.toNamed(ProductListPage.routeName);
+
         },
         child: Padding(
           padding: padding8,
