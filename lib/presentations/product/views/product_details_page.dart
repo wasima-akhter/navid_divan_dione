@@ -153,18 +153,18 @@ return Column(
         color: AppColors.kPrimaryTextDarkColor,
       ),
       SizedBox(
-        height: 300,
+        height: 250,
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
             spacing: 12.w,
             children: List.generate(
-              5,
+              ProductController.to.relatedProductList.length,
                   (index) => SizedBox(
                   width: 200.w,
                   // height: 200.w,
                   child: ProductCardItemWidget(
-                    product: ProductModel(),
+                    product: ProductController.to.relatedProductList[index],
                   )),
             ),
           ),

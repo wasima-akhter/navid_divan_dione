@@ -19,6 +19,7 @@ class ProductController extends GetxController {
       TextEditingController(text: kDebugMode ? '2025-01-22' : '').obs;
   RxBool isLoadingProductDetails = false.obs;
 Rx<ProductModel> productModel = ProductModel().obs;
+RxList<ProductModel> relatedProductList = <ProductModel>[].obs;
   Rx<String?> selectedColor = Rx<String?>(null);
   RxList<String> currentBannerImages=<String>[].obs;
 
@@ -35,6 +36,7 @@ Rx<ProductModel> productModel = ProductModel().obs;
       if (response['success'] == true) {
         logger.d(response);
         productModel.value = ProductModel.fromJson(response['data']);
+        relatedProductList.value = (response['related_product'] as List).map((e)=>ProductModel.fromJson(e)).toList();
         initializeBannerImages();
       } /*else if (response['message'] == AppStaticStrings.noInternet) {
         showCustomSnackbar(
