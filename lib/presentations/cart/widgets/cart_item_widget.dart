@@ -46,7 +46,7 @@ class CartItemWidget extends StatelessWidget {
                         style: poppinsRegular,
                         fontSize: getFontSizeDefault(),
                       )),
-                      CartCounterWidget()
+                      CartCounterWidget(count: 0.obs,)
                     ],
                   ),
                   CustomText(
@@ -64,42 +64,42 @@ class CartItemWidget extends StatelessWidget {
 }
 
 class CartCounterWidget extends StatelessWidget {
+  final RxInt count;
   const CartCounterWidget({
     super.key,
+    required this.count,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Obx(() => Row(
       spacing: 4.w,
       children: [
         BlueContainerWithIcon(
           onTap: () {
-            if(CommonController.to.count.value>1){
-              CommonController.to.decrement(CommonController.to.count.value);
+            if(count.value > 1){
+              count.value--;
             }
           },
           icon: 'assets/icons/minius_icon.svg',
         ),
         BlueContainerWithIcon(
           child: Padding(
-            padding: paddingH16V6,
-            child: Obx(() {
-              return CustomText(
-                text: CommonController.to.count.value.toString(),
+              padding: paddingH16V6,
+              child: CustomText(
+                text: count.value.toString(),
                 color: AppColors.kPrimaryTextDarkColor,
                 fontSize: getFontSizeSmall(),
-              );
-            }),
+              )
           ),
         ),
         BlueContainerWithIcon(
           onTap: () {
-            CommonController.to.increment(CommonController.to.count.value);
+            count.value++;
           },
           icon: 'assets/icons/plus_icon.svg',
         )
       ],
-    );
+    ));
   }
 }

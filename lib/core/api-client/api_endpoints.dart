@@ -10,3 +10,5 @@ String changePassEndPoint ='auth/change-password';
 String catGetAllEndPoint ='category/get-all';
 String productGetAllEndPoint ='product/get-all';
 String productDetailsEndPoint ='product/get-details/';
+String addToCartEndPoint ='cart/create';
+String getAllCartEndPoint ='cart/get-all';

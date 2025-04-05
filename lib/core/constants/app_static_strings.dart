@@ -2,7 +2,7 @@ class AppStaticStrings {
   // Common Auth Labels
   static const String signUp = 'Sign Up';
   static const String signIn = 'Sign In';
-  static const String addToCard = 'Add to card';
+  static const String addToCard = 'Add to cart';
   static const String checkout = 'Check Out';
   static const String welcomeBack = 'Welcome Back!!!';
   static const String createAccount = 'Create a new account';

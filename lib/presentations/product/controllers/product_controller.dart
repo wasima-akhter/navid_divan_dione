@@ -13,7 +13,7 @@ import '../../../core/utils/variable.dart';
 class ProductController extends GetxController {
   static ProductController get to => Get.find();
   Rx<PageController> pageController = PageController(initialPage: 0,keepPage: true).obs;
-
+RxInt cartQuantity =0.obs;
   RxString selectedTime = ''.obs;
   Rx<TextEditingController> dateController =
       TextEditingController(text: kDebugMode ? '2025-01-22' : '').obs;

@@ -25,12 +25,13 @@ class CustomButton extends StatelessWidget {
       this.icon,
       this.fontSize,
       this.radius,
-      this.isLoading = false, this.padding});
+      this.isLoading = false, this.padding, this.loadingColor});
 
   final double? height;
   final double? radius;
   final double? width;
   final Color fillColor;
+  final Color? loadingColor;
   final Color borderColor;
   final bool? isLoading;
 
@@ -68,8 +69,8 @@ class CustomButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(radius ?? 8.r),
             color: fillColor),
         child: isLoading == true
-            ? const DefaultProgressIndicator(
-                      strokeWidth: 2,
+            ?  DefaultProgressIndicator(
+                      strokeWidth: 2,color: loadingColor,
                     )
             : child ??
                 Row(

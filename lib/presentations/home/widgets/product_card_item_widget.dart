@@ -14,7 +14,7 @@ import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
 import 'package:navid_e_commerce/core/constants/image_constants.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
-import 'package:navid_e_commerce/core/utils/variable.dart';
+import 'package:navid_e_commerce/presentations/cart/controllers/cart_controller.dart';
 import 'package:navid_e_commerce/presentations/product/controllers/product_controller.dart';
 import 'package:navid_e_commerce/presentations/product/model/product_model.dart';
 import 'package:navid_e_commerce/presentations/product/views/product_details_page.dart';
@@ -32,13 +32,16 @@ class ProductCardItemWidget extends StatelessWidget {
         ? '${ApiService().baseUrl}/${product.banner!.first.toString()}'
         : '';
     String productName = product.name ?? 'n/a';
+    String productId = product.id ?? 'n/a';
     String productPrice = product.price.toString();
     String productPreviousPrice = product.previousPrice.toString();
     String productQuantity = product.quantity.toString();
     return DefaultFadeContainerWidget(
       child: ButtonTapWidget(
         onTap: () {
-          Get.lazyPut(() => ProductController(),);
+          Get.lazyPut(
+            () => ProductController(),
+          );
           ProductController.to
               .getProductDetailsRequest(productID: product.id ?? '');
           Get.toNamed(ProductDetailsPage.routeName);
@@ -81,28 +84,39 @@ class ProductCardItemWidget extends StatelessWidget {
                   previousPrice: productPreviousPrice,
                 ),
 
-                CustomButton(
-                  padding: padding8,
-                  radius: 40.r,
-                  fillColor: AppColors.kPrimaryDarkColor,
-                  onTap: () {},
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      CustomText(
-                        text: AppStaticStrings.addToCard,
-                        style: poppinsRegular,
-                        fontSize: getFontSizeSmall(),
-                        color: AppColors.kWhiteColor,
-                      ),
-                      SvgPicture.asset(
-                        cartIcon,
-                        colorFilter: ColorFilter.mode(
-                            AppColors.kWhiteColor, BlendMode.srcIn),
-                      )
-                    ],
-                  ),
-                )
+                Obx(() {
+                  final isLoading =
+                      CartController.to.isLoadingAddCart[productId] ?? false;
+                  return CustomButton(
+                    padding: padding8,
+                    radius: 40.r,
+                    isLoading: isLoading,
+                    fillColor: AppColors.kPrimaryDarkColor,
+                    onTap: () {
+                      Get.lazyPut(() => CartController());
+                      CartController.to.addToCart(
+                          productId: productId,
+                          quantity: 1,
+                          price: int.parse(productPrice));
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        CustomText(
+                          text: AppStaticStrings.addToCard,
+                          style: poppinsRegular,
+                          fontSize: getFontSizeSmall(),
+                          color: AppColors.kWhiteColor,
+                        ),
+                        SvgPicture.asset(
+                          cartIcon,
+                          colorFilter: ColorFilter.mode(
+                              AppColors.kWhiteColor, BlendMode.srcIn),
+                        )
+                      ],
+                    ),
+                  );
+                })
               ],
             ))
           ],
