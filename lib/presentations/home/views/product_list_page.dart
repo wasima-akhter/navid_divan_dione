@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:navid_e_commerce/core/components/custom_refresh_indicator.dart';
+import 'package:navid_e_commerce/core/constants/custom_space.dart';
 import 'package:navid_e_commerce/presentations/home/views/home_page.dart';
 import 'package:navid_e_commerce/presentations/home/widgets/default_scaffold_structure_widget.dart';
 import 'package:navid_e_commerce/presentations/home/widgets/search_text_field_widget.dart';
@@ -48,6 +49,7 @@ class _ProductListPageState extends State<ProductListPage> {
             children: [
               SearchTextFieldWidget(
                   searchController: HomeController.to.searchController.value),
+              space12H,
               DynamicProductList()
             ]),
       ),

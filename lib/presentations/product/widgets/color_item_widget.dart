@@ -7,9 +7,10 @@ import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
 class ColorItemWidget extends StatelessWidget {
   final String color;
-  final bool isSelected;
+  final Color? textColor;
+  final Color? containerColor;
   const ColorItemWidget({
-    super.key, required this.color, required this.isSelected,
+    super.key, required this.color, this.textColor, this.containerColor,
   });
 
   @override
@@ -17,7 +18,7 @@ class ColorItemWidget extends StatelessWidget {
     return Container(
       padding: padding8,
       decoration: BoxDecoration(
-        color: isSelected?AppColors.kPrimaryColor:Colors.transparent,
+        color:containerColor,
           borderRadius: BorderRadius.circular(4.r),
           border: Border.all(
               color: AppColors.kPrimaryLightColor, width: 2)),
@@ -25,7 +26,7 @@ class ColorItemWidget extends StatelessWidget {
         text: color,
         style: poppinsRegular,
         fontSize: getFontSizeSmall(),
-        color:isSelected?AppColors.kWhiteColor: AppColors.kPrimaryColor,
+        color:textColor,
       ),
     );
   }

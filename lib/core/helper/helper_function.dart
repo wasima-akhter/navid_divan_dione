@@ -40,7 +40,8 @@ List<PopupMenuEntry<dynamic>> items = [
 
 
 Future<dynamic> defaultAlertDialog(BuildContext context,
-    {required Widget child, String? title, Color? backgroundColor}) {
+    {required Widget child, String? title, Color? backgroundColor})
+{
   return showDialog(
     barrierDismissible: false,
     context: context,
@@ -78,7 +79,8 @@ Future<dynamic> defaultAlertDialog(BuildContext context,
   );
 }
 void removeImage(
-    {required RxList<String> uploadImages, required String imagePath}) {
+    {required RxList<String> uploadImages, required String imagePath})
+{
   if (uploadImages.contains(imagePath)) {
     uploadImages.remove(imagePath);
   } else {
@@ -201,7 +203,8 @@ void showCustomSnackbar({
   Function()? retryTap,
    SnackBarType type=SnackBarType.success,
   SnackPosition position = SnackPosition.BOTTOM, // Default position
-}) {
+})
+{
   Color backgroundColor= AppColors.kWhiteColor.withValues(alpha: .5);
   Color textColor= AppColors.kTextDarkColor;
 

@@ -19,6 +19,8 @@ class ProductController extends GetxController {
       TextEditingController(text: kDebugMode ? '2025-01-22' : '').obs;
   RxBool isLoadingProductDetails = false.obs;
 Rx<ProductModel> productModel = ProductModel().obs;
+  Rx<String?> selectedColor = Rx<String?>(null);
+  RxList<String> currentBannerImages=<String>[].obs;
 
   ///------------------------------ get Product Details method -------------------------///
 
@@ -33,7 +35,7 @@ Rx<ProductModel> productModel = ProductModel().obs;
       if (response['success'] == true) {
         logger.d(response);
         productModel.value = ProductModel.fromJson(response['data']);
-
+        initializeBannerImages();
       } /*else if (response['message'] == AppStaticStrings.noInternet) {
         showCustomSnackbar(
           title: 'Failed',
@@ -55,5 +57,38 @@ Rx<ProductModel> productModel = ProductModel().obs;
       logger.e(e.toString());
       isLoadingProductDetails.value = false;
     }
+  }
+
+  void initializeBannerImages() {
+    final product =productModel.value;
+
+    // If there's a default banner, use it
+    if (product.banner != null && product.banner!.isNotEmpty) {
+     currentBannerImages.value = product.banner!;
+     selectedColor.value = null;
+    }
+    // Otherwise, try to use the first color's variant images
+    else if (product.variantColors != null &&
+        product.variantColors!.isNotEmpty) {
+     selectedColor.value = product.variantColors!.first;
+     currentBannerImages.value =
+          product.variantImages?[ProductController.to.selectedColor.value] ??
+              [];
+    } else {
+     currentBannerImages.value = [];
+     selectedColor.value = null;
+    }
+  }
+
+  void onColorSelected(String color) {
+    final product =productModel.value;
+
+   selectedColor.value = color;
+    logger.d(selectedColor.value);
+
+    // Update banner images based on selected color
+   currentBannerImages.value =
+        product.variantImages?[color] ?? [];
+
   }
 }
