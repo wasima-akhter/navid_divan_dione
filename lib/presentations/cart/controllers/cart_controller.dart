@@ -31,8 +31,10 @@ class CartController extends GetxController {
       isCartLoading.value = false;
       if (response['success'] == true) {
         logger.d(response);
-        cartList.value =
-            (response['data']['items']).map((e) => CartModel.fromJson(e)).toList();
+        cartList.value = (response['data']['items'] as List)
+            .map((e) => CartModel.fromJson(e))
+            .toList();
+
       } else {
         logger.e(response);
         showCustomSnackbar(
@@ -46,19 +48,20 @@ class CartController extends GetxController {
     }
   }
 
-  ///==========================add to cart ===========================///
+  ///------------------------------- add to cart ----------------------------///
 
   Future<void> addToCart({
     required String productId,
     required num quantity,
     required num price,
+    required String variant,
   }) async {
     try {
       isLoadingAddCart[productId] = true;
       final response = await ApiService()
           .request(endpoint: addToCartEndPoint, method: 'POST', body: {
         "items": [
-          {"product_id": productId, "quantity": quantity, "price": price}
+          {"product_id": productId, "quantity": quantity, "price": price,"variant":variant}
         ]
       });
       isLoadingAddCart[productId] = false;

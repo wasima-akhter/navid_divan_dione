@@ -28,9 +28,7 @@ class ProductCardItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String imgUrl = product.banner != null && product.banner!.isNotEmpty
-        ? '${ApiService().baseUrl}/${product.banner!.first.toString()}'
-        : '';
+    String imgUrl = product.banner != null && product.banner!.isNotEmpty ? '${product.banner!.first.toString()}' : '';
     String productName = product.name ?? 'n/a';
     String productId = product.id ?? 'n/a';
     String productPrice = product.price.toString();
@@ -42,8 +40,7 @@ class ProductCardItemWidget extends StatelessWidget {
           Get.lazyPut(
             () => ProductController(),
           );
-          ProductController.to
-              .getProductDetailsRequest(productID: product.id ?? '');
+          ProductController.to.getProductDetailsRequest(productID: product.id ?? '');
           Get.toNamed(ProductDetailsPage.routeName);
         },
         child: Column(
@@ -52,7 +49,7 @@ class ProductCardItemWidget extends StatelessWidget {
 
                 ///===================dynamic img=================///
                 child: CustomNetworkImage(
-              imageUrl: imgUrl,
+              imageUrl: "${ApiService().baseUrl}/$imgUrl",
             )),
             Expanded(
                 child: Column(
@@ -85,8 +82,7 @@ class ProductCardItemWidget extends StatelessWidget {
                 ),
 
                 Obx(() {
-                  final isLoading =
-                      CartController.to.isLoadingAddCart[productId] ?? false;
+                  final isLoading = CartController.to.isLoadingAddCart[productId] ?? false;
                   return CustomButton(
                     padding: padding8,
                     radius: 40.r,
@@ -94,10 +90,7 @@ class ProductCardItemWidget extends StatelessWidget {
                     fillColor: AppColors.kPrimaryDarkColor,
                     onTap: () {
                       Get.lazyPut(() => CartController());
-                      CartController.to.addToCart(
-                          productId: productId,
-                          quantity: 1,
-                          price: int.parse(productPrice));
+                      CartController.to.addToCart(productId: productId, quantity: 1, price: int.parse(productPrice), variant: imgUrl);
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -110,8 +103,7 @@ class ProductCardItemWidget extends StatelessWidget {
                         ),
                         SvgPicture.asset(
                           cartIcon,
-                          colorFilter: ColorFilter.mode(
-                              AppColors.kWhiteColor, BlendMode.srcIn),
+                          colorFilter: ColorFilter.mode(AppColors.kWhiteColor, BlendMode.srcIn),
                         )
                       ],
                     ),
@@ -167,16 +159,12 @@ class PriceTextWidget extends StatelessWidget {
         text: TextSpan(children: [
           TextSpan(
               text: 'price: \$$price  ',
-              style: poppinsMedium.copyWith(
-                  color: AppColors.kPrimaryTextDarkColor,
-                  fontSize: fontSize ?? getFontSizeSemiSmall())),
+              style: poppinsMedium.copyWith(color: AppColors.kPrimaryTextDarkColor, fontSize: fontSize ?? getFontSizeSemiSmall())),
           if (previousPrice != '0.0')
             TextSpan(
                 text: '\$$previousPrice',
                 style: poppinsRegular.copyWith(
-                    color: Colors.red,
-                    fontSize: previousPriceFontSize ?? getFontSizeSmall(),
-                    decoration: TextDecoration.lineThrough)),
+                    color: Colors.red, fontSize: previousPriceFontSize ?? getFontSizeSmall(), decoration: TextDecoration.lineThrough)),
         ]));
   }
 }

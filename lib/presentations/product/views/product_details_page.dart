@@ -171,7 +171,7 @@ class ProductDetailsPage extends StatelessWidget {
                       return CustomButton(
                         loadingColor: AppColors.kPrimaryColor,
                         onTap: () {
-                          CartController.to.addToCart(
+                          CartController.to.addToCart(variant: controller.currentBannerImages[0],
                               productId: product.id ?? '',
                               quantity: ProductController.to.cartQuantity.value,
                               price: ProductController.to.cartQuantity.value *

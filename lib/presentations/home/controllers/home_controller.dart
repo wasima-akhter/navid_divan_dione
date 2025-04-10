@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -14,11 +13,11 @@ import '../../../core/utils/variable.dart';
 
 class HomeController extends GetxController {
   static HomeController get to => Get.find();
-  RxString category =''.obs;
+  RxString category = ''.obs;
   RxBool isLoadingCategory = false.obs;
   RxBool isLoadingProduct = false.obs;
 
- ///=======================dynamic list==========================///
+  ///=======================dynamic list==========================///
 
   RxList<CategoryModel> catList = <CategoryModel>[].obs;
   RxList<ProductModel> productList = <ProductModel>[].obs;
@@ -30,7 +29,7 @@ class HomeController extends GetxController {
   final RxInt totalCategoryPages = 5.obs;
   final RxBool isLoadingMore = false.obs;
 
-  ///====================category pagination variable========================///
+  ///====================product pagination variable========================///
 
   final RxInt currentProductPage = 1.obs;
   final RxInt itemsProductPerPage = 10.obs;
@@ -47,22 +46,24 @@ class HomeController extends GetxController {
 
     super.onInit();
   }
-  Future<void> refreshCall() async{
+
+  Future<void> refreshCall() async {
     searchController.value.clear();
-    category.value='';
-    await  getCategoryListRequest();
-   await getProductListRequest();
+    category.value = '';
+    await getCategoryListRequest();
+    await getProductListRequest();
   }
 
   ///------------------------------ get category list method -------------------------///
 
-  Future<void> getCategoryListRequest({bool loadMore = false }) async {
+  Future<void> getCategoryListRequest({bool loadMore = false}) async {
     try {
       if (loadMore && currentPage.value >= totalCategoryPages.value) {
         return;
       }
 
       if (loadMore) {
+        currentPage.value++;
         isLoadingMore.value = true;
       } else {
         isLoadingCategory.value = true;
@@ -70,8 +71,7 @@ class HomeController extends GetxController {
       }
       ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
 
-      final response = await ApiService()
-          .request(endpoint: catGetAllEndPoint, method: 'GET', queryParams: {
+      final response = await ApiService().request(endpoint: catGetAllEndPoint, method: 'GET', queryParams: {
         'page': currentPage.value.toString(),
         'limit': itemsPerPage.value.toString(),
         'sort': 'updatedAt',
@@ -83,17 +83,13 @@ class HomeController extends GetxController {
       if (response['success'] == true) {
         if (response['pagination'] != null) {
           currentPage.value = response['pagination']['currentPage'] ?? 1;
-          totalCategoryPages.value =
-              response['pagination']['totalPages'] ?? 1; // Add this line
+          totalCategoryPages.value = response['pagination']['totalPages'] ?? 1; // Add this line
 
           itemsPerPage.value = response['pagination']['itemsPerPage'] ?? 10;
         }
-        final newCategories = (response['data'] as List)
-            .map((e) => CategoryModel.fromJson(e))
-            .toList();
+        final newCategories = (response['data'] as List).map((e) => CategoryModel.fromJson(e)).toList();
 
         if (loadMore) {
-          currentPage.value++;
           catList.addAll(newCategories); // Append for load more
         } else {
           catList.value = newCategories; // Replace for refresh
@@ -111,10 +107,7 @@ class HomeController extends GetxController {
         );
       } else {
         logger.e(response);
-        showCustomSnackbar(
-            title: 'Failed',
-            message: response['message'],
-            type: SnackBarType.failed);
+        showCustomSnackbar(title: 'Failed', message: response['message'], type: SnackBarType.failed);
       }
     } catch (e) {
       logger.e(e.toString());
@@ -122,9 +115,11 @@ class HomeController extends GetxController {
     }
   }
 
-  ///------------------------------ get category list method -------------------------///
+  ///------------------------------ get product list method -------------------------///
 
-  Future<void> getProductListRequest({bool loadMore = false, }) async {
+  Future<void> getProductListRequest({
+    bool loadMore = false,
+  }) async {
     try {
       // Don't load more if we've reached the last page
       if (loadMore && currentProductPage.value >= totalProductPages.value) {
@@ -132,7 +127,9 @@ class HomeController extends GetxController {
       }
 
       if (loadMore) {
+
         isProductLoadingMore.value = true;
+        currentProductPage.value++;
         // Don't increment page here - we'll do it after successful response
       } else {
         isLoadingProduct.value = true;
@@ -147,9 +144,8 @@ class HomeController extends GetxController {
         queryParams: {
           'page': currentProductPage.value.toString(),
           'limit': itemsProductPerPage.value.toString(),
-          'search':searchController.value.text,
-          'category':category.value
-
+          'search': searchController.value.text,
+          'category': category.value
         },
       );
 
@@ -159,19 +155,15 @@ class HomeController extends GetxController {
       if (response['success'] == true) {
         if (response['pagination'] != null) {
           currentProductPage.value = response['pagination']['currentPage'] ?? 1;
-          totalProductPages.value =
-              response['pagination']['totalPages'] ?? 1; // Add this line
-          itemsProductPerPage.value =
-              response['pagination']['itemsPerPage'] ?? 10;
+          totalProductPages.value = response['pagination']['totalPages'] ?? 1; // Add this line
+          itemsProductPerPage.value = response['pagination']['itemsPerPage'] ?? 10;
         }
 
-        final newProducts = (response['data'] as List)
-            .map((e) => ProductModel.fromJson(e))
-            .toList();
+        final newProducts = (response['data'] as List).map((e) => ProductModel.fromJson(e)).toList();
 
         if (loadMore) {
           // Only increment page after successful load
-          currentProductPage.value++;
+
           productList.addAll(newProducts);
         } else {
           productList.value = newProducts;

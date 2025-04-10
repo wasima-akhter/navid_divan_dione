@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:navid_e_commerce/core/api-client/api_service.dart';
 import 'package:navid_e_commerce/core/components/custom_network_image.dart';
 import 'package:navid_e_commerce/core/constants/color_constants.dart';
 import 'package:navid_e_commerce/core/constants/custom_text.dart';
@@ -8,13 +9,17 @@ import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
 import 'package:navid_e_commerce/core/utils/variable.dart';
+import 'package:navid_e_commerce/presentations/cart/controllers/cart_controller.dart';
+import 'package:navid_e_commerce/presentations/cart/model/cart_model.dart';
 import 'package:navid_e_commerce/presentations/cart/widgets/blue_container_widget.dart';
 import 'package:navid_e_commerce/presentations/home/widgets/product_card_item_widget.dart';
 import 'package:navid_e_commerce/presentations/splash/controllers/common_controller.dart';
 
 class CartItemWidget extends StatelessWidget {
+  final CartModel cartModel;
   const CartItemWidget({
     super.key,
+    required this.cartModel,
   });
 
   @override
@@ -26,7 +31,7 @@ class CartItemWidget extends StatelessWidget {
           Expanded(
             flex: 2,
             child: CustomNetworkImage(
-              imageUrl: dummyCatImg,
+              imageUrl: "${ApiService().baseUrl}/${cartModel.variant}",
               height: 100.w,
             ),
           ),
@@ -40,21 +45,36 @@ class CartItemWidget extends StatelessWidget {
                     children: [
                       Expanded(
                           child: CustomText(
-                        text: 'Tobaco',
+                        text: cartModel.productId?.name ?? "",
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: poppinsRegular,
                         fontSize: getFontSizeDefault(),
                       )),
-                      CartCounterWidget(count: 0.obs,)
+                      CartCounterWidget(
+                        count: (cartModel.quantity ?? 0).obs,
+                        onIncrement: () {
+                          CartController.to.addToCart(
+                              productId: cartModel.productId?.sId ?? "",
+                              quantity: (cartModel.quantity ?? 0) + 1,
+                              price: cartModel.price ?? 0,
+                              variant: cartModel.variant ?? "");
+                          CartController.to.getCartListRequest();
+
+                          CartController.to.cartList.refresh();
+                        },
+                      )
                     ],
                   ),
-                  CustomText(
-                    text: '12 pis',
-                    fontSize: getFontSizeSmall(),
-                    style: poppinsLight,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: CustomText(
+                            text: 'price: \$${cartModel.price.toString()}  ',
+                            style: poppinsMedium.copyWith(color: AppColors.kPrimaryTextDarkColor, fontSize: getFontSizeSemiSmall())),
+                      ),
+                    ],
                   ),
-                  PriceTextWidget(),
                 ],
               ))
         ],
@@ -65,41 +85,46 @@ class CartItemWidget extends StatelessWidget {
 
 class CartCounterWidget extends StatelessWidget {
   final RxInt count;
+  final Function()? onIncrement;
+  final Function()? onDecrement;
   const CartCounterWidget({
     super.key,
     required this.count,
+    this.onIncrement,
+    this.onDecrement,
   });
 
   @override
   Widget build(BuildContext context) {
     return Obx(() => Row(
-      spacing: 4.w,
-      children: [
-        BlueContainerWithIcon(
-          onTap: () {
-            if(count.value > 1){
-              count.value--;
-            }
-          },
-          icon: 'assets/icons/minius_icon.svg',
-        ),
-        BlueContainerWithIcon(
-          child: Padding(
-              padding: paddingH16V6,
-              child: CustomText(
-                text: count.value.toString(),
-                color: AppColors.kPrimaryTextDarkColor,
-                fontSize: getFontSizeSmall(),
-              )
-          ),
-        ),
-        BlueContainerWithIcon(
-          onTap: () {
-            count.value++;
-          },
-          icon: 'assets/icons/plus_icon.svg',
-        )
-      ],
-    ));
+          spacing: 4.w,
+          children: [
+            BlueContainerWithIcon(
+              onTap: onDecrement ??
+                  () {
+                    if (count.value > 1) {
+                      count.value--;
+                    }
+                  },
+              icon: 'assets/icons/minius_icon.svg',
+            ),
+            BlueContainerWithIcon(
+              child: Padding(
+                  padding: paddingH16V6,
+                  child: CustomText(
+                    text: count.value.toString(),
+                    color: AppColors.kPrimaryTextDarkColor,
+                    fontSize: getFontSizeSmall(),
+                  )),
+            ),
+            BlueContainerWithIcon(
+              onTap: onIncrement ??
+                  () {
+                    count.value++;
+                  },
+              icon: 'assets/icons/plus_icon.svg',
+            )
+          ],
+        ));
   }
 }
