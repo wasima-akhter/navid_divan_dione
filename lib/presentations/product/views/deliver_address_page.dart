@@ -16,137 +16,149 @@ import 'package:navid_e_commerce/presentations/home/widgets/default_scaffold_str
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:navid_e_commerce/presentations/product/controllers/product_controller.dart';
+import 'package:navid_e_commerce/presentations/product/model/pick_address_model.dart';
+import 'package:navid_e_commerce/presentations/product/views/edit_address_page.dart';
 import 'package:navid_e_commerce/presentations/product/widgets/expand_able_text.dart';
 
 class DeliverAddressPage extends StatelessWidget {
   static const String routeName = '/deliver-add';
+
   const DeliverAddressPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return DefaultScaffoldStructureWidget(
-        spacing: 6.h,
-        appBarTitle: AppStaticStrings.address,
+    return DefaultScaffoldStructureWidget(spacing: 6.h, appBarTitle: AppStaticStrings.address, children: [
+      Row(
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: CustomText(
-                  text: AppStaticStrings.deliveryAddress,
-                  fontSize: getFontSizeDefault(),
-                ),
-              ),
-
-              Flexible(
-                child: CustomButton(onTap: () {
-
-                },fillColor: AppColors.kPrimaryDarkColor,title: AppStaticStrings.editAddress,padding: padding6,),
-              )
-            ],
+          Expanded(
+            child: CustomText(
+              text: AppStaticStrings.deliveryAddress,
+              fontSize: getFontSizeDefault(),
+            ),
           ),
+          Flexible(
+            child: CustomButton(
+              onTap: () {
+                Get.toNamed(EditAddressPage.routeName);
+              },
+              fillColor: AppColors.kPrimaryDarkColor,
+              title: AppStaticStrings.editAddress,
+              padding: padding6,
+            ),
+          )
+        ],
+      ),
+      Obx(() {
+        return Column(
+          children: List.generate(
+            ProductController.to.shippingAddressList.length,
+            (index) => shippingAddressCard(ProductController.to.shippingAddressList[index]),
+          ),
+        );
+      }),
+      // Row(
+      //   children: [
+      //     Expanded(
+      //         child: ButtonTapWidget(
+      //             onTap: () async {
+      //               ProductController.to.dateController.value.text = await selectDate(context);
+      //             },
+      //             child: CustomTextField(
+      //               title: AppStaticStrings.deliveryDateLabel,
+      //               hintText: AppStaticStrings.defaultDeliveryDate,
+      //               // textEditingController: controller,
+      //               isEnable: false,
+      //               suffixIcon: Icon(
+      //                 Icons.calendar_month,
+      //                 color: AppColors.kExtraLightGreyTextColor,
+      //               ),
+      //             ))),
+      //     SizedBox(width: 12.w),
+      //     Expanded(
+      //         child: ButtonTapWidget(
+      //             onTap: () async {
+      //               ProductController.to.selectedTime.value =
+      //                   await selectAndFormatTime(context: context, initialTime: const TimeOfDay(hour: 10, minute: 0)) ?? '';
+      //             },
+      //             child: CustomTextField(
+      //               title: AppStaticStrings.deliveryTimeLabel,
+      //               hintText: AppStaticStrings.defaultDeliveryTime,
+      //               textEditingController: TextEditingController(text: ProductController.to.selectedTime.value),
+      //               isEnable: false,
+      //               suffixIcon: Icon(
+      //                 Icons.arrow_drop_down,
+      //                 color: AppColors.kExtraLightGreyTextColor,
+      //               ),
+      //             ))),
+      //   ],
+      // ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
           CustomText(
-            text:
-                'Name: User Name\nCnontuct No:+9900000000\n13th Street. 47 W 13th St, New York, NY 10011',
+            text: AppStaticStrings.subTotal,
             fontSize: getFontSizeSmall(),
             color: AppColors.kExtraLightGreyTextColor,
-            style: poppinsRegular,
           ),
-          Row(
-            children: [
-              Expanded(
-                  child: ButtonTapWidget(
-                      onTap: () async {
-                        ProductController.to.dateController.value.text =
-                            await selectDate(context);
-                      },
-                      child: CustomTextField(
-                        title: AppStaticStrings.deliveryDateLabel,
-                        hintText: AppStaticStrings.defaultDeliveryDate,
-                        // textEditingController: controller,
-                        isEnable: false,
-                        suffixIcon: Icon(
-                          Icons.calendar_month,
-                          color: AppColors.kExtraLightGreyTextColor,
-                        ),
-                      ))),
-              SizedBox(width: 12.w),
-              Expanded(
-                  child: ButtonTapWidget(
-                      onTap: () async {
-                        ProductController.to.selectedTime.value =
-                            await selectAndFormatTime(
-                                    context: context,
-                                    initialTime:
-                                        const TimeOfDay(hour: 10, minute: 0)) ??
-                                '';
-                      },
-                      child: CustomTextField(
-                        title: AppStaticStrings.deliveryTimeLabel,
-                        hintText: AppStaticStrings.defaultDeliveryTime,
-                        textEditingController: TextEditingController(
-                            text: ProductController.to.selectedTime.value),
-                        isEnable: false,
-                        suffixIcon: Icon(
-                          Icons.arrow_drop_down,
-                          color: AppColors.kExtraLightGreyTextColor,
-                        ),
-                      ))),
-            ],
+          CustomText(
+            text: '\$715.00',
+            fontSize: getFontSizeSmall(),
+            color: AppColors.kExtraLightGreyTextColor,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CustomText(
-                text: AppStaticStrings.subTotal,
-                fontSize: getFontSizeSmall(),
-                color: AppColors.kExtraLightGreyTextColor,
-
-              ),
-              CustomText(
-                text: '\$715.00',
-                fontSize: getFontSizeSmall(),
-                color: AppColors.kExtraLightGreyTextColor,
-
-              ),
-            ],
-          ),Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CustomText(
-                text: AppStaticStrings.deliveryFee,
-                fontSize: getFontSizeSmall(),
-                color: AppColors.kExtraLightGreyTextColor,
-
-              ),
-              CustomText(
-                text: '\$71',
-                fontSize: getFontSizeSmall(),
-                color: AppColors.kExtraLightGreyTextColor,
-
-              ),
-            ],
+        ],
+      ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          CustomText(
+            text: AppStaticStrings.deliveryFee,
+            fontSize: getFontSizeSmall(),
+            color: AppColors.kExtraLightGreyTextColor,
           ),
-          Divider(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CustomText(
-                text: AppStaticStrings.totalLabel,
-                fontSize: getFontSizeDefault(),
-                color: AppColors.kSplashBackgroundColor,
-              ),
-              CustomText(
-                text: AppStaticStrings.defaultTotal,
-                fontSize: getFontSizeDefault(),
-                color: AppColors.kSplashBackgroundColor,
-              ),
-            ],
+          CustomText(
+            text: '\$71',
+            fontSize: getFontSizeSmall(),
+            color: AppColors.kExtraLightGreyTextColor,
           ),
-          space12H,
-          CustomButton(
-            onTap: () {},
-            title: AppStaticStrings.payment,
-          )
-        ]);
+        ],
+      ),
+      Divider(),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          CustomText(
+            text: AppStaticStrings.totalLabel,
+            fontSize: getFontSizeDefault(),
+            color: AppColors.kSplashBackgroundColor,
+          ),
+          CustomText(
+            text: AppStaticStrings.defaultTotal,
+            fontSize: getFontSizeDefault(),
+            color: AppColors.kSplashBackgroundColor,
+          ),
+        ],
+      ),
+      space12H,
+      CustomButton(
+        onTap: () {},
+        title: AppStaticStrings.payment,
+      )
+    ]);
+  }
+
+  Row shippingAddressCard(PickAddressModel pickAddress) {
+    return Row(
+      children: [
+        Checkbox(value:ProductController.to.selectedShippingAddress.value == pickAddress.sId.toString()? true:false, onChanged: (value) {
+ProductController.to.selectedShippingAddress.value = pickAddress.sId.toString();
+        },),
+        CustomText(
+          text: 'Name: ${pickAddress.name}\nCnontuct No:${pickAddress.phone}\n${pickAddress.address}',
+          fontSize: getFontSizeSmall(),
+          color: AppColors.kExtraLightGreyTextColor,
+          style: poppinsRegular,
+        ),
+      ],
+    );
   }
 }

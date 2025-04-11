@@ -12,3 +12,6 @@ String productGetAllEndPoint ='product/get-all';
 String productDetailsEndPoint ='product/get-details/';
 String addToCartEndPoint ='cart/create';
 String getAllCartEndPoint ='cart/get-all';
+String shippingAddressCreateEndPoint ='shipping-address/create';
+String shippingAddressGetEndPoint ='shipping-address/get-all';
+String pickAddressEndPoint ='pick-address/get-all';
