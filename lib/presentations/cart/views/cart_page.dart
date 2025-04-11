@@ -18,8 +18,8 @@ class CartPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomRefreshIndicatorWidget(
-      onRefresh: () async{
-      await CartController.to.getCartListRequest();
+      onRefresh: () async {
+        await CartController.to.getCartListRequest();
       },
       child: Column(
         children: [
@@ -54,11 +54,13 @@ class CartPage extends StatelessWidget {
                 ),
 
                 ///--------------------- dynamic price--------------------///
-                CustomText(
-                  text: '\$12324',
-                  style: poppinsMedium,
-                  fontSize: getFontSizeDefault(),
-                ),
+                Obx(() {
+                  return CustomText(
+                    text: '\$${CartController.to.totalPrice.value}',
+                    style: poppinsMedium,
+                    fontSize: getFontSizeDefault(),
+                  );
+                }),
               ],
             ),
           ),

@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:navid_e_commerce/core/api-client/api_service.dart';
@@ -73,6 +74,16 @@ class CartItemWidget extends StatelessWidget {
                             text: 'price: \$${cartModel.price.toString()}  ',
                             style: poppinsMedium.copyWith(color: AppColors.kPrimaryTextDarkColor, fontSize: getFontSizeSemiSmall())),
                       ),
+                      IconButton(
+                          onPressed: () {
+                            CartController.to.deleteCartItem(cartId: cartModel.productId!.sId ?? "");
+
+                          },
+                          icon: Icon(
+                            CupertinoIcons.delete,
+                            color: Colors.red,
+                            size: 16.sp,
+                          ))
                     ],
                   ),
                 ],

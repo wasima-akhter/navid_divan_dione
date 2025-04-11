@@ -14,11 +14,11 @@ import 'package:navid_e_commerce/presentations/cart/widgets/cart_item_widget.dar
 import 'package:navid_e_commerce/presentations/home/widgets/default_scaffold_structure_widget.dart';
 import 'package:navid_e_commerce/presentations/home/widgets/product_card_item_widget.dart';
 import 'package:navid_e_commerce/presentations/product/controllers/product_controller.dart';
-import 'package:navid_e_commerce/presentations/product/views/deliver_address_page.dart';
-import 'package:navid_e_commerce/presentations/product/views/pickup_address_page.dart';
 import 'package:navid_e_commerce/presentations/product/widgets/color_item_widget.dart';
 import 'package:navid_e_commerce/presentations/product/widgets/expand_able_text.dart';
 import 'package:navid_e_commerce/presentations/profile/widgets/custom_loading_widget.dart';
+
+import '../../../core/helper/helper_function.dart';
 
 class ProductDetailsPage extends StatelessWidget {
   static const String routeName = '/product-details';
@@ -133,32 +133,7 @@ class ProductDetailsPage extends StatelessWidget {
                     Expanded(
                       child: CustomButton(
                         onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              content: Column(
-                                spacing: 6.h,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  CustomButton(
-                                    onTap: () {
-                                      Get.toNamed(PickupAddressPage.routeName);
-                                    },
-                                    title: AppStaticStrings.pickUp,
-                                  ),
-                                  CustomText(text: 'or'),
-                                  CustomButton(
-                                    onTap: () {
-                                      Get.toNamed(DeliverAddressPage.routeName);
-                                    },
-                                    fillColor: AppColors.kPrimaryDarkColor,
-                                    borderColor: AppColors.kPrimaryDarkColor,
-                                    title: AppStaticStrings.deliveryAddress,
-                                  )
-                                ],
-                              ),
-                            ),
-                          );
+                          buyProductDialog(context);
                         },
                         title: AppStaticStrings.buyNow,
                       ),
@@ -214,4 +189,5 @@ class ProductDetailsPage extends StatelessWidget {
       ],
     );
   }
+
 }

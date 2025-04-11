@@ -10,9 +10,12 @@ import '../../../core/utils/hive_boxes.dart';
 
 class CartController extends GetxController {
   static CartController get to => Get.find();
+  RxString totalPrice ="0.0".obs;
   RxMap<String, bool> isLoadingAddCart = <String, bool>{}.obs;
+  RxMap<String, bool> isLoadingDeleteCart = <String, bool>{}.obs;
   RxList<CartModel> cartList = <CartModel>[].obs;
   RxBool isCartLoading = false.obs;
+
   @override
   void onInit() {
     getCartListRequest();
@@ -34,6 +37,7 @@ class CartController extends GetxController {
         cartList.value = (response['data']['items'] as List)
             .map((e) => CartModel.fromJson(e))
             .toList();
+        totalPrice.value = response['data']["total_price"].toString();
 
       } else {
         logger.e(response);
@@ -55,7 +59,8 @@ class CartController extends GetxController {
     required num quantity,
     required num price,
     required String variant,
-  }) async {
+  })
+  async {
     try {
       isLoadingAddCart[productId] = true;
       final response = await ApiService()
@@ -80,6 +85,36 @@ class CartController extends GetxController {
       }
     } catch (e) {
       isLoadingAddCart[productId] = false;
+      logger.e(e.toString());
+    }
+  }
+
+
+///----------------------- Delete Cart item ----------------------///
+
+
+  Future<void> deleteCartItem({required String cartId})async{
+    try {
+      isLoadingDeleteCart[cartId] = true;
+      final response = await ApiService()
+          .request(endpoint: "$deleteCartEndPoint$cartId", method: 'DELETE',);
+      isLoadingDeleteCart[cartId] = false;
+      if (response['success'] == true) {
+        logger.d(response);
+        getCartListRequest();
+        showCustomSnackbar(
+          title: 'Success',
+          message: response['message'],
+        );
+      } else {
+        logger.e(response);
+        showCustomSnackbar(
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed);
+      }
+    } catch (e) {
+      isLoadingDeleteCart[cartId] = false;
       logger.e(e.toString());
     }
   }

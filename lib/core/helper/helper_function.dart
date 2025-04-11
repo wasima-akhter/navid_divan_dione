@@ -9,6 +9,11 @@ import 'package:navid_e_commerce/core/constants/custom_text.dart';
 import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
+import 'package:navid_e_commerce/core/components/custom_button.dart';
+import 'package:navid_e_commerce/core/constants/app_static_strings.dart';
+
+import '../../presentations/product/views/deliver_address_page.dart';
+import '../../presentations/product/views/pickup_address_page.dart';
 
 void showPopupMenu(BuildContext context, Offset offset) async {
 
@@ -18,6 +23,35 @@ void showPopupMenu(BuildContext context, Offset offset) async {
   //   });
   // }
 }
+Future<dynamic> buyProductDialog(BuildContext context) {
+  return showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      content: Column(
+        spacing: 6.h,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CustomButton(
+            onTap: () {
+              Get.toNamed(PickupAddressPage.routeName);
+            },
+            title: AppStaticStrings.pickUp,
+          ),
+          CustomText(text: 'or'),
+          CustomButton(
+            onTap: () {
+              Get.toNamed(DeliverAddressPage.routeName);
+            },
+            fillColor: AppColors.kPrimaryDarkColor,
+            borderColor: AppColors.kPrimaryDarkColor,
+            title: AppStaticStrings.deliveryAddress,
+          )
+        ],
+      ),
+    ),
+  );
+}
+
 
 List<PopupMenuEntry<dynamic>> items = [
   PopupMenuItem(

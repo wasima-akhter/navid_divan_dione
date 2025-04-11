@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:navid_e_commerce/core/components/custom_button.dart';
@@ -149,15 +150,26 @@ class DeliverAddressPage extends StatelessWidget {
   Row shippingAddressCard(PickAddressModel pickAddress) {
     return Row(
       children: [
-        Checkbox(value:ProductController.to.selectedShippingAddress.value == pickAddress.sId.toString()? true:false, onChanged: (value) {
-ProductController.to.selectedShippingAddress.value = pickAddress.sId.toString();
-        },),
+        Checkbox(
+          value: ProductController.to.selectedShippingAddress.value == pickAddress.sId.toString() ? true : false,
+          onChanged: (value) {
+            ProductController.to.selectedShippingAddress.value = pickAddress.sId.toString();
+          },
+        ),
         CustomText(
           text: 'Name: ${pickAddress.name}\nCnontuct No:${pickAddress.phone}\n${pickAddress.address}',
           fontSize: getFontSizeSmall(),
           color: AppColors.kExtraLightGreyTextColor,
           style: poppinsRegular,
         ),
+        IconButton(
+            onPressed: () {
+              ProductController.to.deleteAddress(id: pickAddress.sId.toString());
+            },
+            icon: Icon(
+              CupertinoIcons.delete,
+              color: Colors.red,
+            ))
       ],
     );
   }

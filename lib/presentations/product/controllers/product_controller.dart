@@ -32,6 +32,8 @@ class ProductController extends GetxController {
   RxList<PickAddressModel> shippingAddressList = <PickAddressModel>[].obs;
   Rx<String?> selectedColor = Rx<String?>(null);
   RxList<String> currentBannerImages = <String>[].obs;
+  RxMap<String, bool> isLoadingDeleteAddress = <String, bool>{}.obs;
+
   @override
   void onInit() {
     getPickUpAddressRequest();
@@ -164,6 +166,35 @@ class ProductController extends GetxController {
     }
   }
 
+
+  ///----------------------- Delete address item ----------------------///
+
+
+  Future<void> deleteAddress({required String id})async{
+    try {
+      isLoadingDeleteAddress[id] = true;
+      final response = await ApiService()
+          .request(endpoint: "$deleteCartEndPoint$id", method: 'DELETE',);
+      isLoadingDeleteAddress[id] = false;
+      if (response['success'] == true) {
+        logger.d(response);
+        getShippingAddressRequest();
+        showCustomSnackbar(
+          title: 'Success',
+          message: response['message'],
+        );
+      } else {
+        logger.e(response);
+        showCustomSnackbar(
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed);
+      }
+    } catch (e) {
+      isLoadingDeleteAddress[id] = false;
+      logger.e(e.toString());
+    }
+  }
   void initializeBannerImages() {
     final product = productModel.value;
 
