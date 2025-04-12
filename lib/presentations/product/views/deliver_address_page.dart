@@ -9,11 +9,15 @@ import 'package:navid_e_commerce/core/constants/custom_text.dart';
 import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
+import 'package:navid_e_commerce/core/helper/helper_function.dart';
 import 'package:navid_e_commerce/presentations/home/widgets/default_scaffold_structure_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:navid_e_commerce/presentations/navigation/views/navigation_page.dart';
 import 'package:navid_e_commerce/presentations/product/controllers/product_controller.dart';
 import 'package:navid_e_commerce/presentations/product/model/pick_address_model.dart';
 import 'package:navid_e_commerce/presentations/product/views/edit_address_page.dart';
+
+import '../../cart/controllers/cart_controller.dart';
 
 class DeliverAddressPage extends StatelessWidget {
   static const String routeName = '/deliver-add';
@@ -47,7 +51,9 @@ class DeliverAddressPage extends StatelessWidget {
         return ProductController.to.isLoadingShippingAddress.value
             ? Padding(
                 padding: padding12V,
-                child: DefaultProgressIndicator(),
+                child: DefaultProgressIndicator(
+                  color: AppColors.kPrimaryColor,
+                ),
               )
             : ProductController.to.shippingAddressList.isEmpty
                 ? Padding(
@@ -61,42 +67,6 @@ class DeliverAddressPage extends StatelessWidget {
                     ),
                   );
       }),
-      // Row(
-      //   children: [
-      //     Expanded(
-      //         child: ButtonTapWidget(
-      //             onTap: () async {
-      //               ProductController.to.dateController.value.text = await selectDate(context);
-      //             },
-      //             child: CustomTextField(
-      //               title: AppStaticStrings.deliveryDateLabel,
-      //               hintText: AppStaticStrings.defaultDeliveryDate,
-      //               // textEditingController: controller,
-      //               isEnable: false,
-      //               suffixIcon: Icon(
-      //                 Icons.calendar_month,
-      //                 color: AppColors.kExtraLightGreyTextColor,
-      //               ),
-      //             ))),
-      //     SizedBox(width: 12.w),
-      //     Expanded(
-      //         child: ButtonTapWidget(
-      //             onTap: () async {
-      //               ProductController.to.selectedTime.value =
-      //                   await selectAndFormatTime(context: context, initialTime: const TimeOfDay(hour: 10, minute: 0)) ?? '';
-      //             },
-      //             child: CustomTextField(
-      //               title: AppStaticStrings.deliveryTimeLabel,
-      //               hintText: AppStaticStrings.defaultDeliveryTime,
-      //               textEditingController: TextEditingController(text: ProductController.to.selectedTime.value),
-      //               isEnable: false,
-      //               suffixIcon: Icon(
-      //                 Icons.arrow_drop_down,
-      //                 color: AppColors.kExtraLightGreyTextColor,
-      //               ),
-      //             ))),
-      //   ],
-      // ),
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -107,7 +77,7 @@ class DeliverAddressPage extends StatelessWidget {
           ),
           Obx(() {
             return CustomText(
-              text: '\$${(ProductController.to.productModel.value.price!).toString()}',
+              text: '\$${(isFromCart ? CartController.to.totalPrice.value : ProductController.to.productModel.value.price!).toString()}',
               fontSize: getFontSizeSmall(),
               color: AppColors.kExtraLightGreyTextColor,
             );
@@ -140,7 +110,8 @@ class DeliverAddressPage extends StatelessWidget {
           ),
           Obx(() {
             return CustomText(
-              text: "\$${(ProductController.to.productModel.value.price!.toInt() + 71).toString()}",
+              text:
+                  "\$${(int.parse(isFromCart ? CartController.to.totalPrice.value.toString() : ProductController.to.productModel.value.price.toString()) + 71).toString()}",
               fontSize: getFontSizeDefault(),
               color: AppColors.kSplashBackgroundColor,
             );
@@ -151,8 +122,21 @@ class DeliverAddressPage extends StatelessWidget {
       CustomButton(
         onTap: isFromCart
             ? () {
-
-        }
+                if (ProductController.to.selectedShippingAddress.isNotEmpty && CartController.to.cartList.isNotEmpty) {
+                  ProductController.to.orderRequest(
+                      totalAmount: (int.parse(CartController.to.totalPrice.value.toString()) + 71).toString(),
+                      deliveryAddress: ProductController.to.selectedShippingAddress.value,
+                      item: List.generate(
+                        CartController.to.cartList.length,
+                        (index) {
+                          final cart = CartController.to.cartList[index];
+                          return {"product": cart.productId!.sId, "quantity": cart.quantity, "color": cart.variant};
+                        },
+                      ));
+                } else {
+                  showCustomSnackbar(title: "Failed", message: "Provide valid Data", type: SnackBarType.failed);
+                }
+              }
             : () {
                 ProductController.to.orderRequest(
                     totalAmount: (ProductController.to.productModel.value.price!.toInt() + 71).toString(),
@@ -183,11 +167,13 @@ class DeliverAddressPage extends StatelessWidget {
             ProductController.to.selectedShippingAddress.value = pickAddress.sId.toString();
           },
         ),
-        CustomText(
-          text: 'Name: ${pickAddress.name}\nCnontuct No:${pickAddress.phone}\n${pickAddress.address}',
-          fontSize: getFontSizeSmall(),
-          color: AppColors.kExtraLightGreyTextColor,
-          style: poppinsRegular,
+        Expanded(
+          child: CustomText(
+            text: 'Name: ${pickAddress.name}\nCnontuct No:${pickAddress.phone}\n${pickAddress.address}',
+            fontSize: getFontSizeSmall(),
+            color: AppColors.kExtraLightGreyTextColor,
+            style: poppinsRegular,
+          ),
         ),
         IconButton(
             onPressed: () {

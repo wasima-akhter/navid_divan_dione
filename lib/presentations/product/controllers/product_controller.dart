@@ -8,6 +8,7 @@ import 'package:navid_e_commerce/presentations/product/model/product_model.dart'
 import '../../../core/api-client/api_service.dart';
 import '../../../core/helper/helper_function.dart';
 import '../../../core/utils/variable.dart';
+import '../../navigation/views/navigation_page.dart';
 
 class ProductController extends GetxController {
   static ProductController get to => Get.find();
@@ -192,7 +193,7 @@ class ProductController extends GetxController {
       isLoadingOrder.value = false;
       if (response['success'] == true) {
         logger.d(response);
-      Get.back();
+      Get.offAllNamed(NavigationPage.routeName);
         showCustomSnackbar(
           title: 'Success',
           message: response['message'],
@@ -220,6 +221,9 @@ class ProductController extends GetxController {
       if (response['success'] == true) {
         logger.d(response);
         getShippingAddressRequest();
+        if(shippingAddressList.isEmpty){
+          selectedShippingAddress.value = "";
+        }
         showCustomSnackbar(
           title: 'Success',
           message: response['message'],

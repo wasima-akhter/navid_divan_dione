@@ -9,6 +9,8 @@ import 'package:navid_e_commerce/core/constants/custom_text.dart';
 import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
+import 'package:navid_e_commerce/presentations/cart/controllers/cart_controller.dart';
+import 'package:navid_e_commerce/presentations/cart/model/cart_model.dart';
 import 'package:navid_e_commerce/presentations/home/widgets/default_scaffold_structure_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:navid_e_commerce/presentations/product/controllers/product_controller.dart';
@@ -16,10 +18,12 @@ import 'package:navid_e_commerce/presentations/product/model/pick_address_model.
 import 'package:navid_e_commerce/presentations/product/model/product_model.dart';
 import 'package:navid_e_commerce/presentations/product/widgets/expand_able_text.dart';
 
+import '../../../core/helper/helper_function.dart';
+
 class PickupAddressPage extends StatelessWidget {
   static const String routeName = '/pick-up';
 
-   PickupAddressPage({super.key});
+  PickupAddressPage({super.key});
   final bool isFromCart = Get.arguments;
   @override
   Widget build(BuildContext context) {
@@ -27,7 +31,9 @@ class PickupAddressPage extends StatelessWidget {
       _buildSectionTitle(AppStaticStrings.pickUpFromLabel),
       Obx(() {
         return ProductController.to.isLoadingPickUpAddress.value
-            ? DefaultProgressIndicator()
+            ? DefaultProgressIndicator(
+                color: AppColors.kPrimaryColor,
+              )
             : ProductController.to.pickAddressList.isEmpty
                 ? Padding(
                     padding: padding12V,
@@ -88,7 +94,17 @@ class PickupAddressPage extends StatelessWidget {
       _buildSectionTitle(AppStaticStrings.productsInfoLabel),
 
       Obx(() {
-        return _buildProductItem(ProductController.to.productModel.value);
+        return isFromCart?
+            Column(
+              children: List.generate(CartController.to.cartList.length, (index) {
+                final cart = CartController.to.cartList[index];
+                return _buildProductItem(name: cart.productId!.name.toString(), price: cart.price.toString(), description:"", quantity: cart.quantity.toString());
+              },),
+            ):_buildProductItem(
+            name: ProductController.to.productModel.value.name.toString(),
+            price: ProductController.to.productModel.value.price.toString(),
+            description: ProductController.to.productModel.value.description.toString(),
+            quantity: ProductController.to.productModel.value.quantity.toString());
       }),
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -99,7 +115,7 @@ class PickupAddressPage extends StatelessWidget {
             color: AppColors.kSplashBackgroundColor,
           ),
           CustomText(
-            text: "\$${ProductController.to.productModel.value.price}",
+            text: "\$${isFromCart ? CartController.to.totalPrice.value.toString() : ProductController.to.productModel.value.price}",
             fontSize: getFontSizeDefault(),
             color: AppColors.kSplashBackgroundColor,
           ),
@@ -109,8 +125,21 @@ class PickupAddressPage extends StatelessWidget {
       CustomButton(
         onTap: isFromCart
             ? () {
-
-        }
+                if (ProductController.to.selectedPickAddress.isNotEmpty && CartController.to.cartList.isNotEmpty) {
+                  ProductController.to.orderRequest(
+                      totalAmount: CartController.to.totalPrice.value.toString(),
+                      pickupAddress: ProductController.to.selectedPickAddress.value,
+                      item: List.generate(
+                        CartController.to.cartList.length,
+                        (index) {
+                          final cart = CartController.to.cartList[index];
+                          return {"product": cart.productId!.sId, "quantity": cart.quantity, "color": cart.variant};
+                        },
+                      ));
+                } else {
+                  showCustomSnackbar(title: "Failed", message: "Provide valid Data", type: SnackBarType.failed);
+                }
+              }
             : () {
                 ProductController.to.orderRequest(
                     totalAmount: ProductController.to.productModel.value.price.toString(),
@@ -154,7 +183,12 @@ class PickupAddressPage extends StatelessWidget {
     );
   }
 
-  Widget _buildProductItem(ProductModel product) {
+  Widget _buildProductItem({
+    required String name,
+    required String price,
+    required String description,
+    required String quantity,
+  }) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -163,22 +197,22 @@ class PickupAddressPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CustomText(
-                text: product.name.toString(),
+                text: name,
                 fontSize: getFontSizeDefault(),
                 color: AppColors.kPrimaryTextDarkColor,
               ),
               space4H,
               CustomText(
-                text: "Price: \$${product.price}",
+                text: "Price: \$$price",
                 fontSize: getFontSizeDefault(),
                 color: AppColors.kPrimaryTextDarkColor,
               ),
               space4H,
-              ExpandableText(text: product.description.toString()),
+              ExpandableText(text: description),
             ],
           ),
         ),
-        CustomText(text: "${product.quantity} pis", style: poppinsLight),
+        CustomText(text: "$quantity pis", style: poppinsLight),
       ],
     );
   }
