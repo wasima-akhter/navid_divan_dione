@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:navid_e_commerce/core/components/custom_button.dart';
 import 'package:navid_e_commerce/core/constants/color_constants.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
+import 'package:navid_e_commerce/core/utils/variable.dart';
 import 'package:navid_e_commerce/presentations/profile/widgets/custom_loading_widget.dart';
 
 import '../constants/image_constants.dart';
@@ -76,29 +77,32 @@ class _CustomNetworkImageState extends State<CustomNetworkImage> {
                 size: 30.sp,
                 width: widget.width,
               ),
-              errorBuilder: (context, error, stackTrace) => Container(
-                height: widget.height,
-                width: widget.width,
-                clipBehavior: Clip.antiAlias,
-                decoration: BoxDecoration(
-                  border: widget.border,
-                  borderRadius: widget.boxShape == BoxShape.circle
-                      ? null
-                      : BorderRadius.circular(widget.radius ?? 8.r),
-                  shape: widget.boxShape,
-                  color: Colors.grey.withOpacity(0.6),
-                  // image: DecorationImage(
-                  //   image: Svg(imageErrorUrl ?? ''),
-                  //   fit: BoxFit.cover,
-                  // ),
-                ),
-                child: SvgPicture.asset(
-                  widget.imageErrorUrl ?? placeholderImage,
-                  fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace){
+                logger.e(error);
+                return Container(
                   height: widget.height,
                   width: widget.width,
-                ),
-              ),
+                  clipBehavior: Clip.antiAlias,
+                  decoration: BoxDecoration(
+                    border: widget.border,
+                    borderRadius: widget.boxShape == BoxShape.circle
+                        ? null
+                        : BorderRadius.circular(widget.radius ?? 8.r),
+                    shape: widget.boxShape,
+                    color: Colors.grey.withOpacity(0.6),
+                    // image: DecorationImage(
+                    //   image: Svg(imageErrorUrl ?? ''),
+                    //   fit: BoxFit.cover,
+                    // ),
+                  ),
+                  child: SvgPicture.asset(
+                    widget.imageErrorUrl ?? placeholderImage,
+                    fit: BoxFit.cover,
+                    height: widget.height,
+                    width: widget.width,
+                  ),
+                );
+              },
             ),
           )
         : CachedNetworkImage(

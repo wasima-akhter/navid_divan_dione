@@ -9,8 +9,10 @@ import 'package:navid_e_commerce/core/constants/custom_text.dart';
 import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
+import 'package:navid_e_commerce/core/helper/helper_function.dart';
 import 'package:navid_e_commerce/presentations/cart/controllers/cart_controller.dart';
 import 'package:navid_e_commerce/presentations/cart/widgets/cart_item_widget.dart';
+import 'package:navid_e_commerce/presentations/product/controllers/product_controller.dart';
 
 class CartPage extends StatelessWidget {
   const CartPage({super.key});
@@ -29,15 +31,22 @@ class CartPage extends StatelessWidget {
               child: Padding(
                 padding: padding12,
                 child: Obx(() {
-                  return Column(
-                    spacing: 12.h,
-                    children: [
-                      ...List.generate(
-                        CartController.to.cartList.length,
-                            (index) => CartItemWidget(cartModel: CartController.to.cartList[index],),
-                      ),
-                    ],
-                  );
+                  return CartController.to.cartList.isEmpty
+                      ? Padding(
+                        padding: padding12V,
+                        child: CustomText(text: "Cart List is Empty!!"),
+                      )
+                      : Column(
+                          spacing: 12.h,
+                          children: [
+                            ...List.generate(
+                              CartController.to.cartList.length,
+                              (index) => CartItemWidget(
+                                cartModel: CartController.to.cartList[index],
+                              ),
+                            ),
+                          ],
+                        );
                 }),
               ),
             ),
@@ -67,8 +76,9 @@ class CartPage extends StatelessWidget {
           Padding(
             padding: padding12.copyWith(top: 0),
             child: CustomButton(
-
-              onTap: () {},
+              onTap: () {
+buyProductDialog(context,isFromCart: true);
+              },
               title: AppStaticStrings.checkout,
             ),
           )
@@ -77,4 +87,3 @@ class CartPage extends StatelessWidget {
     );
   }
 }
-

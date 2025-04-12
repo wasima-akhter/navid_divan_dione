@@ -60,7 +60,7 @@ class CartItemWidget extends StatelessWidget {
                               quantity: (cartModel.quantity ?? 0) + 1,
                               price: cartModel.price ?? 0,
                               variant: cartModel.variant ?? "");
-                          CartController.to.getCartListRequest();
+
 
                           CartController.to.cartList.refresh();
                         },

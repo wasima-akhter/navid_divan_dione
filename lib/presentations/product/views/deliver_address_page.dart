@@ -2,8 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:navid_e_commerce/core/components/custom_button.dart';
-import 'package:navid_e_commerce/core/components/custom_button_tap.dart';
-import 'package:navid_e_commerce/core/components/custom_textfield.dart';
 import 'package:navid_e_commerce/core/constants/app_static_strings.dart';
 import 'package:navid_e_commerce/core/constants/color_constants.dart';
 import 'package:navid_e_commerce/core/constants/custom_space.dart';
@@ -11,21 +9,17 @@ import 'package:navid_e_commerce/core/constants/custom_text.dart';
 import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
-import 'package:navid_e_commerce/core/helper/helper_function.dart';
-import 'package:navid_e_commerce/core/utils/variable.dart';
 import 'package:navid_e_commerce/presentations/home/widgets/default_scaffold_structure_widget.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:navid_e_commerce/presentations/product/controllers/product_controller.dart';
 import 'package:navid_e_commerce/presentations/product/model/pick_address_model.dart';
 import 'package:navid_e_commerce/presentations/product/views/edit_address_page.dart';
-import 'package:navid_e_commerce/presentations/product/widgets/expand_able_text.dart';
 
 class DeliverAddressPage extends StatelessWidget {
   static const String routeName = '/deliver-add';
 
-  const DeliverAddressPage({super.key});
-
+  DeliverAddressPage({super.key});
+  final bool isFromCart = Get.arguments;
   @override
   Widget build(BuildContext context) {
     return DefaultScaffoldStructureWidget(spacing: 6.h, appBarTitle: AppStaticStrings.address, children: [
@@ -50,12 +44,22 @@ class DeliverAddressPage extends StatelessWidget {
         ],
       ),
       Obx(() {
-        return Column(
-          children: List.generate(
-            ProductController.to.shippingAddressList.length,
-            (index) => shippingAddressCard(ProductController.to.shippingAddressList[index]),
-          ),
-        );
+        return ProductController.to.isLoadingShippingAddress.value
+            ? Padding(
+                padding: padding12V,
+                child: DefaultProgressIndicator(),
+              )
+            : ProductController.to.shippingAddressList.isEmpty
+                ? Padding(
+                    padding: padding12V,
+                    child: CustomText(text: "Shipping Address not found!!"),
+                  )
+                : Column(
+                    children: List.generate(
+                      ProductController.to.shippingAddressList.length,
+                      (index) => shippingAddressCard(ProductController.to.shippingAddressList[index]),
+                    ),
+                  );
       }),
       // Row(
       //   children: [
@@ -101,11 +105,13 @@ class DeliverAddressPage extends StatelessWidget {
             fontSize: getFontSizeSmall(),
             color: AppColors.kExtraLightGreyTextColor,
           ),
-          CustomText(
-            text: '\$715.00',
-            fontSize: getFontSizeSmall(),
-            color: AppColors.kExtraLightGreyTextColor,
-          ),
+          Obx(() {
+            return CustomText(
+              text: '\$${(ProductController.to.productModel.value.price!).toString()}',
+              fontSize: getFontSizeSmall(),
+              color: AppColors.kExtraLightGreyTextColor,
+            );
+          }),
         ],
       ),
       Row(
@@ -132,16 +138,37 @@ class DeliverAddressPage extends StatelessWidget {
             fontSize: getFontSizeDefault(),
             color: AppColors.kSplashBackgroundColor,
           ),
-          CustomText(
-            text: AppStaticStrings.defaultTotal,
-            fontSize: getFontSizeDefault(),
-            color: AppColors.kSplashBackgroundColor,
-          ),
+          Obx(() {
+            return CustomText(
+              text: "\$${(ProductController.to.productModel.value.price!.toInt() + 71).toString()}",
+              fontSize: getFontSizeDefault(),
+              color: AppColors.kSplashBackgroundColor,
+            );
+          }),
         ],
       ),
       space12H,
       CustomButton(
-        onTap: () {},
+        onTap: isFromCart
+            ? () {
+
+        }
+            : () {
+                ProductController.to.orderRequest(
+                    totalAmount: (ProductController.to.productModel.value.price!.toInt() + 71).toString(),
+                    item: [
+                      {
+                        "product": ProductController.to.productModel.value.id,
+                        "quantity": ProductController.to.cartQuantity.value,
+                        "color": ProductController.to.currentBannerImages[0]
+                      }
+                    ],
+                    deliveryAddress: ProductController.to.selectedShippingAddress.value);
+
+                // ProductController.to.orderRequest(totalAmount: CartController.to.totalPrice.value, item: [
+                //
+                // ],address: )
+              },
         title: AppStaticStrings.payment,
       )
     ]);

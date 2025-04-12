@@ -13,6 +13,7 @@ String productDetailsEndPoint ='product/get-details/';
 String addToCartEndPoint ='cart/create';
 String getAllCartEndPoint ='cart/get-all';
 String deleteCartEndPoint ='cart/delete-item/';
+String orderCreateEndPoint ='order/create';
 String deletesShippingAddressEndPoint ='shipping-address/delete/';
 String shippingAddressCreateEndPoint ='shipping-address/create';
 String shippingAddressGetEndPoint ='shipping-address/get-all';

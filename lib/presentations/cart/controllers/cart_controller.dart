@@ -72,6 +72,7 @@ class CartController extends GetxController {
       isLoadingAddCart[productId] = false;
       if (response['success'] == true) {
         logger.d(response);
+        getCartListRequest();
         showCustomSnackbar(
           title: 'Success',
           message: response['message'],

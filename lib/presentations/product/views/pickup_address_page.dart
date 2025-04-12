@@ -9,7 +9,6 @@ import 'package:navid_e_commerce/core/constants/custom_text.dart';
 import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
-import 'package:navid_e_commerce/core/utils/variable.dart';
 import 'package:navid_e_commerce/presentations/home/widgets/default_scaffold_structure_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:navid_e_commerce/presentations/product/controllers/product_controller.dart';
@@ -20,8 +19,8 @@ import 'package:navid_e_commerce/presentations/product/widgets/expand_able_text.
 class PickupAddressPage extends StatelessWidget {
   static const String routeName = '/pick-up';
 
-  const PickupAddressPage({super.key});
-
+   PickupAddressPage({super.key});
+  final bool isFromCart = Get.arguments;
   @override
   Widget build(BuildContext context) {
     return DefaultScaffoldStructureWidget(spacing: 12.h, appBarTitle: AppStaticStrings.pickUpAddress, children: [
@@ -100,7 +99,7 @@ class PickupAddressPage extends StatelessWidget {
             color: AppColors.kSplashBackgroundColor,
           ),
           CustomText(
-            text: AppStaticStrings.defaultTotal,
+            text: "\$${ProductController.to.productModel.value.price}",
             fontSize: getFontSizeDefault(),
             color: AppColors.kSplashBackgroundColor,
           ),
@@ -108,7 +107,22 @@ class PickupAddressPage extends StatelessWidget {
       ),
       space12H,
       CustomButton(
-        onTap: () {},
+        onTap: isFromCart
+            ? () {
+
+        }
+            : () {
+                ProductController.to.orderRequest(
+                    totalAmount: ProductController.to.productModel.value.price.toString(),
+                    item: [
+                      {
+                        "product": ProductController.to.productModel.value.id,
+                        "quantity": ProductController.to.cartQuantity.value,
+                        "color": ProductController.to.currentBannerImages[0]
+                      }
+                    ],
+                    pickupAddress: ProductController.to.selectedPickAddress.value);
+              },
         title: AppStaticStrings.payment,
       )
     ]);

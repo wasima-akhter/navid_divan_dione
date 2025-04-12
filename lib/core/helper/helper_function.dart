@@ -23,7 +23,7 @@ void showPopupMenu(BuildContext context, Offset offset) async {
   //   });
   // }
 }
-Future<dynamic> buyProductDialog(BuildContext context) {
+Future<dynamic> buyProductDialog(BuildContext context, {bool isFromCart = false}) {
   return showDialog(
     context: context,
     builder: (context) => AlertDialog(
@@ -33,14 +33,14 @@ Future<dynamic> buyProductDialog(BuildContext context) {
         children: [
           CustomButton(
             onTap: () {
-              Get.toNamed(PickupAddressPage.routeName);
+            Get.toNamed(PickupAddressPage.routeName,arguments: isFromCart);
             },
             title: AppStaticStrings.pickUp,
           ),
           CustomText(text: 'or'),
           CustomButton(
             onTap: () {
-              Get.toNamed(DeliverAddressPage.routeName);
+            Get.toNamed(DeliverAddressPage.routeName,arguments: isFromCart);
             },
             fillColor: AppColors.kPrimaryDarkColor,
             borderColor: AppColors.kPrimaryDarkColor,

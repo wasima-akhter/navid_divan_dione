@@ -12,7 +12,7 @@ import '../../../core/utils/variable.dart';
 class ProductController extends GetxController {
   static ProductController get to => Get.find();
   Rx<PageController> pageController = PageController(initialPage: 0, keepPage: true).obs;
-  RxInt cartQuantity = 0.obs;
+  RxInt cartQuantity = 1.obs;
   RxString selectedTime = ''.obs;
   RxString selectedPickAddress = ''.obs;
   RxString selectedShippingAddress = ''.obs;
@@ -26,6 +26,7 @@ class ProductController extends GetxController {
   RxBool isLoadingPickUpAddress = false.obs;
   RxBool isLoadingShippingAddress = false.obs;
   RxBool isLoadingAddShippingAddress = false.obs;
+  RxBool isLoadingOrder = false.obs;
   Rx<ProductModel> productModel = ProductModel().obs;
   RxList<ProductModel> relatedProductList = <ProductModel>[].obs;
   RxList<PickAddressModel> pickAddressList = <PickAddressModel>[].obs;
@@ -38,8 +39,6 @@ class ProductController extends GetxController {
   void onInit() {
     getPickUpAddressRequest();
     getShippingAddressRequest();
-    selectedPickAddress.value=pickAddressList[0].sId.toString();
-    selectedShippingAddress.value=shippingAddressList[0].sId.toString();
     super.onInit();
   }
 
@@ -102,6 +101,9 @@ class ProductController extends GetxController {
               (e) => PickAddressModel.fromJson(e),
             )
             .toList();
+        selectedPickAddress.value = pickAddressList[0].sId.toString();
+        fetchPickUpAddress();
+
       } else {
         logger.e(response);
         showCustomSnackbar(title: 'Failed', message: response['message'], type: SnackBarType.failed);
@@ -127,6 +129,8 @@ class ProductController extends GetxController {
               (e) => PickAddressModel.fromJson(e),
             )
             .toList();
+        selectedShippingAddress.value = shippingAddressList[0].sId.toString();
+
       } else {
         logger.e(response);
         showCustomSnackbar(title: 'Failed', message: response['message'], type: SnackBarType.failed);
@@ -166,15 +170,52 @@ class ProductController extends GetxController {
     }
   }
 
+  ///------------------------------- order Product ----------------------------///
+
+  Future<void> orderRequest(
+      {required String totalAmount,
+      required List<Map<String, dynamic>> item,
+
+      String? pickupAddress,
+      String? deliveryAddress,
+      String? note})
+  async {
+    try {
+      isLoadingOrder.value = true;
+      final response = await ApiService().request(endpoint: orderCreateEndPoint, method: 'POST', body: {
+        "items": item,
+        "total_amount": totalAmount,
+        "delivery_address": deliveryAddress ,
+        "pick_up_address": pickupAddress ,
+        "notes": note ?? ""
+      });
+      isLoadingOrder.value = false;
+      if (response['success'] == true) {
+        logger.d(response);
+      Get.back();
+        showCustomSnackbar(
+          title: 'Success',
+          message: response['message'],
+        );
+      } else {
+        logger.e(response);
+        showCustomSnackbar(title: 'Failed', message: response['message'], type: SnackBarType.failed);
+      }
+    } catch (e) {
+      isLoadingOrder.value = false;
+      logger.e(e.toString());
+    }
+  }
 
   ///----------------------- Delete address item ----------------------///
 
-
-  Future<void> deleteAddress({required String id})async{
+  Future<void> deleteAddress({required String id}) async {
     try {
       isLoadingDeleteAddress[id] = true;
-      final response = await ApiService()
-          .request(endpoint: "$deleteCartEndPoint$id", method: 'DELETE',);
+      final response = await ApiService().request(
+        endpoint: "$deletesShippingAddressEndPoint$id",
+        method: 'DELETE',
+      );
       isLoadingDeleteAddress[id] = false;
       if (response['success'] == true) {
         logger.d(response);
@@ -185,16 +226,14 @@ class ProductController extends GetxController {
         );
       } else {
         logger.e(response);
-        showCustomSnackbar(
-            title: 'Failed',
-            message: response['message'],
-            type: SnackBarType.failed);
+        showCustomSnackbar(title: 'Failed', message: response['message'], type: SnackBarType.failed);
       }
     } catch (e) {
       isLoadingDeleteAddress[id] = false;
       logger.e(e.toString());
     }
   }
+
   void initializeBannerImages() {
     final product = productModel.value;
 
