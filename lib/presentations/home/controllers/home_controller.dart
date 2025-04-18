@@ -119,7 +119,8 @@ class HomeController extends GetxController {
 
   Future<void> getProductListRequest({
     bool loadMore = false,
-  }) async {
+  })
+  async {
     try {
       // Don't load more if we've reached the last page
       if (loadMore && currentProductPage.value >= totalProductPages.value) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:navid_e_commerce/core/api-client/api_service.dart';
 import 'package:navid_e_commerce/core/components/custom_network_image.dart';
 import 'package:navid_e_commerce/core/constants/app_static_strings.dart';
 import 'package:navid_e_commerce/core/constants/color_constants.dart';
@@ -10,12 +11,15 @@ import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
 import 'package:navid_e_commerce/core/utils/enum.dart';
 import 'package:navid_e_commerce/core/utils/variable.dart';
 import 'package:navid_e_commerce/presentations/home/widgets/product_card_item_widget.dart';
+import 'package:navid_e_commerce/presentations/orders/model/order_model.dart';
 
 class OrderCardItemWidget extends StatelessWidget {
+  final Items itemModel;
+  final OrderModel orderModel;
   final OrderStatus statusEnum;
   const OrderCardItemWidget({
     super.key,
-    required this.statusEnum,
+    required this.statusEnum, required this.itemModel, required this.orderModel,
   });
 
   @override
@@ -51,7 +55,7 @@ class OrderCardItemWidget extends StatelessWidget {
         Expanded(
           flex: 2,
           child: CustomNetworkImage(
-            imageUrl: dummyCatImg,
+            imageUrl: "${ApiService().baseUrl}/${itemModel.color}",
             height: 90.w,
           ),
         ),
@@ -64,7 +68,7 @@ class OrderCardItemWidget extends StatelessWidget {
                   children: [
                     Expanded(
                       child: CustomText(
-                        text: 'Total Item 05',
+                        text: itemModel.product!.name??"n/a",
                         color: AppColors.kPrimaryDarkColor,
                       ),
                     ),
@@ -85,14 +89,14 @@ class OrderCardItemWidget extends StatelessWidget {
                 CustomText(
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  text: '${AppStaticStrings.totalAmount}: \$34553',
+                  text: '${AppStaticStrings.price}: \$${int.parse(itemModel.product!.price.toString())*int.parse(itemModel.quantity.toString())}',
                   fontSize: getFontSizeSmall(),
                   style: poppinsRegular,
                 ),
                 CustomText(
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  text: '${AppStaticStrings.deliveryDate}: 05/12/2021',
+                  text: '${AppStaticStrings.quantity}: ${itemModel.quantity}',
                   fontSize: getFontSizeSmall(),
                   style: poppinsRegular,
                 ),
@@ -100,7 +104,7 @@ class OrderCardItemWidget extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   text:
-                      '${AppStaticStrings.location}: 3 / 621 Juvenal Ridge, Port Vestachester',
+                      '${AppStaticStrings.location}: ${orderModel.deliveryAddress??orderModel.pickUpAddress}',
                   fontSize: getFontSizeSmall(),
                   style: poppinsRegular,
                 ),

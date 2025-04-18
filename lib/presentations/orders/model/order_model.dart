@@ -6,8 +6,8 @@ class OrderModel {
   String? paymentStatus;
   String? paymentMethod;
   String? deliveryStatus;
-  Null deliveryAddress;
-  Null pickUpAddress;
+  String? deliveryAddress;
+  String? pickUpAddress;
   int? iV;
   String? createdAt;
   String? updatedAt;

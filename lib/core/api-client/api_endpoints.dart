@@ -18,3 +18,4 @@ String deletesShippingAddressEndPoint ='shipping-address/delete/';
 String shippingAddressCreateEndPoint ='shipping-address/create';
 String shippingAddressGetEndPoint ='shipping-address/get-all';
 String pickAddressEndPoint ='pick-address/get-all';
+String getOrderEndPoint ='order/get-all';
