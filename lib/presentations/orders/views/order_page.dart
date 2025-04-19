@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:navid_e_commerce/core/components/custom_refresh_indicator.dart';
 import 'package:navid_e_commerce/core/components/dynamic_tab_widget.dart';
 import 'package:navid_e_commerce/core/constants/color_constants.dart';
 import 'package:navid_e_commerce/core/constants/custom_space.dart';
@@ -44,13 +45,19 @@ class OrderPage extends StatelessWidget {
         ),
       ),
     ]);
-    return SingleChildScrollView(
-      child: Padding(
-        padding: padding12H,
-        child: Column(
-          children: [DynamicTabWidget(tabs: OrderController.to.labelTabs, tabContent: OrderController.to.tabItem,function: (p0) {
+    return  CustomRefreshIndicatorWidget(
+        onRefresh: () {
+      return OrderController.to.getOrderListRequest();
+    },
+      child: SingleChildScrollView(
+         physics: AlwaysScrollableScrollPhysics(),
+        child: Padding(
+          padding: padding12H,
+          child: Column(
+            children: [DynamicTabWidget(tabs: OrderController.to.labelTabs, tabContent: OrderController.to.tabItem,function: (p0) {
 
-          },)],
+            },)],
+          ),
         ),
       ),
     );

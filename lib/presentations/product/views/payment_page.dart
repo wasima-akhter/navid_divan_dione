@@ -34,7 +34,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
       body:
         Stack(
           children: [
-            SizedBox(height: ScreenUtil().scaleHeight,
+            SizedBox(height: ScreenUtil().screenHeight,
                 child: WebViewWidget(controller: commonController.webController!)),
             Obx(
               () => commonController.isLoading.value
