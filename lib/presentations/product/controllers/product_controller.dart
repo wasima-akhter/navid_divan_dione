@@ -9,6 +9,8 @@ import '../../../core/api-client/api_service.dart';
 import '../../../core/helper/helper_function.dart';
 import '../../../core/utils/variable.dart';
 import '../../navigation/views/navigation_page.dart';
+import '../../splash/controllers/common_controller.dart';
+import '../views/payment_page.dart';
 
 class ProductController extends GetxController {
   static ProductController get to => Get.find();
@@ -35,6 +37,7 @@ class ProductController extends GetxController {
   Rx<String?> selectedColor = Rx<String?>(null);
   RxList<String> currentBannerImages = <String>[].obs;
   RxMap<String, bool> isLoadingDeleteAddress = <String, bool>{}.obs;
+  RxBool isPaymentLoading = false.obs;
 
   @override
   void onInit() {
@@ -176,6 +179,7 @@ class ProductController extends GetxController {
   Future<void> orderRequest(
       {required String totalAmount,
       required List<Map<String, dynamic>> item,
+      required List<Map<String, dynamic>> productList,
 
       String? pickupAddress,
       String? deliveryAddress,
@@ -193,7 +197,8 @@ class ProductController extends GetxController {
       isLoadingOrder.value = false;
       if (response['success'] == true) {
         logger.d(response);
-      Get.offAllNamed(NavigationPage.routeName);
+        paymentRequest(products: productList);
+      // Get.offAllNamed(NavigationPage.routeName);
         showCustomSnackbar(
           title: 'Success',
           message: response['message'],
@@ -238,6 +243,37 @@ class ProductController extends GetxController {
     }
   }
 
+  ///------------------------------- payment ----------------------------///
+
+  Future<void> paymentRequest({
+    required List<Map<String, dynamic>> products,
+  })
+  async {
+    try {
+          isPaymentLoading.value = true;
+      final response = await ApiService().request(endpoint: paymentCreateEndPoint, method: 'POST', body: {
+        "price_data": products
+        // "purpose": "buy_product"
+        // "currency": "USD"
+      });
+      isPaymentLoading.value = false;
+      if (response['success'] == true) {
+        CommonController.to.stripeUrl.value = response["url"];
+        Get.toNamed(PaymentScreen.routeName);
+        logger.d(response);
+        showCustomSnackbar(
+          title: 'Success',
+          message: response['message'],
+        );
+      } else {
+        logger.e(response);
+        showCustomSnackbar(title: 'Failed', message: response['message'], type: SnackBarType.failed);
+      }
+    } catch (e) {
+      isPaymentLoading.value = false;
+      logger.e(e.toString());
+    }
+  }
   void initializeBannerImages() {
     final product = productModel.value;
 

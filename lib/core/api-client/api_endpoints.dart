@@ -19,3 +19,4 @@ String shippingAddressCreateEndPoint ='shipping-address/create';
 String shippingAddressGetEndPoint ='shipping-address/get-all';
 String pickAddressEndPoint ='pick-address/get-all';
 String getOrderEndPoint ='order/get-all';
+String paymentCreateEndPoint ='payment/create';

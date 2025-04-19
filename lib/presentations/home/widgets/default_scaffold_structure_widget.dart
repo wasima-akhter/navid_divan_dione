@@ -7,10 +7,11 @@ class DefaultScaffoldStructureWidget extends StatelessWidget {
   final double? spacing;
   final ScrollController? scrollController;
   final CrossAxisAlignment? crossAxisAlignment;
-  final List<Widget> children;
+  final List<Widget>? children;
+  final Widget? body;
   final List<Widget>? action;
   const DefaultScaffoldStructureWidget({
-    super.key, required this.appBarTitle, required this.children, this.spacing, this.crossAxisAlignment, this.action, this.scrollController,
+    super.key, required this.appBarTitle,  this.children, this.spacing, this.crossAxisAlignment, this.action, this.scrollController, this.body,
   });
 
   @override
@@ -23,10 +24,10 @@ class DefaultScaffoldStructureWidget extends StatelessWidget {
         physics: AlwaysScrollableScrollPhysics(),
         child: Padding(
           padding: padding12,
-          child: Column(
+          child: body??Column(
             crossAxisAlignment:crossAxisAlignment?? CrossAxisAlignment.start,
             spacing: spacing??0,
-            children: children,
+            children: children??[],
           ),
         ),
       ),

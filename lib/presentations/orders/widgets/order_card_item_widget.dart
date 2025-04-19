@@ -8,46 +8,44 @@ import 'package:navid_e_commerce/core/constants/custom_text.dart';
 import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
-import 'package:navid_e_commerce/core/utils/enum.dart';
-import 'package:navid_e_commerce/core/utils/variable.dart';
 import 'package:navid_e_commerce/presentations/home/widgets/product_card_item_widget.dart';
 import 'package:navid_e_commerce/presentations/orders/model/order_model.dart';
+
+import '../../../core/constants/custom_space.dart';
 
 class OrderCardItemWidget extends StatelessWidget {
   final Items itemModel;
   final OrderModel orderModel;
-  final OrderStatus statusEnum;
+  // final OrderStatus statusEnum;
   const OrderCardItemWidget({
     super.key,
-    required this.statusEnum, required this.itemModel, required this.orderModel,
+    /*required this.statusEnum,*/ required this.itemModel, required this.orderModel,
   });
 
   @override
   Widget build(BuildContext context) {
-    String statusName;
-    Color color;
-    switch (statusEnum) {
-      case OrderStatus.pending:
-        // TODO: Handle this case.
-        statusName = AppStaticStrings.pending;
-        color = AppColors.kPendingColor;
-        break;
-      case OrderStatus.shipping:
-        // TODO: Handle this case.
-        statusName = AppStaticStrings.shipping;
-        color = AppColors.kGreenColor;
-        break;
-      case OrderStatus.completed:
-        // TODO: Handle this case.
-        statusName = AppStaticStrings.complete;
-        color = Colors.black;
-        break;
-      case OrderStatus.shipped:
-        // TODO: Handle this case.
-        statusName = AppStaticStrings.shipped;
-        color = AppColors.kPrimaryDarkColor;
-        break;
-    }
+    // switch (statusEnum) {
+    //   case OrderStatus.pending:
+    //     // TODO: Handle this case.
+    //     statusName = AppStaticStrings.pending;
+    //     color = AppColors.kPendingColor;
+    //     break;
+    //   case OrderStatus.shipping:
+    //     // TODO: Handle this case.
+    //     statusName = AppStaticStrings.shipping;
+    //     color = AppColors.kGreenColor;
+    //     break;
+    //   case OrderStatus.completed:
+    //     // TODO: Handle this case.
+    //     statusName = AppStaticStrings.complete;
+    //     color = Colors.black;
+    //     break;
+    //   case OrderStatus.shipped:
+    //     // TODO: Handle this case.
+    //     statusName = AppStaticStrings.shipped;
+    //     color = AppColors.kPrimaryDarkColor;
+    //     break;
+    // }
     return DefaultFadeContainerWidget(
         child: Row(
       spacing: 12.w,
@@ -75,11 +73,11 @@ class OrderCardItemWidget extends StatelessWidget {
                     Container(
                       padding: padding8,
                       decoration: BoxDecoration(
-                        color: color,
+                        color: AppColors.kGreenColor,
                         borderRadius: BorderRadius.circular(8.r)
                       ),
                       child: CustomText(
-                        text: statusName,
+                        text:orderModel.deliveryStatus??"n/a" ,
                         color: AppColors.kWhiteColor,
                         style: poppinsRegular,
                       ),
@@ -104,7 +102,7 @@ class OrderCardItemWidget extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   text:
-                      '${AppStaticStrings.location}: ${orderModel.deliveryAddress??orderModel.pickUpAddress}',
+                      '${AppStaticStrings.location}: ${orderModel.deliveryAddress!=null?orderModel.deliveryAddress?.address:orderModel.pickUpAddress?.address}',
                   fontSize: getFontSizeSmall(),
                   style: poppinsRegular,
                 ),
@@ -112,5 +110,40 @@ class OrderCardItemWidget extends StatelessWidget {
             )),
       ],
     ));
+  }
+}
+class OderTabItemWidget extends StatelessWidget {
+  final OrderModel orderModel;
+
+  const OderTabItemWidget({
+    super.key,
+    required this.orderModel,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, spacing: 6.h, children: [
+      space12H,
+      CustomText(
+        text: 'Order no: #${orderModel.sId.toString()}',
+        color: AppColors.kPrimaryTextDarkColor,
+        style: poppinsSemiBold,
+      ), CustomText(
+        text: 'Total amount: \$${orderModel.totalAmount.toString()}',
+        color: AppColors.kPrimaryTextDarkColor,
+        style: poppinsSemiBold,
+      ),
+      Column(
+        spacing: 6.h,
+        children: List.generate(
+          orderModel.items!.length,
+              (index) =>
+              OrderCardItemWidget(
+                orderModel: orderModel,
+                itemModel: orderModel.items![index],
+              ),
+        ),
+      )
+    ]);
   }
 }

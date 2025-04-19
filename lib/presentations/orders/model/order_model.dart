@@ -6,8 +6,8 @@ class OrderModel {
   String? paymentStatus;
   String? paymentMethod;
   String? deliveryStatus;
-  String? deliveryAddress;
-  String? pickUpAddress;
+  PickUpAddress? deliveryAddress;
+  PickUpAddress? pickUpAddress;
   int? iV;
   String? createdAt;
   String? updatedAt;
@@ -32,7 +32,7 @@ class OrderModel {
     if (json['items'] != null) {
       items = <Items>[];
       json['items'].forEach((v) {
-        items!.add(Items.fromJson(v));
+        items!.add(new Items.fromJson(v));
       });
     }
     totalAmount = json['total_amount'];
@@ -40,28 +40,32 @@ class OrderModel {
     paymentMethod = json['payment_method'];
     deliveryStatus = json['delivery_status'];
     deliveryAddress = json['delivery_address'];
-    pickUpAddress = json['pick_up_address'];
+    pickUpAddress = json['pick_up_address'] != null
+        ? new PickUpAddress.fromJson(json['pick_up_address'])
+        : null;
     iV = json['__v'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['_id'] = sId;
-    data['user'] = user;
-    if (items != null) {
-      data['items'] = items!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['_id'] = this.sId;
+    data['user'] = this.user;
+    if (this.items != null) {
+      data['items'] = this.items!.map((v) => v.toJson()).toList();
     }
-    data['total_amount'] = totalAmount;
-    data['payment_status'] = paymentStatus;
-    data['payment_method'] = paymentMethod;
-    data['delivery_status'] = deliveryStatus;
-    data['delivery_address'] = deliveryAddress;
-    data['pick_up_address'] = pickUpAddress;
-    data['__v'] = iV;
-    data['createdAt'] = createdAt;
-    data['updatedAt'] = updatedAt;
+    data['total_amount'] = this.totalAmount;
+    data['payment_status'] = this.paymentStatus;
+    data['payment_method'] = this.paymentMethod;
+    data['delivery_status'] = this.deliveryStatus;
+    data['delivery_address'] = this.deliveryAddress;
+    if (this.pickUpAddress != null) {
+      data['pick_up_address'] = this.pickUpAddress!.toJson();
+    }
+    data['__v'] = this.iV;
+    data['createdAt'] = this.createdAt;
+    data['updatedAt'] = this.updatedAt;
     return data;
   }
 }
@@ -76,20 +80,20 @@ class Items {
 
   Items.fromJson(Map<String, dynamic> json) {
     product =
-    json['product'] != null ? Product.fromJson(json['product']) : null;
+    json['product'] != null ? new Product.fromJson(json['product']) : null;
     quantity = json['quantity'];
     color = json['color'];
     sId = json['_id'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    if (product != null) {
-      data['product'] = product!.toJson();
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.product != null) {
+      data['product'] = this.product!.toJson();
     }
-    data['quantity'] = quantity;
-    data['color'] = color;
-    data['_id'] = sId;
+    data['quantity'] = this.quantity;
+    data['color'] = this.color;
+    data['_id'] = this.sId;
     return data;
   }
 }
@@ -108,10 +112,35 @@ class Product {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['_id'] = sId;
-    data['name'] = name;
-    data['price'] = price;
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['_id'] = this.sId;
+    data['name'] = this.name;
+    data['price'] = this.price;
+    return data;
+  }
+}
+
+class PickUpAddress {
+  String? sId;
+  String? address;
+  String? phone;
+  String? name;
+
+  PickUpAddress({this.sId, this.address, this.phone, this.name});
+
+  PickUpAddress.fromJson(Map<String, dynamic> json) {
+    sId = json['_id'];
+    address = json['address'];
+    phone = json['phone'];
+    name = json['name'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['_id'] = this.sId;
+    data['address'] = this.address;
+    data['phone'] = this.phone;
+    data['name'] = this.name;
     return data;
   }
 }

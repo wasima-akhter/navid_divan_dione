@@ -12,7 +12,6 @@ import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
 import 'package:navid_e_commerce/core/helper/helper_function.dart';
 import 'package:navid_e_commerce/presentations/cart/controllers/cart_controller.dart';
 import 'package:navid_e_commerce/presentations/cart/widgets/cart_item_widget.dart';
-import 'package:navid_e_commerce/presentations/product/controllers/product_controller.dart';
 
 class CartPage extends StatelessWidget {
   const CartPage({super.key});

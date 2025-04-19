@@ -12,6 +12,8 @@ import 'package:navid_e_commerce/presentations/navigation/views/navigation_page.
 import 'package:navid_e_commerce/presentations/product/views/deliver_address_page.dart';
 import 'package:navid_e_commerce/presentations/product/views/edit_address_page.dart';
 import 'package:navid_e_commerce/presentations/product/views/edit_address_page.dart';
+import 'package:navid_e_commerce/presentations/product/views/payment_page.dart';
+import 'package:navid_e_commerce/presentations/product/views/payment_page.dart';
 import 'package:navid_e_commerce/presentations/product/views/pickup_address_page.dart';
 import 'package:navid_e_commerce/presentations/product/views/product_details_page.dart';
 import 'package:navid_e_commerce/presentations/profile/views/profile_page.dart';
@@ -39,6 +41,7 @@ class AppRoutes {
         GetPage(name: ProductListPage.routeName, page: () => ProductListPage(), binding: HomeBinding()),
         GetPage(name: ProductDetailsPage.routeName, page: () => ProductDetailsPage(), binding: ProductBinding()),
         GetPage(name: EditAddressPage.routeName, page: () => EditAddressPage(), binding: ProductBinding()),
+        GetPage(name: PaymentScreen.routeName, page: () => PaymentScreen(), binding: ProductBinding()),
         GetPage(name: PickupAddressPage.routeName, page: () => PickupAddressPage(), binding: ProductBinding()),
         GetPage(name: DeliverAddressPage.routeName, page: () => DeliverAddressPage(), binding: ProductBinding()),
       ];

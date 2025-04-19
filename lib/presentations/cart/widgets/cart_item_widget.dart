@@ -9,12 +9,10 @@ import 'package:navid_e_commerce/core/constants/custom_text.dart';
 import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
-import 'package:navid_e_commerce/core/utils/variable.dart';
 import 'package:navid_e_commerce/presentations/cart/controllers/cart_controller.dart';
 import 'package:navid_e_commerce/presentations/cart/model/cart_model.dart';
 import 'package:navid_e_commerce/presentations/cart/widgets/blue_container_widget.dart';
 import 'package:navid_e_commerce/presentations/home/widgets/product_card_item_widget.dart';
-import 'package:navid_e_commerce/presentations/splash/controllers/common_controller.dart';
 
 class CartItemWidget extends StatelessWidget {
   final CartModel cartModel;
@@ -58,7 +56,16 @@ class CartItemWidget extends StatelessWidget {
                           CartController.to.addToCart(
                               productId: cartModel.productId?.sId ?? "",
                               quantity: (cartModel.quantity ?? 0) + 1,
-                              price: cartModel.price ?? 0,
+                              price: cartModel.productId!.price ?? 0,
+                              variant: cartModel.variant ?? "");
+
+
+                          CartController.to.cartList.refresh();
+                        },onDecrement: () {
+                          CartController.to.addToCart(
+                              productId: cartModel.productId?.sId ?? "",
+                              quantity: (cartModel.quantity ?? 0) - 1,
+                              price: cartModel.productId!.price ?? 0,
                               variant: cartModel.variant ?? "");
 
 
@@ -98,7 +105,7 @@ class CartCounterWidget extends StatelessWidget {
   final RxInt count;
   final Function()? onIncrement;
   final Function()? onDecrement;
-  const CartCounterWidget({
+const CartCounterWidget({
     super.key,
     required this.count,
     this.onIncrement,

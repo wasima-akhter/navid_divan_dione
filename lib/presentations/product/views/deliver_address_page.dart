@@ -12,7 +12,6 @@ import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
 import 'package:navid_e_commerce/core/helper/helper_function.dart';
 import 'package:navid_e_commerce/presentations/home/widgets/default_scaffold_structure_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:navid_e_commerce/presentations/navigation/views/navigation_page.dart';
 import 'package:navid_e_commerce/presentations/product/controllers/product_controller.dart';
 import 'package:navid_e_commerce/presentations/product/model/pick_address_model.dart';
 import 'package:navid_e_commerce/presentations/product/views/edit_address_page.dart';
@@ -23,7 +22,9 @@ class DeliverAddressPage extends StatelessWidget {
   static const String routeName = '/deliver-add';
 
   DeliverAddressPage({super.key});
+
   final bool isFromCart = Get.arguments;
+
   @override
   Widget build(BuildContext context) {
     return DefaultScaffoldStructureWidget(spacing: 6.h, appBarTitle: AppStaticStrings.address, children: [
@@ -50,22 +51,22 @@ class DeliverAddressPage extends StatelessWidget {
       Obx(() {
         return ProductController.to.isLoadingShippingAddress.value
             ? Padding(
-                padding: padding12V,
-                child: DefaultProgressIndicator(
-                  color: AppColors.kPrimaryColor,
-                ),
-              )
+          padding: padding12V,
+          child: DefaultProgressIndicator(
+            color: AppColors.kPrimaryColor,
+          ),
+        )
             : ProductController.to.shippingAddressList.isEmpty
-                ? Padding(
-                    padding: padding12V,
-                    child: CustomText(text: "Shipping Address not found!!"),
-                  )
-                : Column(
-                    children: List.generate(
-                      ProductController.to.shippingAddressList.length,
-                      (index) => shippingAddressCard(ProductController.to.shippingAddressList[index]),
-                    ),
-                  );
+            ? Padding(
+          padding: padding12V,
+          child: CustomText(text: "Shipping Address not found!!"),
+        )
+            : Column(
+          children: List.generate(
+            ProductController.to.shippingAddressList.length,
+                (index) => shippingAddressCard(ProductController.to.shippingAddressList[index]),
+          ),
+        );
       }),
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -78,6 +79,22 @@ class DeliverAddressPage extends StatelessWidget {
           Obx(() {
             return CustomText(
               text: '\$${(isFromCart ? CartController.to.totalPrice.value : ProductController.to.productModel.value.price!).toString()}',
+              fontSize: getFontSizeSmall(),
+              color: AppColors.kExtraLightGreyTextColor,
+            );
+          }),
+        ],
+      ), isFromCart ? SizedBox.shrink() : Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          CustomText(
+            text: AppStaticStrings.quantity,
+            fontSize: getFontSizeSmall(),
+            color: AppColors.kExtraLightGreyTextColor,
+          ),
+          Obx(() {
+            return CustomText(
+              text: (ProductController.to.cartQuantity.value).toString(),
               fontSize: getFontSizeSmall(),
               color: AppColors.kExtraLightGreyTextColor,
             );
@@ -111,7 +128,8 @@ class DeliverAddressPage extends StatelessWidget {
           Obx(() {
             return CustomText(
               text:
-                  "\$${(int.parse(isFromCart ? CartController.to.totalPrice.value.toString() : ProductController.to.productModel.value.price.toString()) + 71).toString()}",
+              "\$${(int.parse(isFromCart ? CartController.to.totalPrice.value.toString() : (ProductController.to.productModel.value.price!.toInt() *
+                  ProductController.to.cartQuantity.value).toString()) + 71).toString()}",
               fontSize: getFontSizeDefault(),
               color: AppColors.kSplashBackgroundColor,
             );
@@ -119,42 +137,64 @@ class DeliverAddressPage extends StatelessWidget {
         ],
       ),
       space12H,
-      CustomButton(
-        onTap: isFromCart
-            ? () {
-                if (ProductController.to.selectedShippingAddress.isNotEmpty && CartController.to.cartList.isNotEmpty) {
-                  ProductController.to.orderRequest(
-                      totalAmount: (int.parse(CartController.to.totalPrice.value.toString()) + 71).toString(),
-                      deliveryAddress: ProductController.to.selectedShippingAddress.value,
-                      item: List.generate(
-                        CartController.to.cartList.length,
+      Obx(() {
+        return CustomButton(
+          isLoading: ProductController.to.isLoadingOrder.value||ProductController.to.isPaymentLoading.value,
+          onTap: isFromCart
+              ? () {
+            if (ProductController.to.selectedShippingAddress.isNotEmpty && CartController.to.cartList.isNotEmpty) {
+              ProductController.to.orderRequest(
+                  totalAmount: (int.parse(CartController.to.totalPrice.value.toString()) + 71).toString(),
+                  deliveryAddress: ProductController.to.selectedShippingAddress.value,
+                  item: List.generate(
+                    CartController.to.cartList.length,
                         (index) {
-                          final cart = CartController.to.cartList[index];
-                          return {"product": cart.productId!.sId, "quantity": cart.quantity, "color": cart.variant};
-                        },
-                      ));
-                } else {
-                  showCustomSnackbar(title: "Failed", message: "Provide valid Data", type: SnackBarType.failed);
+                      final cart = CartController.to.cartList[index];
+                      return {"product": cart.productId!.sId, "quantity": cart.quantity, "color": cart.variant};
+                    },
+                  ),
+                  productList: List.generate(
+                    CartController.to.cartList.length,
+                        (index) {
+                      final cart = CartController.to.cartList[index];
+                      return {
+                        "name": cart.productId!.name,
+                        "unit_amount": cart.productId!.price,
+                        "quantity": cart.quantity,
+                        "_id": cart.productId!.sId
+                      };
+                    },
+                  ));
+            } else {
+              showCustomSnackbar(title: "Failed", message: "Provide valid Data", type: SnackBarType.failed);
+            }
+          }
+              : () {
+            ProductController.to.orderRequest(
+                totalAmount: (ProductController.to.productModel.value.price!.toInt() + 71).toString(),
+                item: [
+                  {
+                    "product": ProductController.to.productModel.value.id,
+                    "quantity": ProductController.to.cartQuantity.value,
+                    "color": ProductController.to.currentBannerImages[0]
+                  }
+                ],
+                productList: [{
+                  "name": ProductController.to.productModel.value.name,
+                  "unit_amount": ProductController.to.productModel.value.price,
+                  "quantity": ProductController.to.cartQuantity.value,
+                  "_id": ProductController.to.productModel.value.id
                 }
-              }
-            : () {
-                ProductController.to.orderRequest(
-                    totalAmount: (ProductController.to.productModel.value.price!.toInt() + 71).toString(),
-                    item: [
-                      {
-                        "product": ProductController.to.productModel.value.id,
-                        "quantity": ProductController.to.cartQuantity.value,
-                        "color": ProductController.to.currentBannerImages[0]
-                      }
-                    ],
-                    deliveryAddress: ProductController.to.selectedShippingAddress.value);
+                ],
+                deliveryAddress: ProductController.to.selectedShippingAddress.value);
 
-                // ProductController.to.orderRequest(totalAmount: CartController.to.totalPrice.value, item: [
-                //
-                // ],address: )
-              },
-        title: AppStaticStrings.payment,
-      )
+            // ProductController.to.orderRequest(totalAmount: CartController.to.totalPrice.value, item: [
+            //
+            // ],address: )
+          },
+          title: AppStaticStrings.payment,
+        );
+      })
     ]);
   }
 
