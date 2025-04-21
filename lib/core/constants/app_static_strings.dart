@@ -129,7 +129,7 @@ class AppStaticStrings {
   // Orders & Status
   static const String running = 'Running';
   static const String shipped = 'Shipped';
-  static const String complete = 'Complete';
+  static const String delivered = 'Delivered';
   static const String pending = 'Pending';
   static const String shipping = 'Shipping';
 

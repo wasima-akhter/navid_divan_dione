@@ -17,6 +17,7 @@ class ProductController extends GetxController {
   Rx<PageController> pageController = PageController(initialPage: 0, keepPage: true).obs;
   RxInt cartQuantity = 1.obs;
   RxString selectedTime = ''.obs;
+  RxString orderId = ''.obs;
   RxString selectedPickAddress = ''.obs;
   RxString selectedShippingAddress = ''.obs;
   Rx<TextEditingController> nameController = TextEditingController().obs;
@@ -196,9 +197,13 @@ class ProductController extends GetxController {
       });
       isLoadingOrder.value = false;
       if (response['success'] == true) {
+        orderId.value =response['data'][0]["_id"];
+        logger.d(orderId.value);
         logger.d(response);
-        paymentRequest(products: productList);
-      // Get.offAllNamed(NavigationPage.routeName);
+        if(response['data'][0]["_id"].isNotEmpty) {
+           paymentRequest(products: productList, orderId: response['data'][0]["_id"]);
+        }
+        // Get.offAllNamed(NavigationPage.routeName);
         showCustomSnackbar(
           title: 'Success',
           message: response['message'],
@@ -247,12 +252,14 @@ class ProductController extends GetxController {
 
   Future<void> paymentRequest({
     required List<Map<String, dynamic>> products,
+    required String orderId
   })
   async {
     try {
           isPaymentLoading.value = true;
       final response = await ApiService().request(endpoint: paymentCreateEndPoint, method: 'POST', body: {
-        "price_data": products
+        "price_data": products,
+        "_id":orderId
         // "purpose": "buy_product"
         // "currency": "USD"
       });

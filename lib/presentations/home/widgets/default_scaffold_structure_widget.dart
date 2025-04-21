@@ -19,12 +19,12 @@ class DefaultScaffoldStructureWidget extends StatelessWidget {
     return Scaffold(
       appBar: CustomDefaultAppbar(title: appBarTitle,action: action,),
 
-      body: SingleChildScrollView(
+      body:body?? SingleChildScrollView(
         controller:scrollController ,
         physics: AlwaysScrollableScrollPhysics(),
         child: Padding(
           padding: padding12,
-          child: body??Column(
+          child: Column(
             crossAxisAlignment:crossAxisAlignment?? CrossAxisAlignment.start,
             spacing: spacing??0,
             children: children??[],

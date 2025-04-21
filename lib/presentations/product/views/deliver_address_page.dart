@@ -161,7 +161,7 @@ class DeliverAddressPage extends StatelessWidget {
                         "name": cart.productId!.name,
                         "unit_amount": cart.productId!.price,
                         "quantity": cart.quantity,
-                        "_id": cart.productId!.sId
+                          
                       };
                     },
                   ));
@@ -183,7 +183,7 @@ class DeliverAddressPage extends StatelessWidget {
                   "name": ProductController.to.productModel.value.name,
                   "unit_amount": ProductController.to.productModel.value.price,
                   "quantity": ProductController.to.cartQuantity.value,
-                  "_id": ProductController.to.productModel.value.id
+                    
                 }
                 ],
                 deliveryAddress: ProductController.to.selectedShippingAddress.value);

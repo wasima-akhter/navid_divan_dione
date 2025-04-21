@@ -31,23 +31,25 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
     return DefaultScaffoldStructureWidget(
       appBarTitle: AppStaticStrings.payment,
-      body:
-        Stack(
+      body: SizedBox.expand(
+        child: Stack(
+          fit: StackFit.expand,
           children: [
-            SizedBox(height: ScreenUtil().screenHeight,
-                child: WebViewWidget(controller: commonController.webController!)),
+            Positioned.fill(
+              child: WebViewWidget(controller: commonController.webController!),
+            ),
             Obx(
-              () => commonController.isLoading.value
+                  () => commonController.isLoading.value
                   ? const Center(
-                      child: DefaultProgressIndicator(
-                        color: AppColors.kPrimaryColor,
-                      ),
-                    )
+                child: DefaultProgressIndicator(
+                  color: AppColors.kPrimaryColor,
+                ),
+              )
                   : const SizedBox.shrink(),
             ),
           ],
-        )
-
+        ),
+      ),
     );
   }
 

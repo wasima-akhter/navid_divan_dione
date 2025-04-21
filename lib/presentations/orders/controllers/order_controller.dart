@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:navid_e_commerce/core/constants/app_static_strings.dart';
 import 'package:navid_e_commerce/presentations/orders/model/order_model.dart';
+import 'package:navid_e_commerce/presentations/product/controllers/product_controller.dart';
 
 import '../../../core/api-client/api_endpoints.dart';
 import '../../../core/api-client/api_service.dart';
@@ -16,20 +17,22 @@ class OrderController extends GetxController {
   RxList<String> labelTabs = [
     AppStaticStrings.running,
     AppStaticStrings.shipped,
-    AppStaticStrings.complete
+    AppStaticStrings.delivered
   ].obs;
-
+RxInt selectedIndex =0.obs;
   RxBool isLoadingOrder = false.obs;
   RxList<OrderModel> orderList = <OrderModel>[].obs;
 @override
   void onInit() {
+
 getOrderListRequest();    super.onInit();
+Get.lazyPut(() => ProductController(),);
   }
 
   ///====================product pagination variable========================///
 
   final RxInt currentOrderPage = 1.obs;
-  final RxInt itemsOrderPerPage = 10.obs;
+  final RxInt itemsOrderPerPage = 5.obs;
   final RxInt totalOrderPages = 5.obs;
   final RxBool isOrderLoadingMore = false.obs;
 
@@ -63,6 +66,7 @@ getOrderListRequest();    super.onInit();
         queryParams: {
           'page': currentOrderPage.value.toString(),
           'limit': itemsOrderPerPage.value.toString(),
+          'delivery_status': labelTabs[selectedIndex.value],
 
         },
       );
