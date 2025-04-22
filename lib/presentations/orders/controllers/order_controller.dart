@@ -15,7 +15,7 @@ class OrderController extends GetxController {
 
   ].obs;
   RxList<String> labelTabs = [
-    AppStaticStrings.running,
+    AppStaticStrings.pending,
     AppStaticStrings.shipped,
     AppStaticStrings.delivered
   ].obs;
@@ -66,7 +66,7 @@ Get.lazyPut(() => ProductController(),);
         queryParams: {
           'page': currentOrderPage.value.toString(),
           'limit': itemsOrderPerPage.value.toString(),
-          'delivery_status': labelTabs[selectedIndex.value],
+          'delivery_status': labelTabs[selectedIndex.value].toLowerCase(),
 
         },
       );
