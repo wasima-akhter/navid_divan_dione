@@ -111,6 +111,7 @@ class ProfileController extends GetxController {
       Map<String, String> fields = {
         'name': nameController.value.text,
         'phone': contactNumberController.value.text,
+        "tax_id": taxIdController.value.text,
       };
       Map<String, dynamic> files = {};
 

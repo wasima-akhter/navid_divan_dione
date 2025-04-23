@@ -101,10 +101,10 @@ class AuthController extends GetxController {
 
   reinitializeSignUpControllers() {
     if (kDebugMode) {
-      emailSignUpController.value.text = 'pihoner651@eligou.com';
-      nameSignUpController.text = 'pihoner651';
-      passSignUpController.text = '12345678S';
-      confirmPassSignUpController.text = '12345678S';
+      emailSignUpController.value.text = 'wifikom733@asaption.com';
+      nameSignUpController.text = 'wifikom';
+      passSignUpController.text = '1234567A';
+      confirmPassSignUpController.text = '1234567A';
       ageSignUpController.value.text = formattedDateOfBirth;
       emailLoginController.text = 'cayoj38393@evluence.com';
       emailForgetController.value.text ='cayoj38393@evluence.com' /*'pihoner651@eligou.com'*/;
@@ -154,7 +154,7 @@ class AuthController extends GetxController {
         "password": passSignUpController.text,
         "confirm_password": confirmPassSignUpController.text,
         "date_of_birth": formattedDateOfBirth
-      });
+      },useAuth: false);
       isLoadingSignUp.value = false;
       if (response['success'] == true) {
         logger.d(response);
@@ -184,7 +184,7 @@ class AuthController extends GetxController {
     try {
       isLoadingActiveAcc.value = true;
       final response = await ApiService().request(
-          endpoint: verifyEmailEndPoint,
+          endpoint: verifyEmailEndPoint,useAuth: false,
           method: 'POST',
           body: {
             "email": email,
@@ -225,7 +225,9 @@ class AuthController extends GetxController {
     try {
       isLoadingLogin.value = true;
       final response = await ApiService()
-          .request(endpoint: signInEndPoint, method: 'POST', body: {
+          .request(endpoint: signInEndPoint, method: 'POST'
+          ,useAuth: false,
+          body: {
         "email": AuthController.to.emailLoginController.text,
         "password": AuthController.to.passLoginController.text
       });

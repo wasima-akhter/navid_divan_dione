@@ -26,59 +26,60 @@ class SettingPage extends StatelessWidget {
         },
         title: AppStaticStrings.changePass,
         icon: changePassIcon,
-      ), SettingCardItemWidget(
-        onTap: () {
-          defaultAlertDialog(context,
-              title: AppStaticStrings.deleteAcc,
-              backgroundColor: AppColors.kWhiteColor,
-              child:Column(
-                spacing: 12.h,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CustomTextField(
-
-                    title: AppStaticStrings.confirmPass,
-                    isPassword: true,
-                  ),Row(
-                    spacing: 16.w,
-                    children: [
-                      Expanded(
-                          child: CustomButton(
-
-                            onTap:
-                                () {
-                              Navigator.pop(context);
-                            },
-                            // height: 44.h,
-                            width: 92.w,
-                            title:  AppStaticStrings.yes,
-                            textColor: AppColors.kWhiteColor,
-                            borderColor: Colors.red,
-                            fillColor: Colors.red,
-                          )),
-                      Expanded(
-                          child: CustomButton(
-                            onTap:
-                                () {
-                              Navigator.pop(context);
-                            },
-                            // height: 44.h,
-                            width: 92.w,
-                            title:  AppStaticStrings.no,
-                            textColor: AppColors.kWhiteColor,
-                            borderColor: AppColors.kPrimaryColor,
-                            fillColor: AppColors.kPrimaryColor,
-                          )),
-                    ],
-                  ),
-                  space16H,
-                ],
-
-              ));
-        },
-        title: AppStaticStrings.deleteAcc,
-        icon: deleteIcon,
       ),
+    // SettingCardItemWidget(
+      //   onTap: () {
+      //     defaultAlertDialog(context,
+      //         title: AppStaticStrings.deleteAcc,
+      //         backgroundColor: AppColors.kWhiteColor,
+      //         child:Column(
+      //           spacing: 12.h,
+      //           mainAxisSize: MainAxisSize.min,
+      //           children: [
+      //             CustomTextField(
+      //
+      //               title: AppStaticStrings.confirmPass,
+      //               isPassword: true,
+      //             ),Row(
+      //               spacing: 16.w,
+      //               children: [
+      //                 Expanded(
+      //                     child: CustomButton(
+      //
+      //                       onTap:
+      //                           () {
+      //                         Navigator.pop(context);
+      //                       },
+      //                       // height: 44.h,
+      //                       width: 92.w,
+      //                       title:  AppStaticStrings.yes,
+      //                       textColor: AppColors.kWhiteColor,
+      //                       borderColor: Colors.red,
+      //                       fillColor: Colors.red,
+      //                     )),
+      //                 Expanded(
+      //                     child: CustomButton(
+      //                       onTap:
+      //                           () {
+      //                         Navigator.pop(context);
+      //                       },
+      //                       // height: 44.h,
+      //                       width: 92.w,
+      //                       title:  AppStaticStrings.no,
+      //                       textColor: AppColors.kWhiteColor,
+      //                       borderColor: AppColors.kPrimaryColor,
+      //                       fillColor: AppColors.kPrimaryColor,
+      //                     )),
+      //               ],
+      //             ),
+      //             space16H,
+      //           ],
+      //
+      //         ));
+      //   },
+      //   title: AppStaticStrings.deleteAcc,
+      //   icon: deleteIcon,
+      // ),
     ]);
   }
 }

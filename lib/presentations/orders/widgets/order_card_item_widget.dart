@@ -162,7 +162,7 @@ class OderTabItemWidget extends StatelessWidget {
                       };
                     },
                   ), orderId: orderModel.sId.toString());
-                  OrderController.to.getOrderListRequest();
+
                 },
                 title: "Pay",
               );

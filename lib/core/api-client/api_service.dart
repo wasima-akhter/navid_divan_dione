@@ -59,6 +59,7 @@ class ApiService {
     required String method,
     Map<String, dynamic>? body,
     Map<String, String>? queryParams,
+    bool useAuth = true,
   })
   async {
     // Check internet connection first
@@ -77,37 +78,41 @@ class ApiService {
     }
 
     http.Response response;
-
+    final headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      if (useAuth && _authToken != null) 'Authorization': 'Bearer $_authToken',
+    };
     try {
       switch (method) {
         case 'GET':
-          response = await http.get(uri, headers: _headers);
+          response = await http.get(uri, headers: headers);
           break;
         case 'POST':
           response = await http.post(
             uri,
-            headers: _headers,
+            headers: headers,
             body: body != null ? json.encode(body) : null,
           );
           break;
         case 'PUT':
           response = await http.put(
             uri,
-            headers: _headers,
+            headers: headers,
             body: body != null ? json.encode(body) : null,
           );
           break;
         case 'PATCH':
           response = await http.patch(
             uri,
-            headers: _headers,
+            headers: headers,
             body: body != null ? json.encode(body) : null,
           );
           break;
         case 'DELETE':
           response = await http.delete(
             uri,
-            headers: _headers,
+            headers: headers,
             body: body != null ? json.encode(body) : null,
           );
           break;
@@ -117,6 +122,8 @@ class ApiService {
 if(body!=null){
   logger.d(body);
 }
+      logger.d(uri);
+
       // Parse response
       var responseData = json.decode(response.body);
       // logger.d(responseData);

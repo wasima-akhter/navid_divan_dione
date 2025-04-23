@@ -17,12 +17,22 @@ import 'package:navid_e_commerce/presentations/product/controllers/product_contr
 import 'package:navid_e_commerce/presentations/product/widgets/color_item_widget.dart';
 import 'package:navid_e_commerce/presentations/product/widgets/expand_able_text.dart';
 import 'package:navid_e_commerce/presentations/profile/widgets/custom_loading_widget.dart';
+import 'package:video_player/video_player.dart';
 
 import '../../../core/helper/helper_function.dart';
 
-class ProductDetailsPage extends StatelessWidget {
+class ProductDetailsPage extends StatefulWidget {
   static const String routeName = '/product-details';
   const ProductDetailsPage({super.key});
+
+  @override
+  State<ProductDetailsPage> createState() => _ProductDetailsPageState();
+}
+
+class _ProductDetailsPageState extends State<ProductDetailsPage> {
+
+
+  VideoPlayerController? _controller;
 
   @override
   Widget build(BuildContext context) {
@@ -36,158 +46,185 @@ class ProductDetailsPage extends StatelessWidget {
             return CustomLoadingWidget();
           }
           final product = controller.productModel.value;
-          return Column(
-              spacing: 12.h,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Obx(
-                  () {
-                    if (controller.currentBannerImages.isEmpty) {
-                      return SizedBox.shrink();
-                    }
-                    return SizedBox(
-                      height: 150.h,
-                      child: PageView.builder(
-                        controller: controller.pageController.value,
-                        itemCount: controller.currentBannerImages.length,
-                        itemBuilder: (context, index) => CustomNetworkImage(
-                          imageUrl:
-                              '${ApiService().baseUrl}/${controller.currentBannerImages[index]}',
-                          height: 150.h,
-                          width: double.infinity,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-                Obx(
-                  () {
-                    if (product.variantColors?.isEmpty ?? true) {
-                      return SizedBox.shrink();
-                    }
-                    return SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        spacing: 12.w,
-                        children: [
-                          CustomText(text: AppStaticStrings.selectColor),
-                          ...product.variantColors!.map((color) =>
-                              GestureDetector(
-                                onTap: () => controller.onColorSelected(color),
-                                child: ColorItemWidget(
-                                  textColor:
-                                      controller.selectedColor.value == color
-                                          ? AppColors.kWhiteColor
-                                          : AppColors.kPrimaryColor,
-                                  containerColor:
-                                      controller.selectedColor.value == color
-                                          ? AppColors.kPrimaryColor
-                                          : Colors.transparent,
-                                  color: color,
+          return Column(spacing: 12.h, crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Obx(
+              () {
+                if (controller.currentBannerImages.isEmpty) {
+                  return SizedBox.shrink();
+                }
+                return SizedBox(
+                  height: 150.h,
+                  child: PageView.builder(
+                    controller: controller.pageController.value,
+                    itemCount: controller.currentBannerImages.length,
+                    itemBuilder: (context, index) => (controller.selectedColor.value == "video"&& _controller!=null)
+                        ?
+                        // VideoPlayer(controller)
+                        Stack(alignment: Alignment.center,
+                          children: [
+                            SizedBox(
+                                height: 150.h,
+                                width: double.infinity,
+                              child:VideoPlayer(_controller!) ,
+                              ),
+                            Container(decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: AppColors.kWhiteColor.withValues(alpha:  .5)
+                            ),
+                              child: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _controller!.value.isPlaying
+                                        ? _controller!.pause()
+                                        : _controller!.play();
+                                  });
+                                },
+                                icon: Icon(
+                                  color: AppColors.kPrimaryColor,
+                                  _controller!.value.isPlaying ? Icons.pause : Icons.play_arrow,
                                 ),
-                              )),
-                        ],
-                      ),
-                    );
-                  },
+                              ),
+                            ),
+                          ],
+                        )
+                        : CustomNetworkImage(
+                            imageUrl: '${ApiService().baseUrl}/${controller.currentBannerImages[index]}',
+                            height: 150.h,
+                            width: double.infinity,
+                          ),
+                  ),
+                );
+              },
+            ),
+            Obx(
+              () {
+                if (product.variantColors?.isEmpty ?? true) {
+                  return SizedBox.shrink();
+                }
+                return SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    spacing: 12.w,
+                    children: [
+                      CustomText(text: AppStaticStrings.selectColor),
+                      ...product.variantColors!.map((color) => GestureDetector(
+                            onTap: (){controller.onColorSelected(color);
+                            if( controller.selectedColor.value=="video"){
+                              _controller = VideoPlayerController.networkUrl(Uri.parse(
+                                  "${ApiService().baseUrl}/${controller.productModel.value.variantImages!["video"]!.first}"))
+                                ..initialize().then((_) {
+                                  // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+                                  setState(() {});
+                                });
+                            }},
+                            child: ColorItemWidget(
+                              textColor: controller.selectedColor.value == color ? AppColors.kWhiteColor : AppColors.kPrimaryColor,
+                              containerColor: controller.selectedColor.value == color ? AppColors.kPrimaryColor : Colors.transparent,
+                              color: color,
+                            ),
+                          )),
+                    ],
+                  ),
+                );
+              },
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: PriceTextWidget(
+                    previousPrice: (product.previousPrice ?? 0.0).toString(),
+                    price: (product.price ?? 0.0).toString(),
+                    fontSize: getFontSizeExtraLarge(),
+                    previousPriceFontSize: getFontSizeDefault(),
+                  ),
                 ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: PriceTextWidget(
-                        previousPrice:
-                            (product.previousPrice ?? 0.0).toString(),
-                        price: (product.price ?? 0.0).toString(),
-                        fontSize: getFontSizeExtraLarge(),
-                        previousPriceFontSize: getFontSizeDefault(),
-                      ),
-                    ),
-                    CartCounterWidget(
-                      count: ProductController.to.cartQuantity,
-                    )
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: CustomText(
-                        text: product.name ?? '',
-                        fontSize: getFontSizeDefault(),
-                        color: AppColors.kPrimaryTextDarkColor,
-                      ),
-                    ),
-                    CustomText(
-                      text: '${product.quantity ?? ''} pis',
-                      style: poppinsRegular,
-                    )
-                  ],
-                ),
-                ExpandableText(
-                  text: product.description ?? '',
-                  maxLines: 3,
-                ),
-                Row(
-                  spacing: 12.w,
-                  children: [
-                    Expanded(
-                      child: CustomButton(
-                        onTap: () {
-                          buyProductDialog(context);
-                        },
-                        title: AppStaticStrings.buyNow,
-                      ),
-                    ),
-                    Expanded(child: Obx(() {
-                      final isLoading =
-                          CartController.to.isLoadingAddCart[product.id] ??
-                              false;
-
-                      return CustomButton(
-                        loadingColor: AppColors.kPrimaryColor,
-                        onTap: () {
-                          CartController.to.addToCart(variant: controller.currentBannerImages[0],
-                              productId: product.id ?? '',
-                              quantity: ProductController.to.cartQuantity.value,
-                              price: ProductController.to.cartQuantity.value *
-                                  int.parse(product.price.toString()));
-                        },
-                        isLoading: isLoading,
-                        title: AppStaticStrings.addToCard,
-                        fillColor: Colors.transparent,
-                        textColor: AppColors.kPrimaryColor,
-                      );
-                    }))
-                  ],
+                CartCounterWidget(
+                  count: ProductController.to.cartQuantity,
+                )
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: CustomText(
+                    text: product.name ?? '',
+                    fontSize: getFontSizeDefault(),
+                    color: AppColors.kPrimaryTextDarkColor,
+                  ),
                 ),
                 CustomText(
-                  text: 'Related Products',
-                  fontSize: getFontSizeDefault(),
-                  color: AppColors.kPrimaryTextDarkColor,
-                ),
-                SizedBox(
-                  height: 250,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      spacing: 12.w,
-                      children: List.generate(
-                        ProductController.to.relatedProductList.length,
-                        (index) => SizedBox(
-                            width: 200.w,
-                            // height: 200.w,
-                            child: ProductCardItemWidget(
-                              product: ProductController
-                                  .to.relatedProductList[index],
-                            )),
-                      ),
-                    ),
-                  ),
+                  text: '${product.quantity ?? ''} pis',
+                  style: poppinsRegular,
                 )
-              ]);
+              ],
+            ),
+            ExpandableText(
+              text: product.description ?? '',
+              maxLines: 3,
+            ),
+            Row(
+              spacing: 12.w,
+              children: [
+                Expanded(
+                  child: CustomButton(
+                    onTap: () {
+                      buyProductDialog(context);
+                    },
+                    title: AppStaticStrings.buyNow,
+                  ),
+                ),
+                Expanded(child: Obx(() {
+                  final isLoading = CartController.to.isLoadingAddCart[product.id] ?? false;
+
+                  return CustomButton(
+                    loadingColor: AppColors.kPrimaryColor,
+                    onTap: () {
+                      CartController.to.addToCart(
+                          variant: controller.currentBannerImages[0],
+                          productId: product.id ?? '',
+                          quantity: ProductController.to.cartQuantity.value,
+                          price: ProductController.to.cartQuantity.value * int.parse(product.price.toString()));
+                    },
+                    isLoading: isLoading,
+                    title: AppStaticStrings.addToCard,
+                    fillColor: Colors.transparent,
+                    textColor: AppColors.kPrimaryColor,
+                  );
+                }))
+              ],
+            ),
+            CustomText(
+              text: 'Related Products',
+              fontSize: getFontSizeDefault(),
+              color: AppColors.kPrimaryTextDarkColor,
+            ),
+            SizedBox(
+              height: 250,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  spacing: 12.w,
+                  children: List.generate(
+                    ProductController.to.relatedProductList.length,
+                    (index) => SizedBox(
+                        width: 200.w,
+                        // height: 200.w,
+                        child: ProductCardItemWidget(
+                          product: ProductController.to.relatedProductList[index],
+                        )),
+                  ),
+                ),
+              ),
+            )
+          ]);
         })
       ],
     );
   }
+  @override
+  void dispose() {
 
+_controller!.dispose();    super.dispose();
+  }
 }

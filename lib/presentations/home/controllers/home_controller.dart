@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:navid_e_commerce/presentations/home/model/category_model.dart';
 import 'package:navid_e_commerce/presentations/product/model/product_model.dart';
+import 'package:navid_e_commerce/presentations/profile/controllers/profile_controller.dart';
 import '../../../core/api-client/api_endpoints.dart';
 
 import '../../../core/api-client/api_service.dart';
@@ -40,14 +41,16 @@ class HomeController extends GetxController {
 
   Rx<TextEditingController> searchController = TextEditingController().obs;
   @override
-  void onInit() {
+  void onInit() async{
+    await ProfileController.to.getUserProfileRequest();
     getCategoryListRequest();
-    getProductListRequest();
+  await getProductListRequest();
 
     super.onInit();
   }
 
   Future<void> refreshCall() async {
+
     searchController.value.clear();
     category.value = '';
     await getCategoryListRequest();
@@ -138,11 +141,11 @@ class HomeController extends GetxController {
       }
 
       ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
-
       final response = await ApiService().request(
         endpoint: productGetAllEndPoint,
         method: 'GET',
         queryParams: {
+          "whole_sale": ProfileController.to.userModel.value.taxId!=null? "true":"false",
           'page': currentProductPage.value.toString(),
           'limit': itemsProductPerPage.value.toString(),
           'search': searchController.value.text,
