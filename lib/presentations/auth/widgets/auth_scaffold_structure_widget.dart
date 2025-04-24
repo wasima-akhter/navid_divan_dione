@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:navid_e_commerce/core/components/custom_appbar.dart';
-import 'package:navid_e_commerce/core/constants/app_static_strings.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 class AuthScaffoldStructureWidget extends StatelessWidget {
   final String appBarTitle;

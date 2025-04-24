@@ -1,11 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:navid_e_commerce/core/components/custom_button.dart';
-import 'package:navid_e_commerce/core/constants/color_constants.dart';
-import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/core/utils/variable.dart';
 import 'package:navid_e_commerce/presentations/profile/widgets/custom_loading_widget.dart';
 
@@ -89,7 +85,7 @@ class _CustomNetworkImageState extends State<CustomNetworkImage> {
                         ? null
                         : BorderRadius.circular(widget.radius ?? 8.r),
                     shape: widget.boxShape,
-                    color: Colors.grey.withOpacity(0.6),
+                    color: Colors.grey.withValues(alpha:0.6),
                     // image: DecorationImage(
                     //   image: Svg(imageErrorUrl ?? ''),
                     //   fit: BoxFit.cover,
@@ -146,7 +142,7 @@ class _CustomNetworkImageState extends State<CustomNetworkImage> {
                       ? null
                       : BorderRadius.circular(widget.radius ?? 8.r),
                   shape: widget.boxShape,
-                  color: Colors.grey.withOpacity(0.6),
+                  color: Colors.grey.withValues(alpha: 0.6),
                   // image: DecorationImage(
                   //   image: Svg(imageErrorUrl ?? ''),
                   //   fit: BoxFit.cover,

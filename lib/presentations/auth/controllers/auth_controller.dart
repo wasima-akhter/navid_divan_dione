@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:navid_e_commerce/core/api-client/api_endpoints.dart';
 import 'package:navid_e_commerce/core/api-client/api_service.dart';
-import 'package:navid_e_commerce/core/constants/app_static_strings.dart';
 import 'package:navid_e_commerce/core/helper/helper_function.dart';
 import 'package:navid_e_commerce/core/utils/hive_boxes.dart';
 import 'package:navid_e_commerce/core/utils/variable.dart';

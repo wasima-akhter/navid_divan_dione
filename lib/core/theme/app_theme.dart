@@ -57,11 +57,11 @@ class AppTheme {
           (states) {
             if (states.contains(WidgetState.hovered)) {
               return AppColors.kPrimaryColor
-                  .withOpacity(0.1); // Hover effect color
+                  .withValues(alpha:0.1); // Hover effect color
             }
             if (states.contains(WidgetState.pressed)) {
               return AppColors.kPrimaryColor
-                  .withOpacity(0.2); // Pressed effect color
+                  .withValues(alpha:0.2); // Pressed effect color
             }
             return null;
           },
