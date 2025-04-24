@@ -40,7 +40,7 @@ class ProductController extends GetxController {
   RxList<String> currentBannerImages = <String>[].obs;
   RxMap<String, bool> isLoadingDeleteAddress = <String, bool>{}.obs;
   RxBool isPaymentLoading = false.obs;
-  VideoPlayerController? _controller;
+  final Rxn<VideoPlayerController> videoController = Rxn<VideoPlayerController>();
   @override
   void onInit() {
     getPickUpAddressRequest();
@@ -65,12 +65,31 @@ class ProductController extends GetxController {
       isLoadingProductDetails.value = true;
 
       final response = await ApiService().request(endpoint: '$productDetailsEndPoint$productID', method: 'GET');
-      isLoadingProductDetails.value = false;
       if (response['success'] == true) {
         logger.d(response);
         productModel.value = ProductModel.fromJson(response['data']);
         relatedProductList.value = (response['related_product'] as List).map((e) => ProductModel.fromJson(e)).toList();
         initializeBannerImages();
+        if(productModel.value.variantImages!=null && productModel.value.variantImages!["video"]!=null ){
+          final controller = VideoPlayerController.networkUrl(
+              Uri.parse("${ApiService().baseUrl}/${productModel.value.variantImages!["video"]!.first}")
+          );
+
+          await controller.initialize();
+          controller.setLooping(true); // Optional: set to true if you want it to loop
+            //
+            // if (controller.value.isCompleted) {
+            //   controller.seekTo(Duration.zero);
+            //   controller.play(); // or controller.play(); if you want to auto-restart
+            // }
+            //
+
+          videoController.value = controller;
+          update();
+
+        }
+        isLoadingProductDetails.value = false;
+
       } /*else if (response['message'] == AppStaticStrings.noInternet) {
         showCustomSnackbar(
           title: 'Failed',
@@ -85,6 +104,8 @@ class ProductController extends GetxController {
       else {
         logger.e(response);
         showCustomSnackbar(title: 'Failed', message: response['message'], type: SnackBarType.failed);
+        isLoadingProductDetails.value = false;
+
       }
     } catch (e) {
       logger.e(e.toString());

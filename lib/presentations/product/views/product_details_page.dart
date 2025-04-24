@@ -23,6 +23,7 @@ import '../../../core/helper/helper_function.dart';
 
 class ProductDetailsPage extends StatefulWidget {
   static const String routeName = '/product-details';
+
   const ProductDetailsPage({super.key});
 
   @override
@@ -30,10 +31,6 @@ class ProductDetailsPage extends StatefulWidget {
 }
 
 class _ProductDetailsPageState extends State<ProductDetailsPage> {
-
-
- 
-
   @override
   Widget build(BuildContext context) {
     final controller = ProductController.to;
@@ -57,35 +54,62 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   child: PageView.builder(
                     controller: controller.pageController.value,
                     itemCount: controller.currentBannerImages.length,
-                    itemBuilder: (context, index) => (controller.selectedColor.value == "video"/*&& _controller!=null*/)
+                    itemBuilder: (context, index) => (controller.selectedColor.value == "video" /*&& _controller!=null*/)
                         ?
                         // VideoPlayer(controller)
-                        Stack(alignment: Alignment.center,
-                          children: [
-                            SizedBox(
-                                height: 150.h,
-                                width: double.infinity,
-                              child:Icon(Icons.movie_filter_rounded,size: 40.sp,) ,
-                              ),
-                            Container(decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: AppColors.kWhiteColor.withValues(alpha:  .5)
+                        GestureDetector(
+
+                          onTap: () {
+                      if (ProductController.to.videoController.value != null &&
+                  ProductController.to.videoController.value!.value.isInitialized) {
+                showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                scrollable: true,
+                content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                AspectRatio(
+                aspectRatio: ProductController.to.videoController.value!.value.aspectRatio,
+                child: VideoPlayer(ProductController.to.videoController.value!),
+                ),
+                IconButton(
+                onPressed: () {
+                if (ProductController.to.videoController.value!.value.isCompleted) {
+                ProductController.to.videoController.value!.seekTo(Duration.zero);
+                ProductController.to.videoController.value!.play();
+                }
+
+                ProductController.to.videoController.value!.value.isPlaying
+                ? ProductController.to.videoController.value!.pause()
+                    : ProductController.to.videoController.value!.play();
+                },
+                icon: ValueListenableBuilder(
+                valueListenable: ProductController.to.videoController.value!,
+                builder: (context, value, _) {
+                return Icon(
+                color: AppColors.kPrimaryColor,
+                value.isPlaying ? Icons.pause : Icons.play_arrow,
+                );
+                },
+                ),
+                ),
+                ],
+                ),
+                ),
+                );
+                }
+                },
+                          child: Container(
+                              height: 150.h,
+                              width: double.infinity,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+
+                                  color: AppColors.kWhiteColor.withValues(alpha: .5),
+                                  image: DecorationImage(image: AssetImage("assets/icons/video.png",),fit: BoxFit.fitHeight,alignment: Alignment.center)),
+
                             ),
-                              child: IconButton(
-                                onPressed: () {
-                                  // setState(() {
-                                  //   _controller!.value.isPlaying
-                                  //       ? _controller!.pause()
-                                  //       : _controller!.play();
-                                  // });
-                                },
-                                icon: Icon(
-                                  color: AppColors.kPrimaryColor,
-                                 Icons.open_in_new,
-                                ),
-                              ),
-                            ),
-                          ],
                         )
                         : CustomNetworkImage(
                             imageUrl: '${ApiService().baseUrl}/${controller.currentBannerImages[index]}',
@@ -108,10 +132,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     children: [
                       CustomText(text: AppStaticStrings.selectColor),
                       ...product.variantColors!.map((color) => GestureDetector(
-                            onTap: (){controller.onColorSelected(color);
-                            if( controller.selectedColor.value=="video"){
-                              
-                            }},
+                            onTap: () {
+                              controller.onColorSelected(color);
+                            },
                             child: ColorItemWidget(
                               textColor: controller.selectedColor.value == color ? AppColors.kWhiteColor : AppColors.kPrimaryColor,
                               containerColor: controller.selectedColor.value == color ? AppColors.kPrimaryColor : Colors.transparent,
@@ -217,9 +240,10 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       ],
     );
   }
-//   @override
-//   void dispose() {
-//
-// _controller!.dispose();    super.dispose();
-//   }
+
+  @override
+  void dispose() {
+    ProductController.to.videoController.value!.dispose();
+    super.dispose();
+  }
 }
