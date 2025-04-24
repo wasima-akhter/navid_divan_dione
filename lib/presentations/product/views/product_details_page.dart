@@ -32,7 +32,7 @@ class ProductDetailsPage extends StatefulWidget {
 class _ProductDetailsPageState extends State<ProductDetailsPage> {
 
 
-  VideoPlayerController? _controller;
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +57,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   child: PageView.builder(
                     controller: controller.pageController.value,
                     itemCount: controller.currentBannerImages.length,
-                    itemBuilder: (context, index) => (controller.selectedColor.value == "video"&& _controller!=null)
+                    itemBuilder: (context, index) => (controller.selectedColor.value == "video"/*&& _controller!=null*/)
                         ?
                         // VideoPlayer(controller)
                         Stack(alignment: Alignment.center,
@@ -65,7 +65,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                             SizedBox(
                                 height: 150.h,
                                 width: double.infinity,
-                              child:VideoPlayer(_controller!) ,
+                              child:Icon(Icons.movie_filter_rounded,size: 40.sp,) ,
                               ),
                             Container(decoration: BoxDecoration(
                               shape: BoxShape.circle,
@@ -73,15 +73,15 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                             ),
                               child: IconButton(
                                 onPressed: () {
-                                  setState(() {
-                                    _controller!.value.isPlaying
-                                        ? _controller!.pause()
-                                        : _controller!.play();
-                                  });
+                                  // setState(() {
+                                  //   _controller!.value.isPlaying
+                                  //       ? _controller!.pause()
+                                  //       : _controller!.play();
+                                  // });
                                 },
                                 icon: Icon(
                                   color: AppColors.kPrimaryColor,
-                                  _controller!.value.isPlaying ? Icons.pause : Icons.play_arrow,
+                                 Icons.open_in_new,
                                 ),
                               ),
                             ),
@@ -110,12 +110,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                       ...product.variantColors!.map((color) => GestureDetector(
                             onTap: (){controller.onColorSelected(color);
                             if( controller.selectedColor.value=="video"){
-                              _controller = VideoPlayerController.networkUrl(Uri.parse(
-                                  "${ApiService().baseUrl}/${controller.productModel.value.variantImages!["video"]!.first}"))
-                                ..initialize().then((_) {
-                                  // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-                                  setState(() {});
-                                });
+                              
                             }},
                             child: ColorItemWidget(
                               textColor: controller.selectedColor.value == color ? AppColors.kWhiteColor : AppColors.kPrimaryColor,
@@ -222,9 +217,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       ],
     );
   }
-  @override
-  void dispose() {
-
-_controller!.dispose();    super.dispose();
-  }
+//   @override
+//   void dispose() {
+//
+// _controller!.dispose();    super.dispose();
+//   }
 }

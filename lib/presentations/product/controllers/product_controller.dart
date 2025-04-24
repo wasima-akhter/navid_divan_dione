@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:navid_e_commerce/core/api-client/api_endpoints.dart';
 import 'package:navid_e_commerce/presentations/product/model/pick_address_model.dart';
 import 'package:navid_e_commerce/presentations/product/model/product_model.dart';
+import 'package:video_player/video_player.dart';
 
 import '../../../core/api-client/api_service.dart';
 import '../../../core/helper/helper_function.dart';
@@ -39,7 +40,7 @@ class ProductController extends GetxController {
   RxList<String> currentBannerImages = <String>[].obs;
   RxMap<String, bool> isLoadingDeleteAddress = <String, bool>{}.obs;
   RxBool isPaymentLoading = false.obs;
-
+  VideoPlayerController? _controller;
   @override
   void onInit() {
     getPickUpAddressRequest();
