@@ -1,0 +1,2 @@
+/Users/bdcalling/Documents/sadiaproject/navid/android/app/.cxx/Debug/3ss2c1e4/arm64-v8a/CMakeFiles/edit_cache.dir
+/Users/bdcalling/Documents/sadiaproject/navid/android/app/.cxx/Debug/3ss2c1e4/arm64-v8a/CMakeFiles/rebuild_cache.dir

@@ -42,13 +42,22 @@ class HomeController extends GetxController {
   Rx<TextEditingController> searchController = TextEditingController().obs;
   @override
   void onInit() async{
-    await ProfileController.to.getUserProfileRequest();
-    getCategoryListRequest();
-  await getProductListRequest();
-
+fetchInitialData();
     super.onInit();
   }
+  void fetchInitialData() async {
+    isLoadingCategory.value = true;
+    isLoadingProduct.value = true;
 
+    await Future.wait([
+      getCategoryListRequest(),
+      ProfileController.to.getUserProfileRequest(),
+      getProductListRequest(),
+    ]);
+
+    isLoadingCategory.value = false;
+    isLoadingProduct.value = false;
+  }
   Future<void> refreshCall() async {
 
     searchController.value.clear();

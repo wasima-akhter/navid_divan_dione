@@ -39,10 +39,13 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       spacing: 12.h,
       children: [
         Obx(() {
+          final product = controller.productModel.value;
           if (controller.isLoadingProductDetails.value) {
             return CustomLoadingWidget();
           }
-          final product = controller.productModel.value;
+         else if(product.id==null){
+           return CustomText(text: "Product Details is Empty!!");
+          }
           return Column(spacing: 12.h, crossAxisAlignment: CrossAxisAlignment.start, children: [
             Obx(
               () {

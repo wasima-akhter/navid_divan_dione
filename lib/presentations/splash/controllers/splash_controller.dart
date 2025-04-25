@@ -4,6 +4,7 @@ import 'package:navid_e_commerce/presentations/navigation/views/navigation_page.
 
 import '../../../core/utils/hive_boxes.dart';
 import '../../../core/utils/variable.dart';
+import '../../profile/controllers/profile_controller.dart';
 
 class SplashController extends GetxController{
   static SplashController get to => Get.find();
@@ -13,6 +14,8 @@ class SplashController extends GetxController{
      if( Boxes.getUserData().get(tokenKey)==null||  Boxes.getUserData().get(tokenKey).toString().isEmpty) {
         Get.offAllNamed(LoginPage.routeName);
       }else{
+
+
        Get.offAllNamed(NavigationPage.routeName);
 
      }
