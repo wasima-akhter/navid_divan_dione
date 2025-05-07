@@ -9,7 +9,6 @@ import 'package:navid_e_commerce/core/constants/custom_text.dart';
 import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
 import 'package:navid_e_commerce/core/constants/image_constants.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
-import 'package:navid_e_commerce/core/utils/variable.dart';
 import 'package:navid_e_commerce/presentations/profile/controllers/profile_controller.dart';
 
 class CustomHomeAppbar extends StatelessWidget {

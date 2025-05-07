@@ -1,0 +1,2 @@
+D:/moury_project/navid-e-commerce/android/app/.cxx/Debug/325d3966/x86_64/CMakeFiles/edit_cache.dir
+D:/moury_project/navid-e-commerce/android/app/.cxx/Debug/325d3966/x86_64/CMakeFiles/rebuild_cache.dir
