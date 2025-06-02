@@ -1,2 +1,0 @@
-/Users/bdcalling/Documents/sadia project/navid-e-commerce/android/app/.cxx/RelWithDebInfo/5n593a62/x86_64/CMakeFiles/edit_cache.dir
-/Users/bdcalling/Documents/sadia project/navid-e-commerce/android/app/.cxx/RelWithDebInfo/5n593a62/x86_64/CMakeFiles/rebuild_cache.dir

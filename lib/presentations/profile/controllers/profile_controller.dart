@@ -43,19 +43,20 @@ class ProfileController extends GetxController {
       .obs;
   Rx<UserProfileModel> userModel = UserProfileModel().obs;
   reinitializeProfileControllers() {
-    nameController.value.text = userModel.value.name ?? 'n/a';
+    nameController.value.text = userModel.value.name ?? '';
 
     ///=====================add dynmic email ====================///
-    emailController.value.text = userModel.value.email ?? 'n/a';
+    emailController.value.text = userModel.value.email ?? '';
 
     ///=====================add dynmic contactNumber ====================///
-    contactNumberController.value.text = userModel.value.phone ?? 'n/a';
+    contactNumberController.value.text = userModel.value.phone ?? '';
 
     ///=====================add dynmic birth day ====================///
     birthDayController.value.text = userModel.value.age.toString();
 
     ///=====================add dynmic tax id ====================///
-    taxIdController.value.text = userModel.value.taxId ?? 'n/a';
+    taxIdController.value.text = userModel.value.taxId ?? '';
+
   }
   RxList<String> docPhotosList = <String>[].obs;
 
@@ -78,6 +79,11 @@ class ProfileController extends GetxController {
       if (response['success'] == true) {
         logger.d(response);
         userModel.value = UserProfileModel.fromJson(response['data']);
+        if(response['data']['tax_id']!=null){
+          Boxes.getUserData().put("hasTax", true);
+        }else{
+          Boxes.getUserData().put("hasTax", false);
+        }
         reinitializeProfileControllers();
       } else if (response['message'] == AppStaticStrings.noInternet) {
         showCustomSnackbar(
@@ -140,8 +146,9 @@ class ProfileController extends GetxController {
       isLoadingUpdateProfile.value = false;
       if (response['success'] == true) {
         logger.d(response);
-        Get.offAllNamed(NavigationPage.routeName);
         getUserProfileRequest();
+
+        Get.offAllNamed(NavigationPage.routeName);
       } else {
         logger.e(response);
         showCustomSnackbar(

@@ -43,7 +43,7 @@ class OtpPage extends StatelessWidget {
                     type: SnackBarType.failed);
               }
             },
-            title: AppStaticStrings.sendCode,
+            title: AppStaticStrings.confirm,
           );
         }),
         children: [

@@ -150,11 +150,12 @@ fetchInitialData();
       }
 
       ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
+      bool hasTax = await Boxes.getUserData().get("hasTax");
       final response = await ApiService().request(
         endpoint: productGetAllEndPoint,
         method: 'GET',
         queryParams: {
-          "whole_sale": ProfileController.to.userModel.value.taxId!=null? "true":"false",
+          "whole_sale":hasTax.toString(),
           'page': currentProductPage.value.toString(),
           'limit': itemsProductPerPage.value.toString(),
           'search': searchController.value.text,

@@ -23,3 +23,4 @@ String pickAddressEndPoint ='pick-address/get-all';
 String getOrderEndPoint ='order/get-all';
 String getNotificationEndPoint ='notification/get-all';
 String paymentCreateEndPoint ='payment/create';
+String paymentUpdateEndPoint ='product/update/';

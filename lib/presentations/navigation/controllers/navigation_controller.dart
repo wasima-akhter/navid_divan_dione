@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:navid_e_commerce/core/constants/app_static_strings.dart';
 import 'package:navid_e_commerce/presentations/cart/views/cart_page.dart';
 import 'package:navid_e_commerce/presentations/home/controllers/home_controller.dart';
@@ -52,7 +53,11 @@ class NavigationController extends GetxController {
       if (response['success'] == true) {
         logger.d(response);
         showCustomSnackbar(title: 'Success', message:  response['message'],);
-        Boxes.getUserData().delete(tokenKey);
+        if (Hive.isBoxOpen(userBoxName)) {
+          await Hive.box(userBoxName).close();
+        }
+        await Hive.deleteBoxFromDisk(userBoxName);
+
         Get.offAllNamed(LoginPage.routeName);
       }else{
         logger.e(response);

@@ -1,2 +1,0 @@
-C:/Users/BdCalling/StudioProjects/navid_e_commerce/android/app/.cxx/Debug/286f5b6d/armeabi-v7a/CMakeFiles/edit_cache.dir
-C:/Users/BdCalling/StudioProjects/navid_e_commerce/android/app/.cxx/Debug/286f5b6d/armeabi-v7a/CMakeFiles/rebuild_cache.dir

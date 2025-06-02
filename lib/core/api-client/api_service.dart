@@ -8,7 +8,7 @@ import '../utils/variable.dart';
 
 class ApiService {
   // Base URL for your API
-  final String baseUrl = 'http://10.0.60.189:5005';
+  final String baseUrl = 'https://api.divandioneapp.com';
 
   // Singleton pattern for API service
   static final ApiService _instance = ApiService._internal();

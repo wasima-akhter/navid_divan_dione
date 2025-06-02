@@ -15,41 +15,58 @@ class NotificationPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomRefreshIndicatorWidget(
       onRefresh: () => NotificationController.to.getNotificationRequest(),
-      child: SingleChildScrollView(
-        physics: AlwaysScrollableScrollPhysics(),
-        child: Padding(
-          padding: padding12,
-          child: Obx(() {
-            return NotificationController.to.isLoadingNotificationList.value? PaginationLoadingWidget():NotificationController.to.notificationList.isEmpty?
-                Center(child: CustomText(text: "Notification List is Empty!! ")): Column(
-              children: List.generate(
-                NotificationController.to.notificationList.length,
-                    (index) =>
-                    Column(
+      child: CustomScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          SliverPadding(
+            padding: padding12,
+            sliver: Obx(() {
+              if (NotificationController.to.isLoadingNotificationList.value) {
+                return SliverToBoxAdapter(child: PaginationLoadingWidget());
+              }
+
+              final list = NotificationController.to.notificationList;
+
+              if (list.isEmpty) {
+                return const SliverToBoxAdapter(
+                  child: Center(child: CustomText(text: "Notification List is Empty!!")),
+                );
+              }
+
+              return SliverList(
+                delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                    final item = list[index];
+                    return Column(
                       children: [
                         Padding(
                           padding: padding6V,
                           child: Row(
                             children: [
-
                               ///------------------------dynamic title-------------------------///
-                              Expanded(child: CustomText(text: NotificationController.to.notificationList[index].title.toString())),
+                              Expanded(
+                                child: CustomText(text: item.title.toString()),
+                              ),
                               CustomText(
-                                text: NotificationController.to.formatDate(NotificationController.to.notificationList[index].updatedAt.toString()),
+                                text: NotificationController.to.formatDate(item.updatedAt.toString()),
                                 style: poppinsLight,
                                 fontSize: getFontSizeSmall(),
                               ),
                             ],
                           ),
                         ),
-                        Divider()
+                        const Divider(),
                       ],
-                    ),
-              ),
-            );
-          }),
-        ),
+                    );
+                  },
+                  childCount: list.length,
+                ),
+              );
+            }),
+          ),
+        ],
       ),
     );
   }
 }
+

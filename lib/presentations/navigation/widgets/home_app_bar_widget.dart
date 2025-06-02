@@ -45,7 +45,7 @@ class CustomHomeAppbar extends StatelessWidget {
                 Obx(
                   () {
                     return CustomText(
-                      text: ProfileController.to.userModel.value.name??'n/a',
+                      text: ProfileController.to.userModel.value.name??'user name',
                       color: AppColors.kWhiteColor,
                       maxLines: 1,
                     );
@@ -54,7 +54,7 @@ class CustomHomeAppbar extends StatelessWidget {
                 Obx(
                 () {
                     return CustomText(
-                      text: ProfileController.to.userModel.value.email??'n/a',
+                      text: ProfileController.to.userModel.value.email??'user@gmail.com',
                       color: AppColors.kWhiteColor,
                       style: poppinsRegular,
                       fontSize: getFontSizeSmall(),

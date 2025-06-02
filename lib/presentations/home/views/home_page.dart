@@ -20,7 +20,6 @@ import 'package:navid_e_commerce/presentations/home/widgets/search_text_field_wi
 import 'package:navid_e_commerce/presentations/profile/widgets/custom_loading_widget.dart';
 
 import '../widgets/pagination_loading_widget.dart';
-
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -30,16 +29,15 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final ScrollController scrollController = ScrollController();
+
   @override
   void initState() {
-    scrollController.addListener(
-      () {
-        if (scrollController.position.pixels ==
-            scrollController.position.maxScrollExtent) {
-          HomeController.to.getProductListRequest(loadMore: true);
-        }
-      },
-    );
+    scrollController.addListener(() {
+      if (scrollController.position.pixels ==
+          scrollController.position.maxScrollExtent) {
+        HomeController.to.getProductListRequest(loadMore: true);
+      }
+    });
     super.initState();
   }
 
@@ -49,86 +47,131 @@ class _HomePageState extends State<HomePage> {
       onRefresh: () {
         return HomeController.to.refreshCall();
       },
-      child: SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-
+      child: CustomScrollView(
         controller: scrollController,
-        child: Padding(
-          padding: padding12,
-          child: Column(
-            spacing: 6.h,
-            children: [
-              ///=================search button=====================///
-
-              SearchTextFieldWidget(
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          /// ============ Search Field =============
+          SliverPadding(
+            padding: padding12H.copyWith(top: 12),
+            sliver: SliverToBoxAdapter(
+              child: SearchTextFieldWidget(
                 searchController: HomeController.to.searchController.value,
               ),
-              Obx(() {
-                return HomeController.to.isLoadingCategory.value ||
-                        HomeController.to.catList.isEmpty
-                    ? SizedBox.shrink()
-                    : Row(
-                        children: [
-                          Expanded(
-                            child: CustomText(
-                              text: AppStaticStrings.category,
-                              style: poppinsMedium,
-                              fontSize: getFontSizeDefault(),
-                              color: AppColors.kPrimaryTextDarkColor,
-                            ),
-                          ),
-                          CustomTextButton(
-                            onPressed: () {
-                              Get.toNamed(CategoryListPage.routeName);
-                            },
-                            title: AppStaticStrings.viewAll,
-                            fontSize: getFontSizeSemiSmall(),
-                            textColor: AppColors.kPrimaryTextDarkColor,
-                          )
-                        ],
-                      );
-              }),
-
-              ///=================category list=====================///
-              Obx(() {
-                return HomeController.to.isLoadingCategory.value
-                    ? CustomLoadingWidget(
-                        height: 40.h,
-                      )
-                    : HomeController.to.catList.isEmpty
-                        ? CustomText(text: 'There is no Category available!!')
-                        : SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              spacing: 12.w,
-                              children: List.generate(
-                                HomeController.to.catList.length,
-                                (index) => CategoryListCardItemWidget(
-                                  categoryModel: HomeController.to.catList[index],
-                                ),
-                              ),
-                            ),
-                          );
-              }),
-              space6H,
-
-              ///=================product list=====================///
-
-              DynamicProductList(),
-              Obx(
-                () {
-                  return HomeController.to.isProductLoadingMore.value
-                      ? PaginationLoadingWidget()
-                      : SizedBox.shrink();
-                },
-              )
-            ],
+            ),
           ),
-        ),
+
+          /// ============ Category Title & Button =============
+          SliverPadding(
+            padding: padding12H,
+            sliver: Obx(() {
+              return HomeController.to.isLoadingCategory.value ||
+                  HomeController.to.catList.isEmpty
+                  ? SliverToBoxAdapter(child: SizedBox.shrink())
+                  : SliverToBoxAdapter(
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: CustomText(
+                        text: AppStaticStrings.category,
+                        style: poppinsMedium,
+                        fontSize: getFontSizeDefault(),
+                        color: AppColors.kPrimaryTextDarkColor,
+                      ),
+                    ),
+                    CustomTextButton(
+                      onPressed: () {
+                        Get.toNamed(CategoryListPage.routeName);
+                      },
+                      title: AppStaticStrings.viewAll,
+                      fontSize: getFontSizeSemiSmall(),
+                      textColor: AppColors.kPrimaryTextDarkColor,
+                    )
+                  ],
+                ),
+              );
+            }),
+          ),
+
+          /// ============ Category Horizontal List =============
+          SliverPadding(
+            padding: padding12H4V,
+            sliver: Obx(() {
+              if (HomeController.to.isLoadingCategory.value) {
+                return SliverToBoxAdapter(
+                  child: CustomLoadingWidget(height: 40.h),
+                );
+              } else if (HomeController.to.catList.isEmpty) {
+                return SliverToBoxAdapter(
+                    child: CustomText(text: 'There is no Category available!!'));
+              } else {
+                return SliverToBoxAdapter(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      spacing: 12.w,
+                      children: List.generate(
+                        HomeController.to.catList.length,
+                            (index) => CategoryListCardItemWidget(
+                          categoryModel: HomeController.to.catList[index],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              }
+            }),
+          ),
+
+          /// ============ Spacing =============
+          SliverToBoxAdapter(child: SizedBox(height: 6.h)),
+
+          /// ============ Product Grid ============
+          SliverPadding(
+            padding: padding12H4V,
+            sliver: Obx(() {
+              if (HomeController.to.isLoadingProduct.value) {
+                return SliverToBoxAdapter(
+                    child: CustomLoadingWidget(height: 200.h));
+              } else if (HomeController.to.productList.isEmpty) {
+                return SliverToBoxAdapter(
+                    child: CustomText(text: 'There is no product available!!'));
+              } else {
+                return SliverGrid(
+                  delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                      return ProductCardItemWidget(
+                        product: HomeController.to.productList[index],
+                      );
+                    },
+                    childCount: HomeController.to.productList.length,
+                  ),
+                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 210.w,
+                    mainAxisExtent: 265.w,
+                    crossAxisSpacing: 8.w,
+                    mainAxisSpacing: 8.w,
+                  ),
+                );
+              }
+            }),
+          ),
+
+          /// ============ Pagination Loader =============
+          SliverPadding(
+            padding: padding12H4V,
+            sliver: Obx(() {
+              return HomeController.to.isProductLoadingMore.value
+                  ? SliverToBoxAdapter(child: PaginationLoadingWidget())
+                  : SliverToBoxAdapter(child: SizedBox.shrink());
+            }),
+          ),
+        ],
       ),
     );
   }
 }
+
 
 class DynamicProductList extends StatelessWidget {
   const DynamicProductList({

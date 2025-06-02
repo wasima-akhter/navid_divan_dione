@@ -42,203 +42,260 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           final product = controller.productModel.value;
           if (controller.isLoadingProductDetails.value) {
             return CustomLoadingWidget();
+          } else if (product.id == null) {
+            return CustomText(text: "Product Details is Empty!!");
           }
-         else if(product.id==null){
-           return CustomText(text: "Product Details is Empty!!");
-          }
-          return Column(spacing: 12.h, crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Obx(
-              () {
-                if (controller.currentBannerImages.isEmpty) {
-                  return SizedBox.shrink();
-                }
-                return SizedBox(
-                  height: 150.h,
-                  child: PageView.builder(
-                    controller: controller.pageController.value,
-                    itemCount: controller.currentBannerImages.length,
-                    itemBuilder: (context, index) => (controller.selectedColor.value == "video" /*&& _controller!=null*/)
-                        ?
-                        // VideoPlayer(controller)
-                        GestureDetector(
-
-                          onTap: () {
-                      if (ProductController.to.videoController.value != null &&
-                  ProductController.to.videoController.value!.value.isInitialized) {
-                showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                scrollable: true,
-                content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                AspectRatio(
-                aspectRatio: ProductController.to.videoController.value!.value.aspectRatio,
-                child: VideoPlayer(ProductController.to.videoController.value!),
-                ),
-                IconButton(
-                onPressed: () {
-                if (ProductController.to.videoController.value!.value.isCompleted) {
-                ProductController.to.videoController.value!.seekTo(Duration.zero);
-                ProductController.to.videoController.value!.play();
-                }
-
-                ProductController.to.videoController.value!.value.isPlaying
-                ? ProductController.to.videoController.value!.pause()
-                    : ProductController.to.videoController.value!.play();
-                },
-                icon: ValueListenableBuilder(
-                valueListenable: ProductController.to.videoController.value!,
-                builder: (context, value, _) {
-                return Icon(
-                color: AppColors.kPrimaryColor,
-                value.isPlaying ? Icons.pause : Icons.play_arrow,
-                );
-                },
-                ),
-                ),
-                ],
-                ),
-                ),
-                );
-                }
-                },
-                          child: Container(
-                              height: 150.h,
-                              width: double.infinity,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-
-                                  color: AppColors.kWhiteColor.withValues(alpha: .5),
-                                  image: DecorationImage(image: AssetImage("assets/icons/video.png",),fit: BoxFit.fitHeight,alignment: Alignment.center)),
-
-                            ),
-                        )
-                        : CustomNetworkImage(
-                            imageUrl: '${ApiService().baseUrl}/${controller.currentBannerImages[index]}',
-                            height: 150.h,
-                            width: double.infinity,
-                          ),
-                  ),
-                );
-              },
-            ),
-            Obx(
-              () {
-                if (product.variantColors?.isEmpty ?? true) {
-                  return SizedBox.shrink();
-                }
-                return SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    spacing: 12.w,
-                    children: [
-                      CustomText(text: AppStaticStrings.selectColor),
-                      ...product.variantColors!.map((color) => GestureDetector(
-                            onTap: () {
-                              controller.onColorSelected(color);
-                            },
-                            child: ColorItemWidget(
-                              textColor: controller.selectedColor.value == color ? AppColors.kWhiteColor : AppColors.kPrimaryColor,
-                              containerColor: controller.selectedColor.value == color ? AppColors.kPrimaryColor : Colors.transparent,
-                              color: color,
-                            ),
-                          )),
-                    ],
-                  ),
-                );
-              },
-            ),
-            Row(
+          return Column(
+              spacing: 12.h,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: PriceTextWidget(
-                    previousPrice: (product.previousPrice ?? 0.0).toString(),
-                    price: (product.price ?? 0.0).toString(),
-                    fontSize: getFontSizeExtraLarge(),
-                    previousPriceFontSize: getFontSizeDefault(),
-                  ),
+                Obx(
+                  () {
+                    if (controller.currentBannerImages.isEmpty) {
+                      return SizedBox.shrink();
+                    }
+                    return AspectRatio(
+                      aspectRatio: 1,
+                      child: PageView.builder(
+                        controller: controller.pageController.value,
+                        itemCount: controller.currentBannerImages.length,
+                        itemBuilder: (context, index) => (controller
+                                    .selectedColor.value ==
+                                "video" /*&& _controller!=null*/)
+                            ?
+                            // VideoPlayer(controller)
+                            GestureDetector(
+                                onTap: () {
+                                  if (ProductController
+                                              .to.videoController.value !=
+                                          null &&
+                                      ProductController.to.videoController
+                                          .value!.value.isInitialized) {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                        scrollable: true,
+                                        content: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            AspectRatio(
+                                              aspectRatio: ProductController
+                                                  .to
+                                                  .videoController
+                                                  .value!
+                                                  .value
+                                                  .aspectRatio,
+                                              child: VideoPlayer(
+                                                  ProductController.to
+                                                      .videoController.value!),
+                                            ),
+                                            IconButton(
+                                              onPressed: () {
+                                                if (ProductController
+                                                    .to
+                                                    .videoController
+                                                    .value!
+                                                    .value
+                                                    .isCompleted) {
+                                                  ProductController
+                                                      .to.videoController.value!
+                                                      .seekTo(Duration.zero);
+                                                  ProductController
+                                                      .to.videoController.value!
+                                                      .play();
+                                                }
+
+                                                ProductController
+                                                        .to
+                                                        .videoController
+                                                        .value!
+                                                        .value
+                                                        .isPlaying
+                                                    ? ProductController.to
+                                                        .videoController.value!
+                                                        .pause()
+                                                    : ProductController.to
+                                                        .videoController.value!
+                                                        .play();
+                                              },
+                                              icon: ValueListenableBuilder(
+                                                valueListenable:
+                                                    ProductController.to
+                                                        .videoController.value!,
+                                                builder: (context, value, _) {
+                                                  return Icon(
+                                                    color:
+                                                        AppColors.kPrimaryColor,
+                                                    value.isPlaying
+                                                        ? Icons.pause
+                                                        : Icons.play_arrow,
+                                                  );
+                                                },
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
+                                child: Container(
+                                  height: 150.h,
+                                  width: double.infinity,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                      color: AppColors.kWhiteColor
+                                          .withValues(alpha: .5),
+                                      image: DecorationImage(
+                                          image: AssetImage(
+                                            "assets/icons/video.png",
+                                          ),
+                                          fit: BoxFit.fitHeight,
+                                          alignment: Alignment.center)),
+                                ),
+                              )
+                            : AspectRatio(
+                          aspectRatio: 1,
+                              child: CustomNetworkImage(
+                                isPreview: true,
+                                  imageUrl:
+                                      '${ApiService().baseUrl}/${controller.currentBannerImages[index]}',
+
+                                  width: double.infinity,
+                                ),
+                            ),
+                      ),
+                    );
+                  },
                 ),
-                CartCounterWidget(
-                  count: ProductController.to.cartQuantity,
-                )
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: CustomText(
-                    text: product.name ?? '',
-                    fontSize: getFontSizeDefault(),
-                    color: AppColors.kPrimaryTextDarkColor,
-                  ),
+                Obx(
+                  () {
+                    if (product.variantColors?.isEmpty ?? true) {
+                      return SizedBox.shrink();
+                    }
+                    return SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        spacing: 12.w,
+                        children: [
+                          CustomText(text: AppStaticStrings.selectColor),
+                          ...product.variantColors!.map((color) =>
+                              GestureDetector(
+                                onTap: () {
+                                  controller.onColorSelected(color);
+                                },
+                                child: ColorItemWidget(
+                                  textColor:
+                                      controller.selectedColor.value == color
+                                          ? AppColors.kWhiteColor
+                                          : AppColors.kPrimaryColor,
+                                  containerColor:
+                                      controller.selectedColor.value == color
+                                          ? AppColors.kPrimaryColor
+                                          : Colors.transparent,
+                                  color: color,
+                                ),
+                              )),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: PriceTextWidget(
+                        previousPrice:
+                            (product.previousPrice ?? 0.0).toString(),
+                        price: (product.price ?? 0.0).toString(),
+                        fontSize: getFontSizeExtraLarge(),
+                        previousPriceFontSize: getFontSizeDefault(),
+                      ),
+                    ),
+                    CartCounterWidget(
+                      count: ProductController.to.cartQuantity,
+                    )
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: CustomText(
+                        text: product.name ?? '',
+                        fontSize: getFontSizeDefault(),
+                        color: AppColors.kPrimaryTextDarkColor,
+                      ),
+                    ),
+                    CustomText(
+                      text: '${product.quantity ?? ''} pis',
+                      style: poppinsRegular,
+                    )
+                  ],
+                ),
+                ExpandableText(
+                  text: product.description ?? '',
+                  maxLines: 3,
+                ),
+                Row(
+                  spacing: 12.w,
+                  children: [
+                    Expanded(
+                      child: CustomButton(
+                        onTap: () {
+                          buyProductDialog(context);
+                        },
+                        title: AppStaticStrings.buyNow,
+                      ),
+                    ),
+                    Expanded(child: Obx(() {
+                      final isLoading =
+                          CartController.to.isLoadingAddCart[product.id] ??
+                              false;
+
+                      return CustomButton(
+                        loadingColor: AppColors.kPrimaryColor,
+                        onTap: () {
+                          CartController.to.addToCart(
+                              variant: controller.currentBannerImages[0],
+                              productId: product.id ?? '',
+                              quantity: ProductController.to.cartQuantity.value,
+                              price: ProductController.to.cartQuantity.value *
+                                  int.parse(product.price.toString()));
+                        },
+                        isLoading: isLoading,
+                        title: AppStaticStrings.addToCard,
+                        fillColor: Colors.transparent,
+                        textColor: AppColors.kPrimaryColor,
+                      );
+                    }))
+                  ],
                 ),
                 CustomText(
-                  text: '${product.quantity ?? ''} pis',
-                  style: poppinsRegular,
+                  text: 'Related Products',
+                  fontSize: getFontSizeDefault(),
+                  color: AppColors.kPrimaryTextDarkColor,
+                ),
+                SizedBox(
+                  height: 250,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      spacing: 12.w,
+                      children: List.generate(
+                        ProductController.to.relatedProductList.length,
+                        (index) => SizedBox(
+                            width: 200.w,
+                            // height: 200.w,
+                            child: ProductCardItemWidget(
+                              product: ProductController
+                                  .to.relatedProductList[index],
+                            )),
+                      ),
+                    ),
+                  ),
                 )
-              ],
-            ),
-            ExpandableText(
-              text: product.description ?? '',
-              maxLines: 3,
-            ),
-            Row(
-              spacing: 12.w,
-              children: [
-                Expanded(
-                  child: CustomButton(
-                    onTap: () {
-                      buyProductDialog(context);
-                    },
-                    title: AppStaticStrings.buyNow,
-                  ),
-                ),
-                Expanded(child: Obx(() {
-                  final isLoading = CartController.to.isLoadingAddCart[product.id] ?? false;
-
-                  return CustomButton(
-                    loadingColor: AppColors.kPrimaryColor,
-                    onTap: () {
-                      CartController.to.addToCart(
-                          variant: controller.currentBannerImages[0],
-                          productId: product.id ?? '',
-                          quantity: ProductController.to.cartQuantity.value,
-                          price: ProductController.to.cartQuantity.value * int.parse(product.price.toString()));
-                    },
-                    isLoading: isLoading,
-                    title: AppStaticStrings.addToCard,
-                    fillColor: Colors.transparent,
-                    textColor: AppColors.kPrimaryColor,
-                  );
-                }))
-              ],
-            ),
-            CustomText(
-              text: 'Related Products',
-              fontSize: getFontSizeDefault(),
-              color: AppColors.kPrimaryTextDarkColor,
-            ),
-            SizedBox(
-              height: 250,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  spacing: 12.w,
-                  children: List.generate(
-                    ProductController.to.relatedProductList.length,
-                    (index) => SizedBox(
-                        width: 200.w,
-                        // height: 200.w,
-                        child: ProductCardItemWidget(
-                          product: ProductController.to.relatedProductList[index],
-                        )),
-                  ),
-                ),
-              ),
-            )
-          ]);
+              ]);
         })
       ],
     );

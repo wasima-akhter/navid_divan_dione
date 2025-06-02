@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:navid_e_commerce/core/api-client/api_endpoints.dart';
 import 'package:navid_e_commerce/core/api-client/api_service.dart';
 import 'package:navid_e_commerce/core/helper/helper_function.dart';
@@ -105,9 +106,9 @@ class AuthController extends GetxController {
       passSignUpController.text = '1234567A';
       confirmPassSignUpController.text = '1234567A';
       ageSignUpController.value.text = formattedDateOfBirth;
-      emailLoginController.text = 'cayoj38393@evluence.com';
+      emailLoginController.text = 'nobaven129@claspira.com';
       emailForgetController.value.text ='cayoj38393@evluence.com' /*'pihoner651@eligou.com'*/;
-      passLoginController.text = '12345678S';
+      passLoginController.text = '1234567A';
       passNewController.text = '1234567A';
       confirmPassNewController.text = '1234567A';
     }
@@ -237,7 +238,10 @@ class AuthController extends GetxController {
           title: 'Success',
           message: response['message'],
         );
+        await Hive.openBox(userBoxName);
+
         Boxes.getUserData().put(tokenKey, response['token']);
+        clearSignInController();
         ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
         Get.offAllNamed(NavigationPage.routeName);
       } else {
@@ -325,16 +329,19 @@ class AuthController extends GetxController {
     nameSignUpController.clear();
     passSignUpController.clear();
     confirmPassSignUpController.clear();
+  } clearSignInController() {
+    emailLoginController.clear();
+    passLoginController.clear();
   }
 
-  @override
-  void onClose() {
-    emailSignUpController.value.dispose();
-    nameSignUpController.dispose();
-    passSignUpController.dispose();
-    confirmPassSignUpController.dispose();
-    passNewController.dispose();
-    confirmPassNewController.dispose();
-    super.onClose();
-  }
+  // @override
+  // void onClose() {
+  //   emailSignUpController.value.dispose();
+  //   nameSignUpController.dispose();
+  //   passSignUpController.dispose();
+  //   confirmPassSignUpController.dispose();
+  //   passNewController.dispose();
+  //   confirmPassNewController.dispose();
+  //   super.onClose();
+  // }
 }

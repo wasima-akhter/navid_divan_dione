@@ -174,7 +174,8 @@ class ProductController extends GetxController {
     required String address,
     required String phone,
     required String name,
-  }) async {
+  })
+  async {
     try {
       isLoadingAddShippingAddress.value = true;
       final response = await ApiService()
