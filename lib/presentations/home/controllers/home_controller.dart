@@ -150,7 +150,9 @@ fetchInitialData();
       }
 
       ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
-      bool hasTax = await Boxes.getUserData().get("hasTax");
+      bool hasTax = (await Boxes.getUserData().get("hasTax")) ?? false; // Provide a default false if null
+logger.d(Boxes.getUserData().get("hasTax").toString());
+
       final response = await ApiService().request(
         endpoint: productGetAllEndPoint,
         method: 'GET',

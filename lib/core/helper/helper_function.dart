@@ -86,14 +86,19 @@ Future<dynamic> defaultAlertDialog(BuildContext context,
         backgroundColor: backgroundColor,
         title: Row(
           children: [
-            title != null ? Spacer() : SizedBox.shrink(),
+
             title != null
-                ? CustomText(
-                    text: title,
-                    style: poppinsMedium.copyWith(fontSize: getFontSizeLarge()),
-                  )
+                ? Expanded(
+                  child: Padding(
+                    padding:padding12H,
+                    child: CustomText(
+                        text: title,
+                        style: poppinsMedium.copyWith(fontSize: getFontSizeLarge()),
+                      ),
+                  ),
+                )
                 : SizedBox.shrink(),
-            Spacer(),
+
             IconButton(
                 onPressed: () {
                   Navigator.pop(context);

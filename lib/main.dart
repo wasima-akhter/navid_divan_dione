@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
       minTextAdapt: true,
       // useInheritedMediaQuery: true,
       builder: (context, child) => GetMaterialApp(
-        title: 'E-commerce',
+        title: 'Divan Dione',
         theme: AppTheme.lightTheme,
         themeMode: ThemeMode.dark,
         initialRoute: SplashPage.routeName,

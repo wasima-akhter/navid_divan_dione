@@ -1,4 +1,4 @@
-package com.example.navid_e_commerce
+package divan.dione.android.app
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
+import 'package:navid_e_commerce/core/components/custom_refresh_indicator.dart';
 import 'package:navid_e_commerce/core/constants/app_static_strings.dart';
 import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
@@ -16,19 +17,32 @@ class PrivacyTermsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String? argument = Get.arguments;
-    return DefaultScaffoldStructureWidget(
-        appBarTitle: argument != null && argument == 'terms'
-            ? AppStaticStrings.termsOfUse
-            : AppStaticStrings.privacyPolicy,
-        children: [
-          Obx(() {
-            return SettingsController.to.isLoadingPolicy.value?PaginationLoadingWidget(): HtmlWidget(
-              argument != null && argument == 'terms' ? '''${SettingsController.to.termsModel.value.desc}
-''' : '''${SettingsController.to.policyModel.value.desc}
-''',
-              textStyle: poppinsRegular.copyWith(fontSize: getFontSizeDefault()),
-            );
-          })
-        ]);
+    return CustomRefreshIndicatorWidget(
+      onRefresh: () {
+        return SettingsController.to.refresh();
+      },
+      child: SizedBox(
+        height: Get.height,
+        child: DefaultScaffoldStructureWidget(
+            appBarTitle: argument != null && argument == 'terms'
+                ? AppStaticStrings.termsOfUse
+                : AppStaticStrings.privacyPolicy,
+            children: [
+              Obx(() {
+                return SettingsController.to.isLoadingPolicy.value
+                    ? PaginationLoadingWidget()
+                    : HtmlWidget(
+                        argument != null && argument == 'terms'
+                            ? '''${SettingsController.to.termsModel.value.desc}
+        '''
+                            : '''${SettingsController.to.policyModel.value.desc}
+        ''',
+                        textStyle: poppinsRegular.copyWith(
+                            fontSize: getFontSizeDefault()),
+                      );
+              })
+            ]),
+      ),
+    );
   }
 }

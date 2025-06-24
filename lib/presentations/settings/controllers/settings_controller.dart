@@ -26,17 +26,21 @@ class SettingsController extends GetxController {
     getTermsRequest();
     super.onInit();
   }
-
+  Future<void> refresh() async{
+  await getPrivacyPolicyRequest();
+  await getTermsRequest();
+}
   Future<void> getPrivacyPolicyRequest() async {
     try {
       isLoadingPolicy.value = true;
       ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
 
       final response = await ApiService().request(endpoint: settingPrivacyEndPoint, method: 'GET');
-      isLoadingPolicy.value = false;
+
       if (response['success'] == true) {
         logger.d(response);
         policyModel.value = SettingsModel.fromJson(response['data']);
+        isLoadingPolicy.value = false;
       } else if (response['message'] == AppStaticStrings.noInternet) {
         showCustomSnackbar(
           title: 'Failed',
@@ -44,11 +48,14 @@ class SettingsController extends GetxController {
           type: SnackBarType.failed,
           noInternet: true,
         );
+        isLoadingPolicy.value = false;
       } else {
+        isLoadingPolicy.value = false;
         logger.e(response);
         showCustomSnackbar(title: 'Failed', message: response['message'], type: SnackBarType.failed);
       }
     } catch (e) {
+
       logger.e(e.toString());
       isLoadingPolicy.value = false;
     }
