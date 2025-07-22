@@ -156,13 +156,19 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                               )
                             : AspectRatio(
                           aspectRatio: 1,
-                              child: CustomNetworkImage(
-                                isPreview: true,
-                                  imageUrl:
-                                      '${ApiService().baseUrl}/${controller.currentBannerImages[index]}',
+                              child: InteractiveViewer(
+                                panEnabled: false, // Set it to fa lse
+                                boundaryMargin: EdgeInsets.all(100),
+                                minScale: 0.5,
+                                maxScale: 2,
+                                child: CustomNetworkImage(
+                                  isPreview: true,
+                                    imageUrl:
+                                        '${ApiService().baseUrl}/${controller.currentBannerImages[index]}',
 
-                                  width: double.infinity,
-                                ),
+                                    width: double.infinity,
+                                  ),
+                              ),
                             ),
                       ),
                     );

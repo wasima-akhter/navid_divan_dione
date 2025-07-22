@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:navid_e_commerce/core/constants/color_constants.dart';
 import 'package:navid_e_commerce/core/utils/variable.dart';
 import 'package:navid_e_commerce/presentations/profile/widgets/custom_loading_widget.dart';
 
@@ -62,10 +63,16 @@ class _CustomNetworkImageState extends State<CustomNetworkImage> {
             onTap:widget.isPreview == true? () {
               if (widget.imageUrl.isNotEmpty && widget.isPreview == true) {
                 Get.dialog(AlertDialog(
-                  content: CustomNetworkImage(
-                    imageUrl: widget.imageUrl,
-                    fit: BoxFit.contain,
-                    width: 300,
+                  content:  InteractiveViewer(
+                    panEnabled: false, // Set it to fa lse
+                    boundaryMargin: EdgeInsets.all(100),
+                    minScale: 0.5,
+                    maxScale: 2,
+                    child: CustomNetworkImage(
+                      imageUrl: widget.imageUrl,
+                      fit: BoxFit.contain,
+                      width: 300,
+                    ),
                   ),
                 ));
               }
@@ -126,14 +133,22 @@ class _CustomNetworkImageState extends State<CustomNetworkImage> {
                   context: context,
                   builder: (context) => AlertDialog(
                     scrollable: false,
+                    backgroundColor: AppColors.kPrimaryCartColor,
                     content:  ConstrainedBox(
                     constraints: BoxConstraints(
                     maxHeight: 300,
                     maxWidth: MediaQuery.of(context).size.width * 0.8,
                   ),
-                  child: CustomNetworkImage(
-                    imageUrl: widget.imageUrl,
-                    fit: BoxFit.contain,
+                  child:  InteractiveViewer(
+                    panEnabled: false, // Set it to fa lse
+                    boundaryMargin: EdgeInsets.all(100),
+                    minScale: 0.5,
+                    maxScale: 2,
+
+                    child: CustomNetworkImage(
+                      imageUrl: widget.imageUrl,
+                      fit: BoxFit.contain,
+                    ),
                   ),
                 ),
 
