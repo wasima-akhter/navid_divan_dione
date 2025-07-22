@@ -1,3 +1,4 @@
+import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -17,6 +18,7 @@ import 'package:navid_e_commerce/presentations/product/controllers/product_contr
 import 'package:navid_e_commerce/presentations/product/widgets/color_item_widget.dart';
 import 'package:navid_e_commerce/presentations/product/widgets/expand_able_text.dart';
 import 'package:navid_e_commerce/presentations/profile/widgets/custom_loading_widget.dart';
+import 'package:navid_e_commerce/presentations/splash/controllers/common_controller.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../../core/helper/helper_function.dart';
@@ -35,6 +37,10 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   Widget build(BuildContext context) {
     final controller = ProductController.to;
     return DefaultScaffoldStructureWidget(
+      onRefresh: () async {
+        ProductController.to.getProductDetailsRequest(
+            productID: controller.productModel.value.id ?? '');
+      },
       appBarTitle: AppStaticStrings.productDetails,
       spacing: 12.h,
       children: [
@@ -67,10 +73,10 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                             GestureDetector(
                                 onTap: () {
                                   if (ProductController
-                                              .to.videoController.value !=
+                                              .to.chewieController.value !=
                                           null &&
-                                      ProductController.to.videoController
-                                          .value!.value.isInitialized) {
+                                      ProductController.to.chewieController
+                                          .value!.videoPlayerController.value.isInitialized) {
                                     showDialog(
                                       context: context,
                                       builder: (context) => AlertDialog(
@@ -79,49 +85,38 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             AspectRatio(
-                                              aspectRatio: ProductController
-                                                  .to
-                                                  .videoController
-                                                  .value!
-                                                  .value
-                                                  .aspectRatio,
-                                              child: VideoPlayer(
-                                                  ProductController.to
-                                                      .videoController.value!),
+                                              aspectRatio: ProductController.to
+                                                  .chewieController
+                                                  .value!.aspectRatio??1,
+                                              child: Chewie(
+                                                   controller: ProductController.to
+                                                       .chewieController.value!,),
                                             ),
                                             IconButton(
                                               onPressed: () {
-                                                if (ProductController
-                                                    .to
-                                                    .videoController
-                                                    .value!
-                                                    .value
-                                                    .isCompleted) {
+                                                /*if (ProductController.to
+                                                    .chewieController.value!.videoPlayerController.value.isCompleted) {
                                                   ProductController
-                                                      .to.videoController.value!
+                                                      .to.chewieController.value?.videoPlayerController.value
                                                       .seekTo(Duration.zero);
                                                   ProductController
-                                                      .to.videoController.value!
+                                                      .to.chewieController.value?.videoPlayerController.value
                                                       .play();
                                                 }
 
-                                                ProductController
-                                                        .to
-                                                        .videoController
-                                                        .value!
-                                                        .value
+                                                ProductController.to
+                                                    .chewieController.value!.videoPlayerController.value
                                                         .isPlaying
                                                     ? ProductController.to
-                                                        .videoController.value!
-                                                        .pause()
+                                                    .chewieController.value!.pause()
                                                     : ProductController.to
-                                                        .videoController.value!
-                                                        .play();
+                                                    .chewieController.value!
+                                                        .play();*/
                                               },
                                               icon: ValueListenableBuilder(
                                                 valueListenable:
                                                     ProductController.to
-                                                        .videoController.value!,
+                                                        .chewieController.value!.videoPlayerController,
                                                 builder: (context, value, _) {
                                                   return Icon(
                                                     color:
@@ -155,21 +150,20 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                 ),
                               )
                             : AspectRatio(
-                          aspectRatio: 1,
-                              child: InteractiveViewer(
-                                panEnabled: false, // Set it to fa lse
-                                boundaryMargin: EdgeInsets.all(100),
-                                minScale: 0.5,
-                                maxScale: 2,
-                                child: CustomNetworkImage(
-                                  isPreview: true,
+                                aspectRatio: 1,
+                                child: InteractiveViewer(
+                                  panEnabled: false, // Set it to fa lse
+                                  boundaryMargin: EdgeInsets.all(100),
+                                  minScale: 0.5,
+                                  maxScale: 2,
+                                  child: CustomNetworkImage(
+                                    isPreview: true,
                                     imageUrl:
                                         '${ApiService().baseUrl}/${controller.currentBannerImages[index]}',
-
                                     width: double.infinity,
                                   ),
+                                ),
                               ),
-                            ),
                       ),
                     );
                   },
@@ -243,61 +237,62 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   text: product.description ?? '',
                   maxLines: 3,
                 ),
-                Row(
-                  spacing: 12.w,
-                  children: [
-                    Expanded(
-                      child: CustomButton(
-                        onTap: () {
-                          buyProductDialog(context);
-                        },
-                        title: AppStaticStrings.buyNow,
-                      ),
-                    ),
-                    Expanded(child: Obx(() {
-                      final isLoading =
-                          CartController.to.isLoadingAddCart[product.id] ??
-                              false;
+                CommonController.to.isLoggedIn
+                    ? Row(
+                        spacing: 12.w,
+                        children: [
+                          Expanded(
+                            child: CustomButton(
+                              onTap: () {
+                                buyProductDialog(context);
+                              },
+                              title: AppStaticStrings.buyNow,
+                            ),
+                          ),
+                          Expanded(child: Obx(() {
+                            final isLoading = CartController
+                                    .to.isLoadingAddCart[product.id] ??
+                                false;
 
-                      return CustomButton(
-                        loadingColor: AppColors.kPrimaryColor,
-                        onTap: () {
-                          CartController.to.addToCart(
-                              variant: controller.currentBannerImages[0],
-                              productId: product.id ?? '',
-                              quantity: ProductController.to.cartQuantity.value,
-                              price: ProductController.to.cartQuantity.value *
-                                  int.parse(product.price.toString()));
-                        },
-                        isLoading: isLoading,
-                        title: AppStaticStrings.addToCard,
-                        fillColor: Colors.transparent,
-                        textColor: AppColors.kPrimaryColor,
-                      );
-                    }))
-                  ],
-                ),
+                            return CustomButton(
+                              loadingColor: AppColors.kPrimaryColor,
+                              onTap: () {
+                                CartController.to.addToCart(
+                                    variant: controller.currentBannerImages[0],
+                                    productId: product.id ?? '',
+                                    quantity:
+                                        ProductController.to.cartQuantity.value,
+                                    price: ProductController
+                                            .to.cartQuantity.value *
+                                        int.parse(product.price.toString()));
+                              },
+                              isLoading: isLoading,
+                              title: AppStaticStrings.addToCard,
+                              fillColor: Colors.transparent,
+                              textColor: AppColors.kPrimaryColor,
+                            );
+                          }))
+                        ],
+                      )
+                    : SizedBox.shrink(),
                 CustomText(
                   text: 'Related Products',
                   fontSize: getFontSizeDefault(),
                   color: AppColors.kPrimaryTextDarkColor,
                 ),
-                SizedBox(
-                  height: 250,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      spacing: 12.w,
-                      children: List.generate(
-                        ProductController.to.relatedProductList.length,
-                        (index) => SizedBox(
-                            width: 200.w,
-                            // height: 200.w,
-                            child: ProductCardItemWidget(
-                              product: ProductController
-                                  .to.relatedProductList[index],
-                            )),
-                      ),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    spacing: 12.w,
+                    children: List.generate(
+                      ProductController.to.relatedProductList.length,
+                      (index) => SizedBox(
+                          width: 200.w,
+                          height: 270.w,
+                          child: ProductCardItemWidget(
+                            product: ProductController
+                                .to.relatedProductList[index],
+                          )),
                     ),
                   ),
                 )
@@ -309,7 +304,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
 
   @override
   void dispose() {
-    ProductController.to.videoController.value!.dispose();
+    if(ProductController.to.chewieController.value!=null){
+      ProductController.to.chewieController.value!.dispose();
+    }
     super.dispose();
   }
 }

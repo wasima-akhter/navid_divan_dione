@@ -38,3 +38,24 @@ class CategoryModel {
     return data;
   }
 }
+class SubCategoryModel {
+  String? sId;
+  String? name;
+  String? img;
+
+  SubCategoryModel({this.sId, this.name, this.img});
+
+  SubCategoryModel.fromJson(Map<String, dynamic> json) {
+    sId = json['_id'];
+    name = json['name'];
+    img = json['img'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['_id'] = sId;
+    data['name'] = name;
+    data['img'] = img;
+    return data;
+  }
+}

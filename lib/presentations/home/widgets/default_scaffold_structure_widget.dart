@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:navid_e_commerce/core/components/custom_appbar.dart';
+import 'package:navid_e_commerce/core/components/custom_refresh_indicator.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 
 class DefaultScaffoldStructureWidget extends StatelessWidget {
@@ -10,8 +11,9 @@ class DefaultScaffoldStructureWidget extends StatelessWidget {
   final List<Widget>? children;
   final Widget? body;
   final List<Widget>? action;
+  final Future<void> Function()? onRefresh;
   const DefaultScaffoldStructureWidget({
-    super.key, required this.appBarTitle,  this.children, this.spacing, this.crossAxisAlignment, this.action, this.scrollController, this.body,
+    super.key, required this.appBarTitle,  this.children, this.spacing, this.crossAxisAlignment, this.action, this.scrollController, this.body,  this.onRefresh,
   });
 
   @override
@@ -19,15 +21,20 @@ class DefaultScaffoldStructureWidget extends StatelessWidget {
     return Scaffold(
       appBar: CustomDefaultAppbar(title: appBarTitle,action: action,),
 
-      body:body?? SingleChildScrollView(
-        controller:scrollController ,
-        physics: AlwaysScrollableScrollPhysics(),
-        child: Padding(
-          padding: padding12,
-          child: Column(
-            crossAxisAlignment:crossAxisAlignment?? CrossAxisAlignment.start,
-            spacing: spacing??0,
-            children: children??[],
+      body:CustomRefreshIndicatorWidget(
+        onRefresh:() async{
+          onRefresh;
+        },
+        child: body?? SingleChildScrollView(
+          controller:scrollController ,
+          physics: AlwaysScrollableScrollPhysics(),
+          child: Padding(
+            padding: padding12,
+            child: Column(
+              crossAxisAlignment:crossAxisAlignment?? CrossAxisAlignment.start,
+              spacing: spacing??0,
+              children: children??[],
+            ),
           ),
         ),
       ),

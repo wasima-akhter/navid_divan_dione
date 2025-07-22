@@ -28,8 +28,7 @@ class CategoryCardItemWidget extends StatelessWidget {
       child: ButtonTapWidget(
         radius:8.r ,
         onTap: () {
-          HomeController.to.category.value=categoryModel.sId??'';
-          HomeController.to.getProductListRequest();
+          HomeController.to.getProductListRequest(category: categoryModel.sId??'');
           Get.toNamed(ProductListPage.routeName);
 
         },

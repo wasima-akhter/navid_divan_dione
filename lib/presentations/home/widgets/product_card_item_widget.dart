@@ -14,10 +14,13 @@ import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
 import 'package:navid_e_commerce/core/constants/image_constants.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
+import 'package:navid_e_commerce/presentations/auth/views/login_page.dart';
 import 'package:navid_e_commerce/presentations/cart/controllers/cart_controller.dart';
+import 'package:navid_e_commerce/presentations/cart/views/cart_page.dart';
 import 'package:navid_e_commerce/presentations/product/controllers/product_controller.dart';
 import 'package:navid_e_commerce/presentations/product/model/product_model.dart';
 import 'package:navid_e_commerce/presentations/product/views/product_details_page.dart';
+import 'package:navid_e_commerce/presentations/splash/controllers/common_controller.dart';
 
 class ProductCardItemWidget extends StatelessWidget {
   final ProductModel product;
@@ -81,8 +84,8 @@ class ProductCardItemWidget extends StatelessWidget {
                   previousPrice: productPreviousPrice,
                 ),
 
-                Obx(() {
-                  final isLoading = CartController.to.isLoadingAddCart[productId] ?? false;
+                CommonController.to.isLoggedIn ?  Obx(() {
+                  final isLoading = (CartController.to.isLoadingAddCart[productId] ?? false);
                   return CustomButton(
                     padding: padding8,
                     radius: 40.r,
@@ -108,7 +111,12 @@ class ProductCardItemWidget extends StatelessWidget {
                       ],
                     ),
                   );
-                })
+                }):CustomButton(onTap: () {
+                  Get.toNamed(LoginPage.routeName);
+                },height: 40.h,
+                  padding: padding6
+                  ,
+                title: AppStaticStrings.signIn,)
               ],
             ))
           ],

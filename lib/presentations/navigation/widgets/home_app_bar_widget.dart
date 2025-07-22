@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:navid_e_commerce/core/api-client/api_service.dart';
+import 'package:navid_e_commerce/core/components/custom_button.dart';
 import 'package:navid_e_commerce/core/components/custom_network_image.dart';
 import 'package:navid_e_commerce/core/constants/color_constants.dart';
 import 'package:navid_e_commerce/core/constants/custom_text.dart';
@@ -10,6 +11,7 @@ import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
 import 'package:navid_e_commerce/core/constants/image_constants.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
 import 'package:navid_e_commerce/presentations/profile/controllers/profile_controller.dart';
+import 'package:navid_e_commerce/presentations/splash/controllers/common_controller.dart';
 
 class CustomHomeAppbar extends StatelessWidget {
   final Function()? onActionTap;
@@ -24,7 +26,7 @@ class CustomHomeAppbar extends StatelessWidget {
       automaticallyImplyLeading: false,
       backgroundColor: AppColors.kPrimaryColor,
       foregroundColor: AppColors.kWhiteColor,
-      title: Row(
+      title:   CommonController.to.isLoggedIn? Row(
         spacing: 12.w,
         children: [
           Obx(
@@ -38,7 +40,7 @@ class CustomHomeAppbar extends StatelessWidget {
               );
             }
           ),
-          Expanded(
+       Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -66,7 +68,10 @@ class CustomHomeAppbar extends StatelessWidget {
             ),
           )
         ],
-      ),
+      ):CustomText( text: "Log in first...",
+        color: AppColors.kWhiteColor,
+        style: poppinsMedium,
+        fontSize: getFontSizeDefault(), ),
       actions: [
         IconButton(onPressed: onActionTap, icon: SvgPicture.asset(drawerIcon))
       ],

@@ -1,3 +1,5 @@
+import 'package:chewie/chewie.dart';
+import 'package:chewie/chewie.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -15,7 +17,8 @@ import '../views/payment_page.dart';
 
 class ProductController extends GetxController {
   static ProductController get to => Get.find();
-  Rx<PageController> pageController = PageController(initialPage: 0, keepPage: true).obs;
+  Rx<PageController> pageController =
+      PageController(initialPage: 0, keepPage: true).obs;
   RxInt cartQuantity = 1.obs;
   RxString selectedTime = ''.obs;
   RxString orderId = ''.obs;
@@ -26,7 +29,8 @@ class ProductController extends GetxController {
   TextEditingController nameAddressController = TextEditingController();
   TextEditingController contactAddressController = TextEditingController();
   TextEditingController deliveryAddressController = TextEditingController();
-  Rx<TextEditingController> dateController = TextEditingController(text: kDebugMode ? '2025-01-22' : '').obs;
+  Rx<TextEditingController> dateController =
+      TextEditingController(text: kDebugMode ? '2025-01-22' : '').obs;
   RxBool isLoadingProductDetails = false.obs;
   RxBool isLoadingPickUpAddress = false.obs;
   RxBool isLoadingShippingAddress = false.obs;
@@ -40,11 +44,15 @@ class ProductController extends GetxController {
   RxList<String> currentBannerImages = <String>[].obs;
   RxMap<String, bool> isLoadingDeleteAddress = <String, bool>{}.obs;
   RxBool isPaymentLoading = false.obs;
-  final Rxn<VideoPlayerController> videoController = Rxn<VideoPlayerController>();
+  // final Rxn<VideoPlayerController> videoController =
+  //     Rxn<VideoPlayerController>();
+  final Rxn<ChewieController> chewieController = Rxn<ChewieController>();
   @override
   void onInit() {
-    getPickUpAddressRequest();
-    getShippingAddressRequest();
+    if (CommonController.to.isLoggedIn) {
+      getPickUpAddressRequest();
+      getShippingAddressRequest();
+    }
     super.onInit();
   }
 
@@ -64,32 +72,40 @@ class ProductController extends GetxController {
     try {
       isLoadingProductDetails.value = true;
 
-      final response = await ApiService().request(endpoint: '$productDetailsEndPoint$productID', method: 'GET');
+      final response = await ApiService().request(
+          endpoint: '$productDetailsEndPoint$productID',
+          method: 'GET',
+          useAuth: CommonController.to.isLoggedIn);
       if (response['success'] == true) {
         logger.d(response);
         productModel.value = ProductModel.fromJson(response['data']);
-        relatedProductList.value = (response['related_product'] as List).map((e) => ProductModel.fromJson(e)).toList();
+        relatedProductList.value = (response['related_product'] as List)
+            .map((e) => ProductModel.fromJson(e))
+            .toList();
         initializeBannerImages();
-        if(productModel.value.variantImages!=null && productModel.value.variantImages!["video"]!=null ){
-          final controller = VideoPlayerController.networkUrl(
-              Uri.parse("${ApiService().baseUrl}/${productModel.value.variantImages!["video"]!.first}")
+        if (productModel.value.variantImages != null &&
+            productModel.value.variantImages!["video"] != null &&
+            productModel.value.variantImages!["video"]?.img != null) {
+          logger.d(
+              "${ApiService().baseUrl}/${productModel.value.variantImages!["video"]?.img?.first}");
+          final String rawPath =
+              productModel.value.variantImages!["video"]!.img!.first;
+          final videoPlayerController = VideoPlayerController.networkUrl(
+              Uri.parse("${ApiService().baseUrl}/$rawPath"));
+
+          await videoPlayerController.initialize();
+
+          final chewie = ChewieController(
+            videoPlayerController: videoPlayerController,
+            autoPlay: true,
+            looping: true,
           );
 
-          await controller.initialize();
-          controller.setLooping(true); // Optional: set to true if you want it to loop
-            //
-            // if (controller.value.isCompleted) {
-            //   controller.seekTo(Duration.zero);
-            //   controller.play(); // or controller.play(); if you want to auto-restart
-            // }
-            //
-
-          videoController.value = controller;
+          // videoController.value = videoPlayerController;
+          chewieController.value = chewie;
           update();
-
         }
         isLoadingProductDetails.value = false;
-
       } /*else if (response['message'] == AppStaticStrings.noInternet) {
         showCustomSnackbar(
           title: 'Failed',
@@ -103,9 +119,11 @@ class ProductController extends GetxController {
       }*/
       else {
         logger.e(response);
-        showCustomSnackbar(title: 'Failed', message: response['message'], type: SnackBarType.failed);
+        showCustomSnackbar(
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed);
         isLoadingProductDetails.value = false;
-
       }
     } catch (e) {
       logger.e(e.toString());
@@ -119,8 +137,9 @@ class ProductController extends GetxController {
     try {
       isLoadingPickUpAddress.value = true;
 
-      final response = await ApiService().request(endpoint: pickAddressEndPoint, method: 'GET');
-      isLoadingPickUpAddress.value = false;
+      final response = await ApiService()
+          .request(endpoint: pickAddressEndPoint, method: 'GET');
+
       if (response['success'] == true) {
         logger.d(response);
         pickAddressList.value = (response["data"] as List)
@@ -130,13 +149,16 @@ class ProductController extends GetxController {
             .toList();
         selectedPickAddress.value = pickAddressList[0].sId.toString();
         fetchPickUpAddress();
-
       } else {
         logger.e(response);
-        showCustomSnackbar(title: 'Failed', message: response['message'], type: SnackBarType.failed);
+        showCustomSnackbar(
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed);
       }
     } catch (e) {
       logger.e(e.toString());
+    } finally {
       isLoadingPickUpAddress.value = false;
     }
   }
@@ -147,7 +169,8 @@ class ProductController extends GetxController {
     try {
       isLoadingShippingAddress.value = true;
 
-      final response = await ApiService().request(endpoint: shippingAddressGetEndPoint, method: 'GET');
+      final response = await ApiService()
+          .request(endpoint: shippingAddressGetEndPoint, method: 'GET');
       isLoadingShippingAddress.value = false;
       if (response['success'] == true) {
         logger.d(response);
@@ -157,10 +180,12 @@ class ProductController extends GetxController {
             )
             .toList();
         selectedShippingAddress.value = shippingAddressList[0].sId.toString();
-
       } else {
         logger.e(response);
-        showCustomSnackbar(title: 'Failed', message: response['message'], type: SnackBarType.failed);
+        showCustomSnackbar(
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed);
       }
     } catch (e) {
       logger.e(e.toString());
@@ -174,12 +199,13 @@ class ProductController extends GetxController {
     required String address,
     required String phone,
     required String name,
-  })
-  async {
+  }) async {
     try {
       isLoadingAddShippingAddress.value = true;
-      final response = await ApiService()
-          .request(endpoint: shippingAddressCreateEndPoint, method: 'POST', body: {"address": address, "phone": phone, "name": name});
+      final response = await ApiService().request(
+          endpoint: shippingAddressCreateEndPoint,
+          method: 'POST',
+          body: {"address": address, "phone": phone, "name": name});
       isLoadingAddShippingAddress.value = false;
       if (response['success'] == true) {
         logger.d(response);
@@ -190,7 +216,10 @@ class ProductController extends GetxController {
         );
       } else {
         logger.e(response);
-        showCustomSnackbar(title: 'Failed', message: response['message'], type: SnackBarType.failed);
+        showCustomSnackbar(
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed);
       }
     } catch (e) {
       isLoadingAddShippingAddress.value = false;
@@ -204,27 +233,27 @@ class ProductController extends GetxController {
       {required String totalAmount,
       required List<Map<String, dynamic>> item,
       required List<Map<String, dynamic>> productList,
-
       String? pickupAddress,
       String? deliveryAddress,
-      String? note})
-  async {
+      String? note}) async {
     try {
       isLoadingOrder.value = true;
-      final response = await ApiService().request(endpoint: orderCreateEndPoint, method: 'POST', body: {
+      final response = await ApiService()
+          .request(endpoint: orderCreateEndPoint, method: 'POST', body: {
         "items": item,
         "total_amount": totalAmount,
-        "delivery_address": deliveryAddress ,
-        "pick_up_address": pickupAddress ,
+        "delivery_address": deliveryAddress,
+        "pick_up_address": pickupAddress,
         "notes": note ?? ""
       });
       isLoadingOrder.value = false;
       if (response['success'] == true) {
-        orderId.value =response['data'][0]["_id"];
+        orderId.value = response['data'][0]["_id"];
         logger.d(orderId.value);
         logger.d(response);
-        if(response['data'][0]["_id"].isNotEmpty) {
-           paymentRequest(products: productList, orderId: response['data'][0]["_id"]);
+        if (response['data'][0]["_id"].isNotEmpty) {
+          paymentRequest(
+              products: productList, orderId: response['data'][0]["_id"]);
         }
         // Get.offAllNamed(NavigationPage.routeName);
         showCustomSnackbar(
@@ -233,7 +262,10 @@ class ProductController extends GetxController {
         );
       } else {
         logger.e(response);
-        showCustomSnackbar(title: 'Failed', message: response['message'], type: SnackBarType.failed);
+        showCustomSnackbar(
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed);
       }
     } catch (e) {
       isLoadingOrder.value = false;
@@ -254,7 +286,7 @@ class ProductController extends GetxController {
       if (response['success'] == true) {
         logger.d(response);
         getShippingAddressRequest();
-        if(shippingAddressList.isEmpty){
+        if (shippingAddressList.isEmpty) {
           selectedShippingAddress.value = "";
         }
         showCustomSnackbar(
@@ -263,7 +295,10 @@ class ProductController extends GetxController {
         );
       } else {
         logger.e(response);
-        showCustomSnackbar(title: 'Failed', message: response['message'], type: SnackBarType.failed);
+        showCustomSnackbar(
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed);
       }
     } catch (e) {
       isLoadingDeleteAddress[id] = false;
@@ -273,16 +308,15 @@ class ProductController extends GetxController {
 
   ///------------------------------- payment ----------------------------///
 
-  Future<void> paymentRequest({
-    required List<Map<String, dynamic>> products,
-    required String orderId
-  })
-  async {
+  Future<void> paymentRequest(
+      {required List<Map<String, dynamic>> products,
+      required String orderId}) async {
     try {
-          isPaymentLoading.value = true;
-      final response = await ApiService().request(endpoint: paymentCreateEndPoint, method: 'POST', body: {
+      isPaymentLoading.value = true;
+      final response = await ApiService()
+          .request(endpoint: paymentCreateEndPoint, method: 'POST', body: {
         "price_data": products,
-        "_id":orderId
+        "_id": orderId
         // "purpose": "buy_product"
         // "currency": "USD"
       });
@@ -297,13 +331,17 @@ class ProductController extends GetxController {
         );
       } else {
         logger.e(response);
-        showCustomSnackbar(title: 'Failed', message: response['message'], type: SnackBarType.failed);
+        showCustomSnackbar(
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed);
       }
     } catch (e) {
       isPaymentLoading.value = false;
       logger.e(e.toString());
     }
   }
+
   void initializeBannerImages() {
     final product = productModel.value;
 
@@ -313,9 +351,12 @@ class ProductController extends GetxController {
       selectedColor.value = null;
     }
     // Otherwise, try to use the first color's variant images
-    else if (product.variantColors != null && product.variantColors!.isNotEmpty) {
+    else if (product.variantColors != null &&
+        product.variantColors!.isNotEmpty) {
       selectedColor.value = product.variantColors!.first;
-      currentBannerImages.value = product.variantImages?[ProductController.to.selectedColor.value] ?? [];
+      currentBannerImages.value = product
+              .variantImages?[ProductController.to.selectedColor.value]?.img ??
+          [];
     } else {
       currentBannerImages.value = [];
       selectedColor.value = null;
@@ -329,6 +370,6 @@ class ProductController extends GetxController {
     logger.d(selectedColor.value);
 
     // Update banner images based on selected color
-    currentBannerImages.value = product.variantImages?[color] ?? [];
+    currentBannerImages.value = product.variantImages?[color]?.img ?? [];
   }
 }

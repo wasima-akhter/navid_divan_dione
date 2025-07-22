@@ -12,11 +12,17 @@ import 'package:navid_e_commerce/core/constants/custom_text.dart';
 import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
 import 'package:navid_e_commerce/core/constants/image_constants.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
+import 'package:navid_e_commerce/presentations/auth/views/login_page.dart';
+import 'package:navid_e_commerce/presentations/auth/views/login_page.dart';
+import 'package:navid_e_commerce/presentations/auth/views/login_page.dart';
 import 'package:navid_e_commerce/presentations/navigation/controllers/navigation_controller.dart';
 import 'package:navid_e_commerce/presentations/profile/views/profile_page.dart';
 import 'package:navid_e_commerce/presentations/settings/views/feedback_page.dart';
 import 'package:navid_e_commerce/presentations/settings/views/privacy_terms_page.dart';
 import 'package:navid_e_commerce/presentations/settings/views/settings_page.dart';
+import 'package:navid_e_commerce/presentations/splash/controllers/common_controller.dart';
+import 'package:navid_e_commerce/presentations/splash/controllers/common_controller.dart';
+import 'package:navid_e_commerce/presentations/splash/controllers/common_controller.dart';
 
 class CustomDrawerWidget extends StatelessWidget {
   const CustomDrawerWidget({
@@ -47,13 +53,21 @@ class CustomDrawerWidget extends StatelessWidget {
                       text: AppStaticStrings.myProfile,
                       onTap: () {
                         Navigator.pop(context);
-                        Get.toNamed(ProfilePage.routeName);
+                        if(CommonController.to.isLoggedIn){
+                          Get.toNamed(ProfilePage.routeName);
+                        }else{
+                          Get.toNamed(LoginPage.routeName);
+                        }
                       },
                     ),
                     DrawerContentWidget(
                       onTap: () {
                         Navigator.pop(context);
-                        Get.toNamed(SettingPage.routeName);
+                        if(CommonController.to.isLoggedIn){
+                          Get.toNamed(SettingPage.routeName);
+                        }else{
+                          Get.toNamed(LoginPage.routeName);
+                        }
                       },
                       icon: settingsIcon,
                       text: AppStaticStrings.settings,
@@ -61,7 +75,11 @@ class CustomDrawerWidget extends StatelessWidget {
                     DrawerContentWidget(
                       onTap: () {
                         Navigator.pop(context);
-                        Get.toNamed(FeedbackPage.routeName);
+                        if(CommonController.to.isLoggedIn){
+                          Get.toNamed(FeedbackPage.routeName);
+                        }else{
+                          Get.toNamed(LoginPage.routeName);
+                        }
                       },
                       icon: feedbackIcon,
                       text: AppStaticStrings.feedback,
@@ -88,32 +106,32 @@ class CustomDrawerWidget extends StatelessWidget {
                 ),
               ),
             ),
-            NavigationController.to.isLoadingLogout.value?
-            DefaultProgressIndicator(color: AppColors.kPrimaryColor,)
-                :   ButtonTapWidget(
-              onTap: () {
+        CommonController.to.isLoggedIn?   Obx(() =>  NavigationController.to.isLoadingLogout.value?
+           DefaultProgressIndicator(color: AppColors.kPrimaryColor,)
+               :   ButtonTapWidget(
+             onTap: () {
                NavigationController.to.logoutRequest();
-              },
-              child: Padding(
-                padding: padding12,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SvgPicture.asset(
-                      logoutIcon,
-                      height: 14.w,
-                      width: 14.w,
-                    ),
-                    space8W,
-                    CustomText(
-                      textAlign: TextAlign.center,
-                      text: AppStaticStrings.logOut,
-                      fontSize: getFontSizeSmall(),
-                    )
-                  ],
-                ),
-              ),
-            ),
+             },
+             child: Padding(
+               padding: padding12,
+               child: Row(
+                 mainAxisAlignment: MainAxisAlignment.center,
+                 children: [
+                   SvgPicture.asset(
+                     logoutIcon,
+                     height: 14.w,
+                     width: 14.w,
+                   ),
+                   space8W,
+                   CustomText(
+                     textAlign: TextAlign.center,
+                     text: AppStaticStrings.logOut,
+                     fontSize: getFontSizeSmall(),
+                   )
+                 ],
+               ),
+             ),
+           ),):SizedBox.shrink()
           ],
         ),
       ),

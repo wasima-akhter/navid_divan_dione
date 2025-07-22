@@ -9,11 +9,11 @@ import 'package:navid_e_commerce/presentations/notification/controller/notificat
 import 'package:navid_e_commerce/presentations/notification/views/notification_page.dart';
 import 'package:navid_e_commerce/presentations/orders/controllers/order_controller.dart';
 import 'package:navid_e_commerce/presentations/orders/views/order_page.dart';
+import 'package:navid_e_commerce/presentations/splash/controllers/common_controller.dart';
 
 import '../../../core/api-client/api_endpoints.dart';
 import '../../../core/api-client/api_service.dart';
 import '../../../core/helper/helper_function.dart';
-import '../../../core/utils/hive_boxes.dart';
 import '../../../core/utils/variable.dart';
 import '../../auth/views/login_page.dart';
 import '../../profile/controllers/profile_controller.dart';
@@ -22,48 +22,63 @@ class NavigationController extends GetxController {
   static NavigationController get to => Get.find();
   RxInt currentNavIndex = 0.obs;
   @override
-  void onInit() async{
-    Get.put(ProfileController());
-    Get.put(OrderController());
-   Get.put(HomeController());
-  Get.put(NotificationController());
+  void onInit() async {
+    Get.put(HomeController());
+    if (CommonController.to.isLoggedIn) {
+      Get.put(ProfileController());
+      Get.put(OrderController());
+
+      Get.put(NotificationController());
+    }
     super.onInit();
   }
 
   List<Widget> getPages() {
-    return [HomePage(), CartPage(), OrderPage(), NotificationPage()];
-  }
-  List<String> appbarTitle= [
-      AppStaticStrings.addToCard,
-      AppStaticStrings.orders,
-      AppStaticStrings.notifications,
+    return [
+      HomePage(),
+      if (CommonController.to.isLoggedIn) CartPage(),
+      if (CommonController.to.isLoggedIn) OrderPage(),
+      if (CommonController.to.isLoggedIn) NotificationPage()
     ];
-  Rx<bool> isLoadingLogout = false.obs;
+  }
 
+  List<String> appbarTitle = [
+    AppStaticStrings.addToCard,
+    AppStaticStrings.orders,
+    AppStaticStrings.notifications,
+  ];
+  Rx<bool> isLoadingLogout = false.obs;
 
   ///------------------------------ log out method -------------------------///
 
-  Future<void> logoutRequest() async{
-    try{
-      isLoadingLogout.value= true;
-      final response = await ApiService().request(endpoint: logoutEndPoint,
+  Future<void> logoutRequest() async {
+    try {
+      isLoadingLogout.value = true;
+      final response = await ApiService().request(
+        endpoint: logoutEndPoint,
         method: 'POST',
       );
-      isLoadingLogout.value= false;
+      isLoadingLogout.value = false;
       if (response['success'] == true) {
         logger.d(response);
-        showCustomSnackbar(title: 'Success', message:  response['message'],);
+        showCustomSnackbar(
+          title: 'Success',
+          message: response['message'],
+        );
         if (Hive.isBoxOpen(userBoxName)) {
           await Hive.box(userBoxName).close();
         }
         await Hive.deleteBoxFromDisk(userBoxName);
 
         Get.offAllNamed(LoginPage.routeName);
-      }else{
+      } else {
         logger.e(response);
-        showCustomSnackbar(title: 'Failed', message:  response['message'],type: SnackBarType.failed);
+        showCustomSnackbar(
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed);
       }
-    }catch(e){
+    } catch (e) {
       logger.e(e.toString());
     }
   }

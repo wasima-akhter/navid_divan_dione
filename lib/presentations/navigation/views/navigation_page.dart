@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:navid_e_commerce/core/components/custom_appbar.dart';
 import 'package:navid_e_commerce/core/components/custom_drawer_widget.dart';
 import 'package:navid_e_commerce/core/constants/app_static_strings.dart';
 import 'package:navid_e_commerce/core/constants/color_constants.dart';
 import 'package:navid_e_commerce/core/constants/image_constants.dart';
+import 'package:navid_e_commerce/presentations/auth/views/login_page.dart';
 import 'package:navid_e_commerce/presentations/navigation/controllers/navigation_controller.dart';
 import 'package:navid_e_commerce/presentations/navigation/widgets/home_app_bar_widget.dart';
+import 'package:navid_e_commerce/presentations/splash/controllers/common_controller.dart';
 
 class NavigationPage extends StatelessWidget {
   const NavigationPage({super.key});
@@ -64,9 +67,15 @@ class NavigationPage extends StatelessWidget {
           return BottomNavigationBar(
             currentIndex: NavigationController.to.currentNavIndex.value,
             onTap: (value) {
-              NavigationController.to.currentNavIndex.value = value;
-              debugPrint(
-                  NavigationController.to.currentNavIndex.value.toString());
+              if (!CommonController.to.isLoggedIn) {
+                if (value == 0) {
+                  NavigationController.to.currentNavIndex.value = value;
+                } else {
+                 Get.toNamed(LoginPage.routeName);
+                }
+              } else {
+                NavigationController.to.currentNavIndex.value = value;
+              }
             },
             showUnselectedLabels: true,
             backgroundColor: AppColors.kPrimaryExtraLightColor,

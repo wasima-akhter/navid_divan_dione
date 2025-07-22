@@ -7,7 +7,7 @@ class ProductModel {
   bool? wholeSale;
   int? quantity;
   num? previousPrice;
-  Map<String, List<String>>? variantImages;
+  Map<String, VariantData>? variantImages;
   List<String>? banner;
   List<String>? variantColors;
 
@@ -41,11 +41,12 @@ class ProductModel {
       quantity: json['quantity'],
       previousPrice: json['previous_price'],
       variantImages: (json['variantImages'] as Map<String, dynamic>?)?.map(
-            (key, value) => MapEntry(key,
-            value != null
-                ? List<String>.from(value)
-                : <String>[]),
+            (key, value) => MapEntry(
+          key,
+          VariantData.fromJson(value as Map<String, dynamic>),
+        ),
       ),
+
       banner: json['banner'] != null
           ? List<String>.from(json['banner'])
           : null,
@@ -66,7 +67,7 @@ class ProductModel {
       'whole_sale': wholeSale,
       'quantity': quantity,
       'previous_price': previousPrice,
-      'variantImages': variantImages,
+      'variantImages': variantImages?.map((key, value) => MapEntry(key, value.toJson())),
       'banner': banner,
       'variantColors': variantColors,
     };
@@ -103,4 +104,27 @@ class Category {
       'img': img,
     };
   }
+}
+class VariantData {
+  List<String>? img;
+  List<String>? size;
+  int? quantity;
+
+  VariantData({this.img, this.size, this.quantity});
+
+  factory VariantData.fromJson(Map<String, dynamic>? json) {
+    if (json == null) return VariantData();
+
+    return VariantData(
+      img: json['img'] != null ? List<String>.from(json['img']) : [],
+      size: json['size'] != null ? List<String>.from(json['size']) : [],
+      quantity: json['quantity'] ?? 0,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'img': img,
+    'size': size,
+    'quantity': quantity,
+  };
 }

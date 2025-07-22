@@ -34,7 +34,6 @@ class _ProductListPageState extends State<ProductListPage> {
   Widget build(BuildContext context) {
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
-        HomeController.to.category.value = '';
         HomeController.to.getProductListRequest();
         HomeController.to.productList.refresh();
         HomeController.to.searchController.value.clear();

@@ -5,8 +5,9 @@ import '../../../core/constants/color_constants.dart';
 import '../../../core/constants/padding_constant.dart';
 
 class PaginationLoadingWidget extends StatelessWidget {
+  final double? size;
   const PaginationLoadingWidget({
-    super.key,
+    super.key, this.size,
   });
 
   @override
@@ -15,8 +16,8 @@ class PaginationLoadingWidget extends StatelessWidget {
       child: Padding(
         padding: padding12,
         child: SizedBox(
-          height: 10.w,
-          width: 10.w,
+          height: size??10.w,
+          width: size??10.w,
           child: CircularProgressIndicator(
             color: AppColors.kPrimaryColor,
             strokeWidth: 2.sp,
