@@ -41,7 +41,10 @@ class ProductController extends GetxController {
   RxList<PickAddressModel> pickAddressList = <PickAddressModel>[].obs;
   RxList<PickAddressModel> shippingAddressList = <PickAddressModel>[].obs;
   Rx<String?> selectedColor = Rx<String?>(null);
+  Rx<String?> selectedSize = Rx<String?>(null);
   RxList<String> currentBannerImages = <String>[].obs;
+  RxList<String> sizes= <String>[].obs;
+  Rxn<int> quantity = Rxn<int>();
   RxMap<String, bool> isLoadingDeleteAddress = <String, bool>{}.obs;
   RxBool isPaymentLoading = false.obs;
   // final Rxn<VideoPlayerController> videoController =
@@ -371,5 +374,7 @@ class ProductController extends GetxController {
 
     // Update banner images based on selected color
     currentBannerImages.value = product.variantImages?[color]?.img ?? [];
+    sizes.value = product.variantImages?[color]?.size ?? [];
+    quantity.value = product.variantImages?[color]!.quantity??0 ;
   }
 }

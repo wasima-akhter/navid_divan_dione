@@ -31,7 +31,9 @@ class ProductCardItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String imgUrl = product.banner != null && product.banner!.isNotEmpty ? '${product.banner!.first.toString()}' : '';
+    String imgUrl = product.banner != null && product.banner!.isNotEmpty
+        ? '${product.banner!.first.toString()}'
+        : '';
     String productName = product.name ?? 'n/a';
     String productId = product.id ?? 'n/a';
     String productPrice = product.price.toString();
@@ -43,7 +45,8 @@ class ProductCardItemWidget extends StatelessWidget {
           Get.lazyPut(
             () => ProductController(),
           );
-          ProductController.to.getProductDetailsRequest(productID: product.id ?? '');
+          ProductController.to
+              .getProductDetailsRequest(productID: product.id ?? '');
           Get.toNamed(ProductDetailsPage.routeName);
         },
         child: Column(
@@ -84,41 +87,53 @@ class ProductCardItemWidget extends StatelessWidget {
                   previousPrice: productPreviousPrice,
                 ),
 
-                CommonController.to.isLoggedIn ?  Obx(() {
-                  final isLoading = (CartController.to.isLoadingAddCart[productId] ?? false);
-                  return CustomButton(
-                    padding: padding8,
-                    radius: 40.r,
-                    isLoading: isLoading,
-                    fillColor: AppColors.kPrimaryDarkColor,
-                    onTap: () {
-                      Get.lazyPut(() => CartController());
-                      CartController.to.addToCart(productId: productId, quantity: 1, price: int.parse(productPrice), variant: imgUrl);
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        CustomText(
-                          text: AppStaticStrings.addToCard,
-                          style: poppinsRegular,
-                          fontSize: getFontSizeSmall(),
-                          color: AppColors.kWhiteColor,
-                        ),
-                        SvgPicture.asset(
-                          cartIcon,
-                          colorFilter: ColorFilter.mode(AppColors.kWhiteColor, BlendMode.srcIn),
-                        )
-                      ],
-                    ),
-                  );
-                }):CustomButton(onTap: () {
-                  Get.toNamed(LoginPage.routeName);
-                },height: 40.h,
-                  padding: padding6
-                  ,
-                title: AppStaticStrings.signIn,)
+
               ],
-            ))
+            )),
+            CommonController.to.isLoggedIn
+                ? Obx(() {
+              final isLoading =
+              (CartController.to.isLoadingAddCart[productId] ??
+                  false);
+              return CustomButton(
+                padding: padding8,
+                radius: 40.r,
+                isLoading: isLoading,
+                fillColor: AppColors.kPrimaryDarkColor,
+                onTap: () {
+                  Get.lazyPut(() => CartController());
+                  CartController.to.addToCart(
+                      productId: productId,
+                      quantity: 1,
+                      price: int.parse(productPrice),
+                      variant: imgUrl);
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    CustomText(
+                      text: AppStaticStrings.addToCard,
+                      style: poppinsRegular,
+                      fontSize: getFontSizeSmall(),
+                      color: AppColors.kWhiteColor,
+                    ),
+                    SvgPicture.asset(
+                      cartIcon,
+                      colorFilter: ColorFilter.mode(
+                          AppColors.kWhiteColor, BlendMode.srcIn),
+                    )
+                  ],
+                ),
+              );
+            })
+                : CustomButton(
+              onTap: () {
+                Get.toNamed(LoginPage.routeName);
+              },
+              height: 35.h,
+              padding: padding2,
+              title: AppStaticStrings.signIn,
+            )
           ],
         ),
       ),
@@ -167,12 +182,16 @@ class PriceTextWidget extends StatelessWidget {
         text: TextSpan(children: [
           TextSpan(
               text: 'price: \$$price  ',
-              style: poppinsMedium.copyWith(color: AppColors.kPrimaryTextDarkColor, fontSize: fontSize ?? getFontSizeSemiSmall())),
+              style: poppinsMedium.copyWith(
+                  color: AppColors.kPrimaryTextDarkColor,
+                  fontSize: fontSize ?? getFontSizeSemiSmall())),
           if (previousPrice != '0.0')
             TextSpan(
                 text: '\$$previousPrice',
                 style: poppinsRegular.copyWith(
-                    color: Colors.red, fontSize: previousPriceFontSize ?? getFontSizeSmall(), decoration: TextDecoration.lineThrough)),
+                    color: Colors.red,
+                    fontSize: previousPriceFontSize ?? getFontSizeSmall(),
+                    decoration: TextDecoration.lineThrough)),
         ]));
   }
 }

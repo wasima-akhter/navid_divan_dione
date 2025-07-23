@@ -11,6 +11,7 @@ String updateProfileEndPoint ='auth/update-profile';
 String changePassEndPoint ='auth/change-password';
 String catGetAllEndPoint ='category/get-all';
 String subCateGetAllEndPoint ='service/get-all/';
+String bannerGetAllEndPoint ='banner/get-all';
 String productGetAllEndPoint ='product/get-all';
 String productDetailsEndPoint ='product/get-details/';
 String addToCartEndPoint ='cart/create';

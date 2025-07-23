@@ -17,12 +17,14 @@ class HomeController extends GetxController {
   static HomeController get to => Get.find();
   RxBool isLoadingCategory = false.obs;
   RxBool isLoadingSubCategory = false.obs;
+  RxBool isLoadingBanner = false.obs;
   RxBool isLoadingProduct = false.obs;
 
   ///=======================dynamic list==========================///
 
   RxList<CategoryModel> catList = <CategoryModel>[].obs;
   RxList<ProductModel> productList = <ProductModel>[].obs;
+  RxList<BannerModel> bannerList = <BannerModel>[].obs;
   RxList<SubCategoryModel> subCategoryList = <SubCategoryModel>[].obs;
 
   ///====================category pagination variable========================///
@@ -42,6 +44,7 @@ class HomeController extends GetxController {
   ///=======================search controller============================///
 
   Rx<TextEditingController> searchController = TextEditingController().obs;
+  Rx<PageController> pageController = PageController(initialPage: 0).obs;
   @override
   void onInit() async {
     fetchInitialData();
@@ -54,9 +57,11 @@ class HomeController extends GetxController {
     if (CommonController.to.isLoggedIn) {
       ProfileController.to.getUserProfileRequest();
     }
+    getBannerRequest();
     await Future.wait([
       getCategoryListRequest(),
       getProductListRequest(),
+
     ]);
 
     isLoadingCategory.value = false;
@@ -141,18 +146,48 @@ class HomeController extends GetxController {
 
   Future<void> getSubCategoryRequest({required String catId}) async {
     try {
-      isLoadingSubCategory.value = true;
+      isLoadingBanner.value = true;
 
-      final response = await ApiService()
-          .request(endpoint: subCateGetAllEndPoint, method: 'GET',queryParams: {
-            "category":catId
-      });
+      final response = await ApiService().request(
+          endpoint: subCateGetAllEndPoint,
+          method: 'GET',
+          queryParams: {"category": catId});
 
       if (response['success'] == true) {
         logger.d(response);
         subCategoryList.value = (response["data"] as List)
             .map(
               (e) => SubCategoryModel.fromJson(e),
+            )
+            .toList();
+      } else {
+        logger.e(response);
+        showCustomSnackbar(
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed);
+      }
+    } catch (e) {
+      logger.e(e.toString());
+    } finally {
+      isLoadingBanner.value = false;
+    }
+  }
+
+  ///-------------------- get banner list method ---------------------///
+
+  Future<void> getBannerRequest() async {
+    try {
+      isLoadingSubCategory.value = true;
+
+      final response = await ApiService()
+          .request(endpoint: bannerGetAllEndPoint, method: 'GET');
+
+      if (response['success'] == true) {
+        logger.d(response);
+        bannerList.value = (response["data"] as List)
+            .map(
+              (e) => BannerModel.fromJson(e),
             )
             .toList();
       } else {
@@ -204,12 +239,11 @@ class HomeController extends GetxController {
         method: 'GET',
         queryParams: {
           if (CommonController.to.isLoggedIn) "whole_sale": hasTax.toString(),
-
           'page': currentProductPage.value.toString(),
           'limit': itemsProductPerPage.value.toString(),
           'search': searchController.value.text,
-        if(category!=null)  'category': category,
-        if(subCategory!=null)  'sub_category': subCategory
+          if (category != null) 'category': category,
+          if (subCategory != null) 'sub_category': subCategory
         },
       );
 

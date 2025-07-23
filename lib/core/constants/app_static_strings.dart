@@ -43,6 +43,7 @@ class AppStaticStrings {
   static const String save = 'Save';
   static const String buyNow = 'Buy Now';
   static const String selectColor = 'Select Color:';
+  static const String selectSize = 'Select Size:';
   static const String checkYourEmail = 'Check your email';
   static const String otpSentMessage = 'We sent a reset link to contact@dscode...com';
   static const String enterOtp = 'enter 6 digit code that mentioned in the email';

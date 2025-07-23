@@ -59,3 +59,21 @@ class SubCategoryModel {
     return data;
   }
 }
+class BannerModel {
+  String? sId;
+  String? img;
+
+  BannerModel({this.sId, this.img});
+
+  BannerModel.fromJson(Map<String, dynamic> json) {
+    sId = json['_id'];
+    img = json['img'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['_id'] = sId;
+    data['img'] = img;
+    return data;
+  }
+}
