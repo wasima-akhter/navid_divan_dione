@@ -11,6 +11,7 @@ import 'package:navid_e_commerce/presentations/auth/views/login_page.dart';
 import 'package:navid_e_commerce/presentations/auth/views/otp_page.dart';
 import 'package:navid_e_commerce/presentations/auth/views/set_new_password_page.dart';
 import 'package:navid_e_commerce/presentations/navigation/views/navigation_page.dart';
+import 'package:navid_e_commerce/presentations/splash/controllers/common_controller.dart';
 
 import '../../../core/constants/color_constants.dart';
 
@@ -238,6 +239,7 @@ class AuthController extends GetxController {
           title: 'Success',
           message: response['message'],
         );
+        CommonController.to.isLoggedIn=true;
         await Hive.openBox(userBoxName);
 
         Boxes.getUserData().put(tokenKey, response['token']);

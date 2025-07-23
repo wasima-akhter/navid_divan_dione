@@ -65,6 +65,7 @@ class NavigationController extends GetxController {
           title: 'Success',
           message: response['message'],
         );
+        CommonController.to.isLoggedIn=false;
         if (Hive.isBoxOpen(userBoxName)) {
           await Hive.box(userBoxName).close();
         }
