@@ -1,9 +1,12 @@
+import 'package:navid_e_commerce/presentations/home/model/category_model.dart';
+
 class ProductModel {
   String? id;
   String? name;
   String? description;
   num? price;
   Category? category;
+ // SubCategoryModel? subCategory; // ✅ new field
   bool? wholeSale;
   int? quantity;
   num? previousPrice;
@@ -17,6 +20,7 @@ class ProductModel {
     this.description,
     this.price,
     this.category,
+    // this.subCategory,
     this.wholeSale,
     this.quantity,
     this.previousPrice,
@@ -37,19 +41,21 @@ class ProductModel {
       category: json['category'] != null
           ? Category.fromJson(json['category'])
           : null,
+      // subCategory: subCategory is SubCategoryModel? json['sub_category']!= null
+      //     ? SubCategory.fromJson(json['sub_category'])
+      //     : null:json['sub_category'],
       wholeSale: json['whole_sale'],
       quantity: json['quantity'],
       previousPrice: json['previous_price'],
       variantImages: (json['variantImages'] as Map<String, dynamic>?)?.map(
             (key, value) => MapEntry(
           key,
-          VariantData.fromJson(value as Map<String, dynamic>),
+              value is Map<String, dynamic>
+                  ? VariantData.fromJson(value)
+                  : VariantData(),
         ),
       ),
-
-      banner: json['banner'] != null
-          ? List<String>.from(json['banner'])
-          : null,
+      banner: json['banner'] != null ? List<String>.from(json['banner']) : null,
       variantColors: json['variantColors'] != null
           ? List<String>.from(json['variantColors'])
           : null,
@@ -64,10 +70,12 @@ class ProductModel {
       'description': description,
       'price': price,
       'category': category?.toJson(),
+      // 'sub_category':subCategory is SubCategoryModel? subCategory?.toJson():subCategory, // ✅ added
       'whole_sale': wholeSale,
       'quantity': quantity,
       'previous_price': previousPrice,
-      'variantImages': variantImages?.map((key, value) => MapEntry(key, value.toJson())),
+      'variantImages':
+      variantImages?.map((key, value) => MapEntry(key, value.toJson())),
       'banner': banner,
       'variantColors': variantColors,
     };
@@ -85,7 +93,6 @@ class Category {
     this.img,
   });
 
-  // FromJson Constructor
   factory Category.fromJson(Map<String, dynamic>? json) {
     if (json == null) return Category();
 
@@ -96,7 +103,6 @@ class Category {
     );
   }
 
-  // ToJson Method
   Map<String, dynamic> toJson() {
     return {
       '_id': id,
@@ -105,6 +111,37 @@ class Category {
     };
   }
 }
+
+class SubCategory {
+  String? id;
+  String? name;
+  String? img;
+
+  SubCategory({
+    this.id,
+    this.name,
+    this.img,
+  });
+
+  factory SubCategory.fromJson(Map<String, dynamic>? json) {
+    if (json == null) return SubCategory();
+
+    return SubCategory(
+      id: json['_id'],
+      name: json['name'],
+      img: json['img'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'name': name,
+      'img': img,
+    };
+  }
+}
+
 class VariantData {
   List<String>? img;
   List<String>? size;
@@ -128,3 +165,4 @@ class VariantData {
     'quantity': quantity,
   };
 }
+

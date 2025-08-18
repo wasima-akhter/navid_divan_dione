@@ -19,7 +19,6 @@ import 'package:navid_e_commerce/presentations/product/widgets/color_item_widget
 import 'package:navid_e_commerce/presentations/product/widgets/expand_able_text.dart';
 import 'package:navid_e_commerce/presentations/profile/widgets/custom_loading_widget.dart';
 import 'package:navid_e_commerce/presentations/splash/controllers/common_controller.dart';
-import 'package:video_player/video_player.dart';
 
 import '../../../core/helper/helper_function.dart';
 
@@ -218,7 +217,40 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                       ),
                     );
                   },
-                ),
+                ),  /*Obx(
+                      () {
+                    if (controller.selectedColor.value==null) {
+                      return SizedBox.shrink();
+                    }
+                    return SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        spacing: 12.w,
+                        children: [
+                          CustomText(text: AppStaticStrings.selectSize),
+                          ...(product.variantImages?[ProductController.to.selectedColor.value]?.size ??
+                              []).map((color) =>
+                              GestureDetector(
+                                onTap: () {
+                                  controller.selectedSize.value=color;
+                                },
+                                child: ColorItemWidget(
+                                  textColor:
+                                  controller.selectedSize.value == color
+                                      ? AppColors.kWhiteColor
+                                      : AppColors.kPrimaryColor,
+                                  containerColor:
+                                  controller.selectedSize.value == color
+                                      ? AppColors.kPrimaryColor
+                                      : Colors.transparent,
+                                  color: color,
+                                ),
+                              )),
+                        ],
+                      ),
+                    );
+                  },
+                ),*/
                 Obx(
                       () {
                     if (controller.selectedColor.value == "video" || controller.sizes.isEmpty) {
@@ -317,6 +349,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                               productId: product.id ?? '',
                               quantity:
                               ProductController.to.cartQuantity.value,
+                               size:  controller.selectedSize.value??controller.sizes[0],
                               price: ProductController
                                   .to.cartQuantity.value *
                                   int.parse(product.price.toString()));

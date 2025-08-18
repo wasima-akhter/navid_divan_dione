@@ -1,26 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:navid_e_commerce/core/api-client/api_service.dart';
-import 'package:navid_e_commerce/core/components/custom_button.dart';
 import 'package:navid_e_commerce/core/components/custom_button_tap.dart';
 import 'package:navid_e_commerce/core/components/custom_network_image.dart';
 
-import 'package:navid_e_commerce/core/constants/app_static_strings.dart';
 import 'package:navid_e_commerce/core/constants/color_constants.dart';
 import 'package:navid_e_commerce/core/constants/custom_text.dart';
 import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
-import 'package:navid_e_commerce/core/constants/image_constants.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
-import 'package:navid_e_commerce/presentations/auth/views/login_page.dart';
-import 'package:navid_e_commerce/presentations/cart/controllers/cart_controller.dart';
-import 'package:navid_e_commerce/presentations/cart/views/cart_page.dart';
 import 'package:navid_e_commerce/presentations/product/controllers/product_controller.dart';
 import 'package:navid_e_commerce/presentations/product/model/product_model.dart';
 import 'package:navid_e_commerce/presentations/product/views/product_details_page.dart';
-import 'package:navid_e_commerce/presentations/splash/controllers/common_controller.dart';
 
 class ProductCardItemWidget extends StatelessWidget {
   final ProductModel product;
@@ -32,10 +24,12 @@ class ProductCardItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String imgUrl = product.banner != null && product.banner!.isNotEmpty
-        ? '${product.banner!.first.toString()}'
+        ? product.banner!.first.toString()
         : '';
+    // String size = product.variantImages != null && product.variantImages!.isNotEmpty
+    //     ? '${product.variantImages..toString()}'
+    //     : '';
     String productName = product.name ?? 'n/a';
-    String productId = product.id ?? 'n/a';
     String productPrice = product.price.toString();
     String productPreviousPrice = product.previousPrice.toString();
     String productQuantity = product.quantity.toString();
@@ -90,50 +84,51 @@ class ProductCardItemWidget extends StatelessWidget {
 
               ],
             )),
-            CommonController.to.isLoggedIn
-                ? Obx(() {
-              final isLoading =
-              (CartController.to.isLoadingAddCart[productId] ??
-                  false);
-              return CustomButton(
-                padding: padding8,
-                radius: 40.r,
-                isLoading: isLoading,
-                fillColor: AppColors.kPrimaryDarkColor,
-                onTap: () {
-                  Get.lazyPut(() => CartController());
-                  CartController.to.addToCart(
-                      productId: productId,
-                      quantity: 1,
-                      price: int.parse(productPrice),
-                      variant: imgUrl);
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    CustomText(
-                      text: AppStaticStrings.addToCard,
-                      style: poppinsRegular,
-                      fontSize: getFontSizeSmall(),
-                      color: AppColors.kWhiteColor,
-                    ),
-                    SvgPicture.asset(
-                      cartIcon,
-                      colorFilter: ColorFilter.mode(
-                          AppColors.kWhiteColor, BlendMode.srcIn),
-                    )
-                  ],
-                ),
-              );
-            })
-                : CustomButton(
-              onTap: () {
-                Get.toNamed(LoginPage.routeName);
-              },
-              height: 35.h,
-              padding: padding2,
-              title: AppStaticStrings.signIn,
-            )
+            // CommonController.to.isLoggedIn
+            //     ? Obx(() {
+            //   final isLoading =
+            //   (CartController.to.isLoadingAddCart[productId] ??
+            //       false);
+            //   return CustomButton(
+            //     padding: padding8,
+            //     radius: 40.r,
+            //     isLoading: isLoading,
+            //     fillColor: AppColors.kPrimaryDarkColor,
+            //     onTap: () {
+            //       Get.lazyPut(() => CartController());
+            //       CartController.to.addToCart(
+            //           productId: productId,
+            //           size: product.,
+            //           quantity: 1,
+            //           price: int.parse(productPrice),
+            //           variant: imgUrl);
+            //     },
+            //     child: Row(
+            //       mainAxisAlignment: MainAxisAlignment.spaceAround,
+            //       children: [
+            //         CustomText(
+            //           text: AppStaticStrings.addToCard,
+            //           style: poppinsRegular,
+            //           fontSize: getFontSizeSmall(),
+            //           color: AppColors.kWhiteColor,
+            //         ),
+            //         SvgPicture.asset(
+            //           cartIcon,
+            //           colorFilter: ColorFilter.mode(
+            //               AppColors.kWhiteColor, BlendMode.srcIn),
+            //         )
+            //       ],
+            //     ),
+            //   );
+            // })
+            //     : CustomButton(
+            //   onTap: () {
+            //     Get.toNamed(LoginPage.routeName);
+            //   },
+            //   height: 35.h,
+            //   padding: padding2,
+            //   title: AppStaticStrings.signIn,
+            // )
           ],
         ),
       ),

@@ -48,6 +48,7 @@ class CartController extends GetxController {
 
   Future<void> addToCart({
     required String productId,
+  required String size,
     required num quantity,
     required num price,
     required String variant,
@@ -56,7 +57,7 @@ class CartController extends GetxController {
       isLoadingAddCart[productId] = true;
       final response = await ApiService().request(endpoint: addToCartEndPoint, method: 'POST', body: {
         "items": [
-          {"product_id": productId, "quantity": quantity, "price": price, "variant": variant}
+          {"product_id": productId, "quantity": quantity, "price": price, "variant": variant,"size":size}
         ]
       });
       isLoadingAddCart[productId] = false;

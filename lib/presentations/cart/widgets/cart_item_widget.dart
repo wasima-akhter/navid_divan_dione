@@ -54,6 +54,7 @@ class CartItemWidget extends StatelessWidget {
                         count: (cartModel.quantity ?? 0).obs,
                         onIncrement: () {
                           CartController.to.addToCart(
+                            size: "",
                               productId: cartModel.productId?.sId ?? "",
                               quantity: (cartModel.quantity ?? 0) + 1,
                               price: cartModel.productId!.price ?? 0,
@@ -63,6 +64,7 @@ class CartItemWidget extends StatelessWidget {
                           CartController.to.cartList.refresh();
                         },onDecrement: () {
                           CartController.to.addToCart(
+                            size: "",
                               productId: cartModel.productId?.sId ?? "",
                               quantity: (cartModel.quantity ?? 0) - 1,
                               price: cartModel.productId!.price ?? 0,

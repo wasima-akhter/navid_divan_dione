@@ -55,10 +55,10 @@ class HomeController extends GetxController {
     isLoadingCategory.value = true;
     isLoadingProduct.value = true;
     if (CommonController.to.isLoggedIn) {
-      ProfileController.to.getUserProfileRequest();
+     await ProfileController.to.getUserProfileRequest();
     }
     getBannerRequest();
-    await Future.wait([
+     Future.wait([
       getCategoryListRequest(),
       getProductListRequest(),
 
@@ -210,7 +210,8 @@ class HomeController extends GetxController {
     bool loadMore = false,
     String? category,
     String? subCategory,
-  }) async {
+  })
+  async {
     try {
       // Don't load more if we've reached the last page
       if (loadMore && currentProductPage.value >= totalProductPages.value) {
@@ -249,6 +250,7 @@ class HomeController extends GetxController {
 
       isLoadingProduct.value = false;
       isProductLoadingMore.value = false;
+      logger.d(response);
 
       if (response['success'] == true) {
         if (response['pagination'] != null) {
@@ -270,7 +272,6 @@ class HomeController extends GetxController {
         } else {
           productList.value = newProducts;
         }
-        logger.d(response);
       } else {
         logger.e(response);
         showCustomSnackbar(
@@ -283,6 +284,9 @@ class HomeController extends GetxController {
       logger.e(e.toString());
       isLoadingProduct.value = false;
       isProductLoadingMore.value = false;
+    }finally{
+      isLoadingProduct.value = false;
+
     }
   }
 }
