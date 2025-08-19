@@ -3,11 +3,10 @@ class CartModel {
   String? variant;
   String? size;
   int? quantity;
-  int? price;
+  num? price;  // Changed to num?
   String? sId;
 
-  CartModel(
-      {this.productId, this.variant, this.size, this.quantity, this.price, this.sId});
+  CartModel({this.productId, this.variant, this.size, this.quantity, this.price, this.sId});
 
   CartModel.fromJson(Map<String, dynamic> json) {
     productId = json['product_id'] != null
@@ -16,7 +15,7 @@ class CartModel {
     size = json['size'];
     variant = json['variant'];
     quantity = json['quantity'];
-    price = json['price'];
+    price = json['price'];  // No need to convert, since price can be num (both int and double)
     sId = json['_id'];
   }
 
@@ -37,14 +36,14 @@ class CartModel {
 class ProductId {
   String? sId;
   String? name;
-  int? price;
+  num? price;  // Changed to num?
 
   ProductId({this.sId, this.name, this.price});
 
   ProductId.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
     name = json['name'];
-    price = json['price'];
+    price = json['price'];  // No need to convert, since price can be num (both int and double)
   }
 
   Map<String, dynamic> toJson() {
@@ -55,3 +54,4 @@ class ProductId {
     return data;
   }
 }
+

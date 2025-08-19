@@ -89,7 +89,7 @@ class OrderCardItemWidget extends StatelessWidget {
                     CustomText(
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      text: '${AppStaticStrings.price}: \$${int.parse(itemModel.product!.price.toString()) *
+                      text: '${AppStaticStrings.price}: \$${double.parse(itemModel.product!.price.toString()) *
                           int.parse(itemModel.quantity.toString())}',
                       fontSize: getFontSizeSmall(),
                       style: poppinsRegular,

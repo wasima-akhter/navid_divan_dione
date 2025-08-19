@@ -238,7 +238,8 @@ class ProductController extends GetxController {
       required List<Map<String, dynamic>> productList,
       String? pickupAddress,
       String? deliveryAddress,
-      String? note}) async {
+      String? note})
+  async {
     try {
       isLoadingOrder.value = true;
       final response = await ApiService()
@@ -249,14 +250,14 @@ class ProductController extends GetxController {
         if(pickupAddress!=null) "pick_up_address": pickupAddress,
         "notes": note ?? ""
       });
-      isLoadingOrder.value = false;
+      logger.d(response);
       if (response['success'] == true) {
-        orderId.value = response['data'][0]["_id"];
+        orderId.value = response['data']["_id"];
         logger.d(orderId.value);
         logger.d(response);
-        if (response['data'][0]["_id"].isNotEmpty) {
+        if (response['data']["_id"].isNotEmpty) {
           paymentRequest(
-              products: productList, orderId: response['data'][0]["_id"]);
+              products: productList, orderId: response['data']["_id"]);
         }
         // Get.offAllNamed(NavigationPage.routeName);
         showCustomSnackbar(
@@ -264,15 +265,17 @@ class ProductController extends GetxController {
           message: response['message'],
         );
       } else {
-        logger.e(response);
+
         showCustomSnackbar(
             title: 'Failed',
             message: response['message'],
             type: SnackBarType.failed);
       }
     } catch (e) {
-      isLoadingOrder.value = false;
       logger.e(e.toString());
+    }finally{
+      isLoadingOrder.value = false;
+
     }
   }
 
