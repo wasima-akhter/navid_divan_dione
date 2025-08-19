@@ -55,7 +55,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Obx(
-                      () {
+                  () {
                     if (controller.currentBannerImages.isEmpty) {
                       return SizedBox.shrink();
                     }
@@ -64,129 +64,126 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                       child: PageView.builder(
                         controller: controller.pageController.value,
                         itemCount: controller.currentBannerImages.length,
-                        itemBuilder: (context, index) =>
-                        (controller
-                            .selectedColor.value ==
-                            "video" /*&& _controller!=null*/)
+                        itemBuilder: (context, index) => (controller
+                                    .selectedColor.value ==
+                                "video" /*&& _controller!=null*/)
                             ?
-                        // VideoPlayer(controller)
-                        GestureDetector(
-                          onTap: () {
-                            if (ProductController
-                                .to.chewieController.value !=
-                                null &&
-                                ProductController
-                                    .to
-                                    .chewieController
-                                    .value!
-                                    .videoPlayerController
-                                    .value
-                                    .isInitialized) {
-                              showDialog(
-                                context: context,
-                                builder: (context) =>
-                                    AlertDialog(
-                                      scrollable: true,
-                                      content: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          AspectRatio(
-                                            aspectRatio: ProductController
-                                                .to
-                                                .chewieController
-                                                .value!
-                                                .aspectRatio ??
-                                                1,
-                                            child: Chewie(
-                                              controller: ProductController
-                                                  .to.chewieController.value!,
+                            // VideoPlayer(controller)
+                            GestureDetector(
+                                onTap: () {
+                                  if (ProductController
+                                              .to.chewieController.value !=
+                                          null &&
+                                      ProductController
+                                          .to
+                                          .chewieController
+                                          .value!
+                                          .videoPlayerController
+                                          .value
+                                          .isInitialized) {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                        scrollable: true,
+                                        content: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            AspectRatio(
+                                              aspectRatio: ProductController
+                                                      .to
+                                                      .chewieController
+                                                      .value!
+                                                      .aspectRatio ??
+                                                  1,
+                                              child: Chewie(
+                                                controller: ProductController
+                                                    .to.chewieController.value!,
+                                              ),
                                             ),
-                                          ),
-                                          IconButton(
-                                            onPressed: () {
-                                              final chewieCtrl =
-                                                  ProductController.to
-                                                      .chewieController.value;
-                                              final videoCtrl = chewieCtrl
-                                                  ?.videoPlayerController;
+                                            IconButton(
+                                              onPressed: () {
+                                                final chewieCtrl =
+                                                    ProductController.to
+                                                        .chewieController.value;
+                                                final videoCtrl = chewieCtrl
+                                                    ?.videoPlayerController;
 
-                                              if (videoCtrl != null &&
-                                                  videoCtrl
-                                                      .value.isInitialized) {
-                                                if (videoCtrl
-                                                    .value.isCompleted) {
-                                                  videoCtrl
-                                                      .seekTo(Duration.zero);
-                                                  videoCtrl.play();
+                                                if (videoCtrl != null &&
+                                                    videoCtrl
+                                                        .value.isInitialized) {
+                                                  if (videoCtrl
+                                                      .value.isCompleted) {
+                                                    videoCtrl
+                                                        .seekTo(Duration.zero);
+                                                    videoCtrl.play();
+                                                  }
+
+                                                  videoCtrl.value.isPlaying
+                                                      ? chewieCtrl?.pause()
+                                                      : chewieCtrl?.play();
                                                 }
-
-                                                videoCtrl.value.isPlaying
-                                                    ? chewieCtrl?.pause()
-                                                    : chewieCtrl?.play();
-                                              }
-                                            },
-                                            icon: ValueListenableBuilder(
-                                              valueListenable:
-                                              ProductController
-                                                  .to
-                                                  .chewieController
-                                                  .value!
-                                                  .videoPlayerController,
-                                              builder: (context, value, _) {
-                                                return Icon(
-                                                  color:
-                                                  AppColors.kPrimaryColor,
-                                                  value.isPlaying
-                                                      ? Icons.pause
-                                                      : Icons.play_arrow,
-                                                );
                                               },
+                                              icon: ValueListenableBuilder(
+                                                valueListenable:
+                                                    ProductController
+                                                        .to
+                                                        .chewieController
+                                                        .value!
+                                                        .videoPlayerController,
+                                                builder: (context, value, _) {
+                                                  return Icon(
+                                                    color:
+                                                        AppColors.kPrimaryColor,
+                                                    value.isPlaying
+                                                        ? Icons.pause
+                                                        : Icons.play_arrow,
+                                                  );
+                                                },
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                              );
-                            }
-                          },
-                          child: Container(
-                            height: 150.h,
-                            width: double.infinity,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                                color: AppColors.kWhiteColor
-                                    .withValues(alpha: .5),
-                                image: DecorationImage(
-                                    image: AssetImage(
-                                      "assets/icons/video.png",
-                                    ),
-                                    fit: BoxFit.fitHeight,
-                                    alignment: Alignment.center)),
-                          ),
-                        )
+                                    );
+                                  }
+                                },
+                                child: Container(
+                                  height: 150.h,
+                                  width: double.infinity,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                      color: AppColors.kWhiteColor
+                                          .withValues(alpha: .5),
+                                      image: DecorationImage(
+                                          image: AssetImage(
+                                            "assets/icons/video.png",
+                                          ),
+                                          fit: BoxFit.fitHeight,
+                                          alignment: Alignment.center)),
+                                ),
+                              )
                             : AspectRatio(
-                          aspectRatio: 1,
-                          child: InteractiveViewer(
-                            panEnabled: false,
-                            // Set it to fa lse
-                            boundaryMargin: EdgeInsets.all(100),
-                            minScale: 0.5,
-                            maxScale: 2,
-                            child: CustomNetworkImage(
-                              isPreview: true,
-                              imageUrl:
-                              '${ApiService().baseUrl}/${controller
-                                  .currentBannerImages[index]}',
-                              width: double.infinity,
-                            ),
-                          ),
-                        ),
+                                aspectRatio: 1,
+                                child: InteractiveViewer(
+                                  panEnabled: false,
+                                  // Set it to fa lse
+                                  boundaryMargin: EdgeInsets.all(100),
+                                  minScale: 0.5,
+                                  maxScale: 2,
+                                  child: CustomNetworkImage(
+                                    isPreview: true,
+                                    imageUrl:
+                                        '${ApiService().baseUrl}/${controller.currentBannerImages[index]}',
+                                    width: double.infinity,
+                                  ),
+                                ),
+                              ),
                       ),
                     );
                   },
                 ),
                 Obx(
-                      () {
+                  () {
                     if (product.variantColors?.isEmpty ?? true) {
                       return SizedBox.shrink();
                     }
@@ -203,13 +200,13 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                 },
                                 child: ColorItemWidget(
                                   textColor:
-                                  controller.selectedColor.value == color
-                                      ? AppColors.kWhiteColor
-                                      : AppColors.kPrimaryColor,
+                                      controller.selectedColor.value == color
+                                          ? AppColors.kWhiteColor
+                                          : AppColors.kPrimaryColor,
                                   containerColor:
-                                  controller.selectedColor.value == color
-                                      ? AppColors.kPrimaryColor
-                                      : Colors.transparent,
+                                      controller.selectedColor.value == color
+                                          ? AppColors.kPrimaryColor
+                                          : Colors.transparent,
                                   color: color,
                                 ),
                               )),
@@ -217,7 +214,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                       ),
                     );
                   },
-                ),  /*Obx(
+                ),
+                /*Obx(
                       () {
                     if (controller.selectedColor.value==null) {
                       return SizedBox.shrink();
@@ -252,8 +250,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   },
                 ),*/
                 Obx(
-                      () {
-                    if (controller.selectedColor.value == "video" || controller.sizes.isEmpty) {
+                  () {
+                    if (controller.selectedColor.value == "video" ||
+                        controller.sizes.isEmpty) {
                       return SizedBox.shrink();
                     }
                     return SingleChildScrollView(
@@ -262,20 +261,19 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                         spacing: 12.w,
                         children: [
                           CustomText(text: AppStaticStrings.selectSize),
-                          ...controller.sizes.map((color) =>
-                              GestureDetector(
+                          ...controller.sizes.map((color) => GestureDetector(
                                 onTap: () {
-                                  controller.selectedSize.value=color ;
+                                  controller.selectedSize.value = color;
                                 },
                                 child: ColorItemWidget(
                                   textColor:
-                                   controller.selectedSize.value == color
-                                      ? AppColors.kWhiteColor
-                                      : AppColors.kPrimaryColor,
+                                      controller.selectedSize.value == color
+                                          ? AppColors.kWhiteColor
+                                          : AppColors.kPrimaryColor,
                                   containerColor:
-                                   controller.selectedSize.value == color
-                                      ? AppColors.kPrimaryColor
-                                      : Colors.transparent,
+                                      controller.selectedSize.value == color
+                                          ? AppColors.kPrimaryColor
+                                          : Colors.transparent,
                                   color: color,
                                 ),
                               )),
@@ -289,7 +287,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     Expanded(
                       child: PriceTextWidget(
                         previousPrice:
-                        (product.previousPrice ?? 0.0).toString(),
+                            (product.previousPrice ?? 0.0).toString(),
                         price: (product.price ?? 0.0).toString(),
                         fontSize: getFontSizeExtraLarge(),
                         previousPriceFontSize: getFontSizeDefault(),
@@ -312,9 +310,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     ),
                     Obx(() {
                       return CustomText(
-                        text:'${(ProductController.to.selectedColor.value == "video" || ProductController.to.quantity.value == null)
-                            ? (product.quantity ?? 0)
-                            : ProductController.to.quantity.value} pcs',
+                        text:
+                            '${(ProductController.to.selectedColor.value == "video" || ProductController.to.quantity.value == null) ? (product.quantity ?? 0) : ProductController.to.quantity.value} pcs',
                         style: poppinsRegular,
                       );
                     })
@@ -326,42 +323,47 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 ),
                 CommonController.to.isLoggedIn
                     ? Row(
-                  spacing: 12.w,
-                  children: [
-                    Expanded(
-                      child: CustomButton(
-                        onTap: () {
-                          buyProductDialog(context);
-                        },
-                        title: AppStaticStrings.buyNow,
-                      ),
-                    ),
-                    Expanded(child: Obx(() {
-                      final isLoading = CartController
-                          .to.isLoadingAddCart[product.id] ??
-                          false;
+                        spacing: 12.w,
+                        children: [
+                          Expanded(
+                            child: CustomButton(
+                              onTap: () {
+                                buyProductDialog(context,
+                                    selectedColor: ProductController
+                                        .to.selectedColor.value,
+                                    selectedSize: ProductController
+                                        .to.selectedSize.value);
+                              },
+                              title: AppStaticStrings.buyNow,
+                            ),
+                          ),
+                          Expanded(child: Obx(() {
+                            final isLoading = CartController
+                                    .to.isLoadingAddCart[product.id] ??
+                                false;
 
-                      return CustomButton(
-                        loadingColor: AppColors.kPrimaryColor,
-                        onTap: () {
-                          CartController.to.addToCart(
-                              variant: controller.currentBannerImages[0],
-                              productId: product.id ?? '',
-                              quantity:
-                              ProductController.to.cartQuantity.value,
-                               size:  controller.selectedSize.value??controller.sizes[0],
-                              price: ProductController
-                                  .to.cartQuantity.value *
-                                  int.parse(product.price.toString()));
-                        },
-                        isLoading: isLoading,
-                        title: AppStaticStrings.addToCard,
-                        fillColor: Colors.transparent,
-                        textColor: AppColors.kPrimaryColor,
-                      );
-                    }))
-                  ],
-                )
+                            return CustomButton(
+                              loadingColor: AppColors.kPrimaryColor,
+                              onTap: () {
+                                CartController.to.addToCart(
+                                    variant: controller.currentBannerImages[0],
+                                    productId: product.id ?? '',
+                                    quantity:
+                                        ProductController.to.cartQuantity.value,
+                                    size: controller.selectedSize.value ??
+                                        controller.sizes[0],
+                                    price: ProductController.to.cartQuantity.value *
+                                        double.parse(product.price.toString()).round()
+                                );
+                              },
+                              isLoading: isLoading,
+                              title: AppStaticStrings.addToCard,
+                              fillColor: Colors.transparent,
+                              textColor: AppColors.kPrimaryColor,
+                            );
+                          }))
+                        ],
+                      )
                     : SizedBox.shrink(),
                 CustomText(
                   text: 'Related Products',
@@ -374,14 +376,13 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     spacing: 12.w,
                     children: List.generate(
                       ProductController.to.relatedProductList.length,
-                          (index) =>
-                          SizedBox(
-                              width: 200.w,
-                              height: 270.w,
-                              child: ProductCardItemWidget(
-                                product:
+                      (index) => SizedBox(
+                          width: 200.w,
+                          height: 200.w,
+                          child: ProductCardItemWidget(
+                            product:
                                 ProductController.to.relatedProductList[index],
-                              )),
+                          )),
                     ),
                   ),
                 )

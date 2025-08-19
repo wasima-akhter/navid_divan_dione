@@ -15,112 +15,113 @@ import 'package:navid_e_commerce/presentations/splash/controllers/common_control
 
 class NavigationPage extends StatelessWidget {
   const NavigationPage({super.key});
+
   static const String routeName = '/nav';
+
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: NavigationController.to.currentNavIndex.value == 0,
-      onPopInvokedWithResult: (didPop, result) {
-        if (!didPop && NavigationController.to.currentNavIndex.value != 0) {
-          NavigationController.to.currentNavIndex.value = 0;
-        }
-      },
-      child: Scaffold(
-        drawer: NavigationController.to.currentNavIndex.value == 0
-            ? CustomDrawerWidget()
-            : null,
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(kToolbarHeight),
-          child: Obx(() {
-            return NavigationController.to.currentNavIndex.value == 0
-                ? Builder(builder: (context) {
-                    return CustomHomeAppbar(
-                      onActionTap: () {
-                        Scaffold.of(context).openDrawer();
-                      },
-                    );
-                  })
-                : CustomDefaultAppbar(
-                    leading: IconButton(
-                        onPressed: () {
-                          NavigationController.to.currentNavIndex.value = 0;
-                        },
-                        icon: Icon(Icons.arrow_back_rounded)),
-                    title: NavigationController.to.appbarTitle[
-                        NavigationController.to.currentNavIndex.value - 1],
+    return Obx(() {
+      final canExit = NavigationController.to.currentNavIndex.value == 0;
+      return PopScope(
+        canPop: canExit,
+        onPopInvokedWithResult: (didPop, result) {
+          if (!didPop && !canExit) {
+            // Instead of exiting, reset to home
+            NavigationController.to.currentNavIndex.value = 0;
+          }
+        },
+        child: Scaffold(
+            drawer: NavigationController.to.currentNavIndex.value == 0
+                ? CustomDrawerWidget()
+                : null,
+            appBar: PreferredSize(
+                preferredSize: Size.fromHeight(kToolbarHeight),
+                child: NavigationController.to.currentNavIndex.value == 0
+                    ? Builder(builder: (context) {
+                  return CustomHomeAppbar(
+                    onActionTap: () {
+                      Scaffold.of(context).openDrawer();
+                    },
                   );
-          }),
-        ),
-        body: Column(
-          children: [
-            Expanded(
-              child: Obx(() {
-                return IndexedStack(
-                  index: NavigationController.to.currentNavIndex.value,
-                  children: NavigationController.to.getPages(),
-                );
-              }),
+                })
+                    : CustomDefaultAppbar(
+                  leading: IconButton(
+                      onPressed: () {
+                        NavigationController.to.currentNavIndex.value = 0;
+                      },
+                      icon: Icon(Icons.arrow_back_rounded)),
+                  title: NavigationController.to.appbarTitle[
+                  NavigationController.to.currentNavIndex.value - 1],
+                )
             ),
-          ],
-        ),
-        bottomNavigationBar: Obx(() {
-          return BottomNavigationBar(
-            currentIndex: NavigationController.to.currentNavIndex.value,
-            onTap: (value) {
-              if (!CommonController.to.isLoggedIn) {
-                if (value == 0) {
-                  NavigationController.to.currentNavIndex.value = value;
+            body: Column(
+              children: [
+                Expanded(
+                    child:
+                    IndexedStack(
+                      index: NavigationController.to.currentNavIndex.value,
+                      children: NavigationController.to.getPages(),
+                    )
+                ),
+              ],
+            ),
+            bottomNavigationBar: BottomNavigationBar(
+              currentIndex: NavigationController.to.currentNavIndex.value,
+              onTap: (value) {
+                if (!CommonController.to.isLoggedIn) {
+                  if (value == 0) {
+                    NavigationController.to.currentNavIndex.value = value;
+                  } else {
+                    Get.toNamed(LoginPage.routeName);
+                  }
                 } else {
-                 Get.toNamed(LoginPage.routeName);
+                  NavigationController.to.currentNavIndex.value = value;
                 }
-              } else {
-                NavigationController.to.currentNavIndex.value = value;
-              }
-            },
-            showUnselectedLabels: true,
-            backgroundColor: AppColors.kPrimaryExtraLightColor,
-            items: [
-              BottomNavigationBarItem(
-                  icon: SvgPicture.asset(
-                    NavigationController.to.currentNavIndex.value == 0
-                        ? homeFillIcon
-                        : homeOutlineIcon,
-                    height: 24.w,
-                    width: 24.w,
-                  ),
-                  label: AppStaticStrings.home),
-              BottomNavigationBarItem(
-                  backgroundColor: AppColors.kPrimaryExtraLightColor,
-                  icon: SvgPicture.asset(
-                    NavigationController.to.currentNavIndex.value == 1
-                        ? cartFillIcon
-                        : cartIcon,
-                    height: 24.w,
-                    width: 24.w,
-                  ),
-                  label: AppStaticStrings.cart),
-              BottomNavigationBarItem(
-                  icon: SvgPicture.asset(
-                    NavigationController.to.currentNavIndex.value == 2
-                        ? orderFillIcon
-                        : orderOutlineIcon,
-                    height: 24.w,
-                    width: 24.w,
-                  ),
-                  label: AppStaticStrings.orders),
-              BottomNavigationBarItem(
-                  icon: SvgPicture.asset(
-                    NavigationController.to.currentNavIndex.value == 3
-                        ? notificationFillIcon
-                        : notificationOutlineIcon,
-                    height: 24.w,
-                    width: 24.w,
-                  ),
-                  label: AppStaticStrings.notifications),
-            ],
-          );
-        }),
-      ),
-    );
+              },
+              showUnselectedLabels: true,
+              backgroundColor: AppColors.kPrimaryExtraLightColor,
+              items: [
+                BottomNavigationBarItem(
+                    icon: SvgPicture.asset(
+                      NavigationController.to.currentNavIndex.value == 0
+                          ? homeFillIcon
+                          : homeOutlineIcon,
+                      height: 24.w,
+                      width: 24.w,
+                    ),
+                    label: AppStaticStrings.home),
+                BottomNavigationBarItem(
+                    backgroundColor: AppColors.kPrimaryExtraLightColor,
+                    icon: SvgPicture.asset(
+                      NavigationController.to.currentNavIndex.value == 1
+                          ? cartFillIcon
+                          : cartIcon,
+                      height: 24.w,
+                      width: 24.w,
+                    ),
+                    label: AppStaticStrings.cart),
+                BottomNavigationBarItem(
+                    icon: SvgPicture.asset(
+                      NavigationController.to.currentNavIndex.value == 2
+                          ? orderFillIcon
+                          : orderOutlineIcon,
+                      height: 24.w,
+                      width: 24.w,
+                    ),
+                    label: AppStaticStrings.orders),
+                BottomNavigationBarItem(
+                    icon: SvgPicture.asset(
+                      NavigationController.to.currentNavIndex.value == 3
+                          ? notificationFillIcon
+                          : notificationOutlineIcon,
+                      height: 24.w,
+                      width: 24.w,
+                    ),
+                    label: AppStaticStrings.notifications),
+              ],
+            )
+        ),
+      );
+    });
   }
 }

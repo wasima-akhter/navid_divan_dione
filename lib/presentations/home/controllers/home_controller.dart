@@ -52,20 +52,19 @@ class HomeController extends GetxController {
   }
 
   void fetchInitialData() async {
-    isLoadingCategory.value = true;
-    isLoadingProduct.value = true;
-    if (CommonController.to.isLoggedIn) {
-     await ProfileController.to.getUserProfileRequest();
-    }
-    getBannerRequest();
+    // isLoadingCategory.value = true;
+    // isLoadingProduct.value = true;
+
+
      Future.wait([
+     getBannerRequest(),
       getCategoryListRequest(),
       getProductListRequest(),
 
     ]);
 
-    isLoadingCategory.value = false;
-    isLoadingProduct.value = false;
+    // isLoadingCategory.value = false;
+    // isLoadingProduct.value = false;
   }
 
   Future<void> refreshCall() async {
@@ -146,7 +145,7 @@ class HomeController extends GetxController {
 
   Future<void> getSubCategoryRequest({required String catId}) async {
     try {
-      isLoadingBanner.value = true;
+      isLoadingSubCategory.value = true;
 
       final response = await ApiService().request(
           endpoint: subCateGetAllEndPoint,
@@ -170,7 +169,7 @@ class HomeController extends GetxController {
     } catch (e) {
       logger.e(e.toString());
     } finally {
-      isLoadingBanner.value = false;
+      isLoadingSubCategory.value = false;
     }
   }
 

@@ -45,7 +45,7 @@ class ProductCardItemWidget extends StatelessWidget {
         },
         child: Column(
           children: [
-            Expanded(
+            Expanded(flex: 2,
 
                 ///===================dynamic img=================///
                 child: CustomNetworkImage(

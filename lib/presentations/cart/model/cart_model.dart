@@ -1,17 +1,19 @@
 class CartModel {
   ProductId? productId;
   String? variant;
+  String? size;
   int? quantity;
   int? price;
   String? sId;
 
   CartModel(
-      {this.productId, this.variant, this.quantity, this.price, this.sId});
+      {this.productId, this.variant, this.size, this.quantity, this.price, this.sId});
 
   CartModel.fromJson(Map<String, dynamic> json) {
     productId = json['product_id'] != null
         ? ProductId.fromJson(json['product_id'])
         : null;
+    size = json['size'];
     variant = json['variant'];
     quantity = json['quantity'];
     price = json['price'];
@@ -23,6 +25,7 @@ class CartModel {
     if (productId != null) {
       data['product_id'] = productId!.toJson();
     }
+    data['size'] = size;
     data['variant'] = variant;
     data['quantity'] = quantity;
     data['price'] = price;

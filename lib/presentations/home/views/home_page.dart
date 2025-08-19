@@ -22,7 +22,7 @@ import 'package:navid_e_commerce/presentations/home/widgets/search_text_field_wi
 import 'package:navid_e_commerce/presentations/profile/widgets/custom_loading_widget.dart';
 
 import '../widgets/pagination_loading_widget.dart';
-
+import 'package:carousel_slider/carousel_slider.dart';
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -71,30 +71,40 @@ class _HomePageState extends State<HomePage> {
                     ? PaginationLoadingWidget()
                     : HomeController.to.bannerList.isEmpty
                     ? SizedBox.shrink()
-                    : SizedBox( // ⬅️ FIXED: give PageView a fixed height
+                    :
+
+                SizedBox(
                   height: 150.h,
-                  child: PageView.builder(
+                  child: CarouselSlider.builder(
                     itemCount: HomeController.to.bannerList.length > 10
                         ? 10
                         : HomeController.to.bannerList.length,
-                    controller: HomeController.to.pageController.value,
-                    itemBuilder: (_, index) {
-                      final trackItem =
-                      HomeController.to.bannerList[index];
+                    itemBuilder: (context, index, realIndex) {
+                      final trackItem = HomeController.to.bannerList[index];
 
                       return Padding(
                         padding: padding6H,
                         child: CustomNetworkImage(
                           borderRadius: BorderRadius.circular(10.r),
-                          imageUrl:
-                          '${ApiService().baseUrl}/${trackItem.img ?? ''}',
+                          imageUrl: '${ApiService().baseUrl}/${trackItem.img ?? ''}',
                           height: 150.h,
                           width: double.maxFinite,
                         ),
                       );
                     },
+                    options: CarouselOptions(
+                      height: 150.h,
+                      viewportFraction: 1, // full width
+                      autoPlay: true, // enable auto play
+                      autoPlayInterval: const Duration(seconds: 3), // time gap
+                      autoPlayAnimationDuration: const Duration(milliseconds: 800),
+                      autoPlayCurve: Curves.fastOutSlowIn,
+                      enlargeCenterPage: false,
+                      enableInfiniteScroll: true,
+                    ),
                   ),
                 );
+
               }),
             ),
           ),
@@ -188,7 +198,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                     maxCrossAxisExtent: 210.w,
-                    mainAxisExtent: 220.w,
+                    mainAxisExtent: 200.w,
                     crossAxisSpacing: 8.w,
                     mainAxisSpacing: 8.w,
                   ),

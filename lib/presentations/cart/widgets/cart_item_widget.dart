@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:navid_e_commerce/core/api-client/api_service.dart';
 import 'package:navid_e_commerce/core/components/custom_network_image.dart';
 import 'package:navid_e_commerce/core/constants/color_constants.dart';
+import 'package:navid_e_commerce/core/constants/custom_space.dart';
 import 'package:navid_e_commerce/core/constants/custom_text.dart';
 import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
@@ -50,11 +51,12 @@ class CartItemWidget extends StatelessWidget {
                         style: poppinsRegular,
                         fontSize: getFontSizeDefault(),
                       )),
+                      space6W,
                       CartCounterWidget(
                         count: (cartModel.quantity ?? 0).obs,
                         onIncrement: () {
                           CartController.to.addToCart(
-                            size: "",
+                            size: cartModel.size??"",
                               productId: cartModel.productId?.sId ?? "",
                               quantity: (cartModel.quantity ?? 0) + 1,
                               price: cartModel.productId!.price ?? 0,
@@ -64,7 +66,7 @@ class CartItemWidget extends StatelessWidget {
                           CartController.to.cartList.refresh();
                         },onDecrement: () {
                           CartController.to.addToCart(
-                            size: "",
+                            size: cartModel.size??"",
                               productId: cartModel.productId?.sId ?? "",
                               quantity: (cartModel.quantity ?? 0) - 1,
                               price: cartModel.productId!.price ?? 0,
@@ -76,6 +78,9 @@ class CartItemWidget extends StatelessWidget {
                       )
                     ],
                   ),
+                  CustomText(
+                      text: 'size: ${cartModel.size??"n/a"}  ',
+                      style: poppinsMedium.copyWith(color: AppColors.kPrimaryTextDarkColor, fontSize: getFontSizeSemiSmall())),
                   Row(
                     children: [
                       Expanded(

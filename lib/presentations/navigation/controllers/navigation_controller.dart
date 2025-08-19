@@ -28,6 +28,7 @@ class NavigationController extends GetxController {
         Boxes.getUserData().get(tokenKey).toString().isNotEmpty) {
       Get.put(ProfileController());
       Get.put(OrderController());
+       ProfileController.to.getUserProfileRequest();
 
       Get.put(NotificationController());
     }

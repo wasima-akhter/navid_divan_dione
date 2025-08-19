@@ -10,6 +10,7 @@ import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
 import 'package:navid_e_commerce/core/helper/helper_function.dart';
+import 'package:navid_e_commerce/core/utils/variable.dart';
 import 'package:navid_e_commerce/presentations/home/widgets/default_scaffold_structure_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:navid_e_commerce/presentations/product/controllers/product_controller.dart';
@@ -18,13 +19,29 @@ import 'package:navid_e_commerce/presentations/product/views/edit_address_page.d
 
 import '../../cart/controllers/cart_controller.dart';
 
-class DeliverAddressPage extends StatelessWidget {
+class DeliverAddressPage extends StatefulWidget {
   static const String routeName = '/deliver-add';
 
   DeliverAddressPage({super.key});
 
-  final bool isFromCart = Get.arguments;
+  @override
+  State<DeliverAddressPage> createState() => _DeliverAddressPageState();
+}
 
+class _DeliverAddressPageState extends State<DeliverAddressPage> {
+  final arg = Get.arguments;
+
+  bool isFromCart = false;
+  String? selectColor;
+  String? selectSize;
+  @override
+  void initState() {
+    isFromCart=arg["isFromCart"];
+    // selectColor=arg["color"]??'';
+    // selectSize=arg["size"];
+    // logger.d("img: $selectColor , size: $selectSize");
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return DefaultScaffoldStructureWidget(spacing: 6.h, appBarTitle: AppStaticStrings.address, children: [
@@ -150,7 +167,7 @@ class DeliverAddressPage extends StatelessWidget {
                     CartController.to.cartList.length,
                         (index) {
                       final cart = CartController.to.cartList[index];
-                      return {"product": cart.productId!.sId, "quantity": cart.quantity, "color": cart.variant};
+                      return {"product": cart.productId!.sId, "quantity": cart.quantity, "color": cart.variant,"size": cart.size};
                     },
                   ),
                   productList: List.generate(
@@ -161,7 +178,7 @@ class DeliverAddressPage extends StatelessWidget {
                         "name": cart.productId!.name,
                         "unit_amount": cart.productId!.price,
                         "quantity": cart.quantity,
-                          
+
                       };
                     },
                   ));
@@ -177,20 +194,19 @@ class DeliverAddressPage extends StatelessWidget {
                     "product": ProductController.to.productModel.value.id,
                     "quantity": ProductController.to.cartQuantity.value,
                     "color": ProductController.to.currentBannerImages[0]
+                    ,"size": ProductController.to.selectedSize.value
                   }
                 ],
                 productList: [{
                   "name": ProductController.to.productModel.value.name,
                   "unit_amount": ProductController.to.productModel.value.price,
                   "quantity": ProductController.to.cartQuantity.value,
-                    
+
                 }
                 ],
                 deliveryAddress: ProductController.to.selectedShippingAddress.value);
 
-            // ProductController.to.orderRequest(totalAmount: CartController.to.totalPrice.value, item: [
-            //
-            // ],address: )
+
           },
           title: AppStaticStrings.payment,
         );

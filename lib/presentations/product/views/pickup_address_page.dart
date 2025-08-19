@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:navid_e_commerce/core/api-client/api_service.dart';
 import 'package:navid_e_commerce/core/components/custom_button.dart';
+import 'package:navid_e_commerce/core/components/custom_network_image.dart';
 import 'package:navid_e_commerce/core/components/custom_textfield.dart';
 import 'package:navid_e_commerce/core/constants/app_static_strings.dart';
 import 'package:navid_e_commerce/core/constants/color_constants.dart';
@@ -9,6 +11,7 @@ import 'package:navid_e_commerce/core/constants/custom_text.dart';
 import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
+import 'package:navid_e_commerce/core/utils/variable.dart';
 import 'package:navid_e_commerce/presentations/cart/controllers/cart_controller.dart';
 import 'package:navid_e_commerce/presentations/home/widgets/default_scaffold_structure_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -18,12 +21,29 @@ import 'package:navid_e_commerce/presentations/product/widgets/expand_able_text.
 
 import '../../../core/helper/helper_function.dart';
 
-class PickupAddressPage extends StatelessWidget {
+class PickupAddressPage extends StatefulWidget {
   static const String routeName = '/pick-up';
 
-  PickupAddressPage({super.key});
+  const PickupAddressPage({super.key});
 
-  final bool isFromCart = Get.arguments;
+  @override
+  State<PickupAddressPage> createState() => _PickupAddressPageState();
+}
+
+class _PickupAddressPageState extends State<PickupAddressPage> {
+final arg = Get.arguments;
+
+   bool isFromCart = false;
+   String? selectColor;
+   String? selectSize;
+  @override
+  void initState() {
+isFromCart=arg["isFromCart"];
+selectColor=arg["color"];
+selectSize=arg["size"];
+logger.d("img: $selectColor , size: $selectSize");
+super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +89,7 @@ class PickupAddressPage extends StatelessWidget {
                   (index) {
                     final cart = CartController.to.cartList[index];
                     return _buildProductItem(
-                        name: cart.productId!.name.toString(), price: cart.price.toString(), description: "", quantity: cart.quantity.toString());
+                        name: cart.productId!.name.toString(), price: cart.price.toString(), description: "",size: cart.size, quantity: cart.quantity.toString());
                   },
                 ),
               )
@@ -77,7 +97,8 @@ class PickupAddressPage extends StatelessWidget {
                 name: ProductController.to.productModel.value.name.toString(),
                 price: ProductController.to.productModel.value.price.toString(),
                 description: ProductController.to.productModel.value.description.toString(),
-                quantity: ProductController.to.cartQuantity.value.toString());
+                quantity: ProductController.to.cartQuantity.value.toString()
+            ,color: selectColor, size: selectSize);
       }),
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -109,7 +130,7 @@ class PickupAddressPage extends StatelessWidget {
                           CartController.to.cartList.length,
                           (index) {
                             final cart = CartController.to.cartList[index];
-                            return {"product": cart.productId!.sId, "quantity": cart.quantity, "color": cart.variant};
+                            return {"product": cart.productId!.sId, "quantity": cart.quantity, "color": cart.variant,"size": cart.size};
                           },
                         ),
                         productList: List.generate(
@@ -120,7 +141,7 @@ class PickupAddressPage extends StatelessWidget {
                               "name": cart.productId!.name,
                               "unit_amount": cart.productId!.price,
                               "quantity": cart.quantity,
-                                
+
                             };
                           },
                         ));
@@ -141,6 +162,7 @@ class PickupAddressPage extends StatelessWidget {
                             "product": ProductController.to.productModel.value.id,
                             "quantity": ProductController.to.cartQuantity.value,
                             "color": ProductController.to.currentBannerImages[0]
+                          ,"size": ProductController.to.selectedSize.value
                           }
                         ],
                         productList: [
@@ -148,7 +170,7 @@ class PickupAddressPage extends StatelessWidget {
                             "name": ProductController.to.productModel.value.name,
                             "unit_amount": ProductController.to.productModel.value.price,
                             "quantity": ProductController.to.cartQuantity.value,
-                              
+
                           }
                         ],
                         pickupAddress: ProductController.to.selectedPickAddress.value);
@@ -193,11 +215,13 @@ class PickupAddressPage extends StatelessWidget {
     required String price,
     required String description,
     required String quantity,
+     String? color,
+     String? size,
   }) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
+      Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -206,14 +230,33 @@ class PickupAddressPage extends StatelessWidget {
                 fontSize: getFontSizeDefault(),
                 color: AppColors.kPrimaryTextDarkColor,
               ),
-              space4H,
-              CustomText(
+
+           if(size!=null)  Padding(
+             padding: padding4V,
+             child: CustomText(
+                  text: "Size: $size",
+                  fontSize: getFontSizeDefault(),
+                  color: AppColors.kPrimaryTextDarkColor,
+                ),
+           ),
+              if(color!=null) Padding(
+                padding: padding4V,
+                child: CustomText(
+                  text: "Color: $color",
+                  fontSize: getFontSizeDefault(),
+                  color: AppColors.kPrimaryTextDarkColor,
+                ),
+              ),
+             CustomText(
                 text: "Price: \$$price",
                 fontSize: getFontSizeDefault(),
                 color: AppColors.kPrimaryTextDarkColor,
               ),
-              space4H,
-              ExpandableText(text: description),
+
+              if(description.isNotEmpty) Padding(
+                padding: padding4V,
+                child: ExpandableText(text: description),
+              ),
             ],
           ),
         ),

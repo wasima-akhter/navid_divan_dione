@@ -245,8 +245,8 @@ class ProductController extends GetxController {
           .request(endpoint: orderCreateEndPoint, method: 'POST', body: {
         "items": item,
         "total_amount": totalAmount,
-        "delivery_address": deliveryAddress,
-        "pick_up_address": pickupAddress,
+        if(deliveryAddress!=null)"delivery_address": deliveryAddress,
+        if(pickupAddress!=null) "pick_up_address": pickupAddress,
         "notes": note ?? ""
       });
       isLoadingOrder.value = false;
@@ -352,6 +352,8 @@ class ProductController extends GetxController {
     if (product.banner != null && product.banner!.isNotEmpty) {
       currentBannerImages.value = product.banner!;
       selectedColor.value = null;
+      selectedSize.value = null;
+
     }
     // Otherwise, try to use the first color's variant images
     else if (product.variantColors != null &&
@@ -363,6 +365,7 @@ class ProductController extends GetxController {
     } else {
       currentBannerImages.value = [];
       selectedColor.value = null;
+      selectedSize.value = null;
     }
   }
 
