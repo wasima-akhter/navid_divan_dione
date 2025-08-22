@@ -198,7 +198,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                     maxCrossAxisExtent: 210.w,
-                    mainAxisExtent: 200.w,
+                    mainAxisExtent: 230.w,
                     crossAxisSpacing: 8.w,
                     mainAxisSpacing: 8.w,
                   ),
