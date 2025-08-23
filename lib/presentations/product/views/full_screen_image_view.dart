@@ -10,6 +10,8 @@ class FullScreenImageViewer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -22,14 +24,15 @@ class FullScreenImageViewer extends StatelessWidget {
       body: Center(
         child: InteractiveViewer(
           minScale: 0.5,
-          maxScale: 3,
+          maxScale: 5,
           child: Image.network(
             imageUrl,
-            fit: BoxFit.contain,
+            fit: BoxFit.contain,     // ✅ keeps aspect ratio
+            width: size.width,       // ✅ expands to screen width
+            height: size.height,     // ✅ also allows height expansion
           ),
         ),
       ),
     );
   }
 }
-
