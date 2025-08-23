@@ -87,15 +87,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                         scrollable: true,
                                         content: Column(
                                           mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            AspectRatio(
-                                              aspectRatio: ProductController
-                                                      .to
-                                                      .chewieController
-                                                      .value!
-                                                      .aspectRatio ??
-                                                  1,
-                                              child: Chewie(
+                                          children: [AspectRatio(
+                                              aspectRatio: ProductController.to.chewieController.value!.aspectRatio ??1,
+                                            child: Chewie(
                                                 controller: ProductController
                                                     .to.chewieController.value!,
                                               ),

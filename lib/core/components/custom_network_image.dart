@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:navid_e_commerce/core/constants/color_constants.dart';
 import 'package:navid_e_commerce/core/utils/variable.dart';
+import 'package:navid_e_commerce/presentations/product/views/full_screen_image_view.dart';
 import 'package:navid_e_commerce/presentations/profile/widgets/custom_loading_widget.dart';
 
 import '../constants/image_constants.dart';
@@ -62,19 +63,7 @@ class _CustomNetworkImageState extends State<CustomNetworkImage> {
         ? GestureDetector(
             onTap:widget.isPreview == true? () {
               if (widget.imageUrl.isNotEmpty && widget.isPreview == true) {
-                Get.dialog(AlertDialog(
-                  content:  InteractiveViewer(
-                    panEnabled: false, // Set it to fa lse
-                    boundaryMargin: EdgeInsets.all(100),
-                    minScale: 0.5,
-                    maxScale: 2,
-                    child: CustomNetworkImage(
-                      imageUrl: widget.imageUrl,
-                      fit: BoxFit.contain,
-                      width: 300,
-                    ),
-                  ),
-                ));
+               Get.to(FullScreenImageViewer(imageUrl: widget.imageUrl,));
               }
             }:null,
             child: Container(
@@ -127,35 +116,11 @@ class _CustomNetworkImageState extends State<CustomNetworkImage> {
             ),
           )
         : GestureDetector(
-            onTap:widget.isPreview == true? () {
-              if (widget.imageUrl.isNotEmpty && widget.isPreview == true) {
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    scrollable: false,
-                    backgroundColor: AppColors.kPrimaryCartColor,
-                    content:  ConstrainedBox(
-                    constraints: BoxConstraints(
-                    maxHeight: 300,
-                    maxWidth: MediaQuery.of(context).size.width * 0.8,
-                  ),
-                  child:  InteractiveViewer(
-                    panEnabled: false, // Set it to fa lse
-                    boundaryMargin: EdgeInsets.all(100),
-                    minScale: 0.5,
-                    maxScale: 2,
-
-                    child: CustomNetworkImage(
-                      imageUrl: widget.imageUrl,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                ),
-
-              ),
-                );
-              }
-            }:null,
+      onTap:widget.isPreview == true? () {
+        if (widget.imageUrl.isNotEmpty && widget.isPreview == true) {
+          Get.to(FullScreenImageViewer(imageUrl: widget.imageUrl,));
+        }
+      }:null,
             child: CachedNetworkImage(
               imageUrl: widget.imageUrl,
               imageBuilder: (context, imageProvider) {

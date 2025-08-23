@@ -180,7 +180,7 @@ class PriceTextWidget extends StatelessWidget {
               style: poppinsMedium.copyWith(
                   color: AppColors.kPrimaryTextDarkColor,
                   fontSize: fontSize ?? getFontSizeSemiSmall())),
-          if (previousPrice != '0.0')
+          if (previousPrice != '0.0'&&previousPrice!=price)
             TextSpan(
                 text: '\$$previousPrice',
                 style: poppinsRegular.copyWith(
