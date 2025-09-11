@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:navid_e_commerce/core/api-client/api_service.dart';
 import 'package:navid_e_commerce/core/components/custom_network_image.dart';
 import 'package:navid_e_commerce/core/components/custom_refresh_indicator.dart';
@@ -19,30 +20,14 @@ import 'package:navid_e_commerce/presentations/home/views/category_list_page.dar
 import 'package:navid_e_commerce/presentations/home/widgets/category_list_card_item_widget.dart';
 import 'package:navid_e_commerce/presentations/home/widgets/product_card_item_widget.dart';
 import 'package:navid_e_commerce/presentations/home/widgets/search_text_field_widget.dart';
+import 'package:navid_e_commerce/presentations/product/model/product_model.dart';
 import 'package:navid_e_commerce/presentations/profile/widgets/custom_loading_widget.dart';
 
 import '../widgets/pagination_loading_widget.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  final ScrollController scrollController = ScrollController();
-
-  @override
-  void initState() {
-    scrollController.addListener(() {
-      if (scrollController.position.pixels ==
-          scrollController.position.maxScrollExtent) {
-        HomeController.to.getProductListRequest(loadMore: true);
-      }
-    });
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +36,6 @@ class _HomePageState extends State<HomePage> {
         return HomeController.to.refreshCall();
       },
       child: CustomScrollView(
-        controller: scrollController,
         physics: const AlwaysScrollableScrollPhysics(),
         slivers: [
           /// ============ Search Field =============
@@ -179,33 +163,32 @@ class _HomePageState extends State<HomePage> {
           /// ============ Product Grid ============
           SliverPadding(
             padding: padding12H4V,
-            sliver: Obx(() {
-              if (HomeController.to.isLoadingProduct.value) {
-                return SliverToBoxAdapter(
-                    child: CustomLoadingWidget(height: 200.h));
-              } else if (HomeController.to.productList.isEmpty) {
-                return SliverToBoxAdapter(
-                    child: CustomText(text: 'There is no product available!!'));
-              } else {
-                return SliverGrid(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      return ProductCardItemWidget(
-                        product: HomeController.to.productList[index],
-                      );
-                    },
-                    childCount: HomeController.to.productList.length,
-                  ),
-                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: 210.w,
-                    mainAxisExtent: 230.w,
-                    crossAxisSpacing: 8.w,
-                    mainAxisSpacing: 8.w,
-                  ),
-                );
-              }
-            }),
+            sliver: PagedSliverGrid<int, ProductModel>(
+              pagingController: HomeController.to.pagingController,
+              builderDelegate: PagedChildBuilderDelegate<ProductModel>(
+                itemBuilder: (context, product, index) {
+                  return ProductCardItemWidget(product: product);
+                },
+                firstPageProgressIndicatorBuilder: (context) =>
+                    CustomLoadingWidget(height: 200.h),
+                newPageProgressIndicatorBuilder: (context) =>
+                    PaginationLoadingWidget(),
+                noItemsFoundIndicatorBuilder: (context) =>
+                    CustomText(text: 'There is no product available!!'),
+                firstPageErrorIndicatorBuilder: (context) =>
+                    CustomText(text: 'Something went wrong!'),
+                newPageErrorIndicatorBuilder: (context) =>
+                    CustomText(text: 'Failed to load more products!'),
+              ),
+              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 210.w,
+                mainAxisExtent: 230.w,
+                crossAxisSpacing: 8.w,
+                mainAxisSpacing: 8.w,
+              ),
+            ),
           ),
+
 
           /// ============ Pagination Loader =============
           SliverPadding(

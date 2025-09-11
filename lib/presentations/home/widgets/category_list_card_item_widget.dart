@@ -28,7 +28,7 @@ class CategoryListCardItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        HomeController.to.getProductListRequest(category: categoryModel.sId??'');
+        HomeController.to.applyFilters(category: categoryModel.sId);
       },
       child: Container(
         decoration: BoxDecoration(
@@ -82,7 +82,7 @@ class CategoryListCardItemWidget extends StatelessWidget {
                               onTap: () {
                                 // handle subcategory tap
                                 Navigator.pop(context);
-                                 HomeController.to.getProductListRequest(subCategory: subCat.sId);
+                                 HomeController.to.applyFilters(subCategory: subCat.sId);
                               },
                             );
                           },

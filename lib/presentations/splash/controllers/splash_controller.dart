@@ -1,4 +1,11 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:navid_e_commerce/core/components/custom_button.dart';
+import 'package:navid_e_commerce/core/constants/custom_space.dart';
+import 'package:navid_e_commerce/core/constants/custom_text.dart';
 import 'package:navid_e_commerce/presentations/auth/views/login_page.dart';
 import 'package:navid_e_commerce/presentations/navigation/views/navigation_page.dart';
 
@@ -11,15 +18,33 @@ class SplashController extends GetxController{
   @override
   void onInit() {
     Future.delayed(Duration(seconds: 3),(){
-    /* if( Boxes.getUserData().get(tokenKey)==null||  Boxes.getUserData().get(tokenKey).toString().isEmpty) {
-        Get.offAllNamed(LoginPage.routeName);
-      }else{
+Get.dialog(AlertDialog(
+  content: SizedBox(
+    width: ScreenUtil().screenWidth*.8,
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+    children: [
+    CustomText(text: "Are you more then 21?"),
+    space6H,
+    Row(
+      children: [
+        Expanded(child: CustomButton(onTap: () {
+          Get.offAllNamed(NavigationPage.routeName);
+        },
+        title: "Yes",)),
+        space12W,
+        Expanded(child: CustomButton(onTap: () {
+    exit(0);
+        },
+        title: "No",)),
+      ],
+    )
+    ],
+    ),
+  ),
 
-
-       Get.offAllNamed(NavigationPage.routeName);
-
-     }*/
-      Get.offAllNamed(NavigationPage.routeName);
+));
+      
     });
     super.onInit();
   }

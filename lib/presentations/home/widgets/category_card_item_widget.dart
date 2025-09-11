@@ -28,8 +28,9 @@ class CategoryCardItemWidget extends StatelessWidget {
       child: ButtonTapWidget(
         radius:8.r ,
         onTap: () {
-          HomeController.to.getProductListRequest(category: categoryModel.sId??'');
+          HomeController.to.applyFilters(category: categoryModel.sId);
           Get.toNamed(ProductListPage.routeName);
+
 
         },
         child: Padding(

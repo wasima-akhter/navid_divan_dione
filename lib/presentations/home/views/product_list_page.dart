@@ -16,35 +16,21 @@ class ProductListPage extends StatefulWidget {
 }
 
 class _ProductListPageState extends State<ProductListPage> {
-  final ScrollController scrollController = ScrollController();
-  @override
-  void initState() {
-    scrollController.addListener(
-      () {
-        if (scrollController.position.pixels ==
-            scrollController.position.maxScrollExtent) {
-          HomeController.to.getProductListRequest(loadMore: true);
-        }
-      },
-    );
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
-        HomeController.to.getProductListRequest();
+        HomeController.to.pagingController.refresh();
         HomeController.to.productList.refresh();
         HomeController.to.searchController.value.clear();
       },
       child: CustomRefreshIndicatorWidget(
-        onRefresh: () {
-          return  HomeController.to.getProductListRequest();
+        onRefresh: () async{
+          return   HomeController.to.pagingController.refresh();
         },
         child: DefaultScaffoldStructureWidget(
             appBarTitle: 'Products',
-            scrollController: scrollController,
             children: [
               SearchTextFieldWidget(
                   searchController: HomeController.to.searchController.value),

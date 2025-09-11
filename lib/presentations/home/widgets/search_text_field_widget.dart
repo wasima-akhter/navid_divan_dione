@@ -18,7 +18,7 @@ class SearchTextFieldWidget extends StatelessWidget {
     return CustomTextField(
       textEditingController: searchController,
    onChanged: (p0) {
-     HomeController.to.getProductListRequest();
+     HomeController.to.pagingController.refresh();
    },
       prefixIcon: Padding(
         padding: padding8,

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:navid_e_commerce/presentations/home/model/category_model.dart';
 import 'package:navid_e_commerce/presentations/product/model/product_model.dart';
 import 'package:navid_e_commerce/presentations/profile/controllers/profile_controller.dart';
@@ -19,7 +20,12 @@ class HomeController extends GetxController {
   RxBool isLoadingSubCategory = false.obs;
   RxBool isLoadingBanner = false.obs;
   RxBool isLoadingProduct = false.obs;
-
+  final int pageSize = 10; // items per page
+  String? selectedCategory;
+  String? selectedSubCategory;
+  String searchQuery = "";
+  final PagingController<int, ProductModel> pagingController =
+  PagingController(firstPageKey: 1);
   ///=======================dynamic list==========================///
 
   RxList<CategoryModel> catList = <CategoryModel>[].obs;
@@ -47,7 +53,11 @@ class HomeController extends GetxController {
   Rx<PageController> pageController = PageController(initialPage: 0).obs;
   @override
   void onInit() async {
+    pagingController.addPageRequestListener((pageKey) {
+      getProductListRequest(pageKey: pageKey);
+    });
     fetchInitialData();
+
     super.onInit();
   }
 
@@ -59,7 +69,7 @@ class HomeController extends GetxController {
      Future.wait([
      getBannerRequest(),
       getCategoryListRequest(),
-      getProductListRequest(),
+      // getProductListRequest(),
 
     ]);
 
@@ -70,8 +80,7 @@ class HomeController extends GetxController {
   Future<void> refreshCall() async {
     searchController.value.clear();
     await getCategoryListRequest();
-    await getProductListRequest();
-  }
+pageController.refresh();  }
 
   ///------------------------------ get category list method -------------------------///
 
@@ -140,7 +149,12 @@ class HomeController extends GetxController {
       isLoadingCategory.value = false;
     }
   }
-
+  void applyFilters({String? category, String? subCategory, String? search}) {
+    selectedCategory = category;
+    selectedSubCategory = subCategory;
+    searchQuery = search ?? "";
+    pagingController.refresh(); // reload data with filters
+  }
   ///-------------------- get sub category list method ---------------------///
 
   Future<void> getSubCategoryRequest({required String catId}) async {
@@ -205,87 +219,48 @@ class HomeController extends GetxController {
 
   ///------------------------------ get product list method -------------------------///
 
-  Future<void> getProductListRequest({
-    bool loadMore = false,
-    String? category,
-    String? subCategory,
-  })
-  async {
+  Future<void> getProductListRequest({required int pageKey}) async {
     try {
-      // Don't load more if we've reached the last page
-      if (loadMore && currentProductPage.value >= totalProductPages.value) {
-        return;
-      }
-
-      if (loadMore) {
-        isProductLoadingMore.value = true;
-        currentProductPage.value++;
-        // Don't increment page here - we'll do it after successful response
-      } else {
-        isLoadingProduct.value = true;
-        currentProductPage.value = 1;
-      }
       bool hasTax = false;
       if (CommonController.to.isLoggedIn) {
-        ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
-        hasTax = (await Boxes.getUserData().get("hasTax")) ??
-            false; // Provide a default false if null
-        logger.d(Boxes.getUserData().get("hasTax").toString());
+        ApiService().setAuthToken(
+            Boxes.getUserData().get(tokenKey).toString());
+        hasTax = (await Boxes.getUserData().get("hasTax")) ?? false;
       }
 
       final response = await ApiService().request(
         endpoint: productGetAllEndPoint,
-        useAuth: CommonController.to.isLoggedIn,
         method: 'GET',
+        useAuth: CommonController.to.isLoggedIn,
         queryParams: {
           if (CommonController.to.isLoggedIn) "whole_sale": hasTax.toString(),
-          'page': currentProductPage.value.toString(),
+          'page': pageKey.toString(),
           'limit': itemsProductPerPage.value.toString(),
-          'search': searchController.value.text,
-          if (category != null) 'category': category,
-          if (subCategory != null) 'sub_category': subCategory
+          if (searchQuery.isNotEmpty) 'search': searchQuery,
+          if (selectedCategory != null) 'category': selectedCategory??"",
+          if (selectedSubCategory != null) 'sub_category': selectedSubCategory??"",
         },
       );
 
-      isLoadingProduct.value = false;
-      isProductLoadingMore.value = false;
-      logger.d(response);
-
       if (response['success'] == true) {
-        if (response['pagination'] != null) {
-          currentProductPage.value = response['pagination']['currentPage'] ?? 1;
-          totalProductPages.value =
-              response['pagination']['totalPages'] ?? 1; // Add this line
-          itemsProductPerPage.value =
-              response['pagination']['itemsPerPage'] ?? 10;
-        }
-
         final newProducts = (response['data'] as List)
             .map((e) => ProductModel.fromJson(e))
             .toList();
 
-        if (loadMore) {
-          // Only increment page after successful load
+        final isLastPage =
+            pageKey >= (response['pagination']?['totalPages'] ?? 1);
 
-          productList.addAll(newProducts);
+        if (isLastPage) {
+          pagingController.appendLastPage(newProducts);
         } else {
-          productList.value = newProducts;
+          final nextPageKey = pageKey + 1;
+          pagingController.appendPage(newProducts, nextPageKey);
         }
       } else {
-        logger.e(response);
-        showCustomSnackbar(
-          title: 'Failed',
-          message: response['message'],
-          type: SnackBarType.failed,
-        );
+        pagingController.error = response['message'];
       }
     } catch (e) {
-      logger.e(e.toString());
-      isLoadingProduct.value = false;
-      isProductLoadingMore.value = false;
-    }finally{
-      isLoadingProduct.value = false;
-
+      pagingController.error = e;
     }
   }
 }
