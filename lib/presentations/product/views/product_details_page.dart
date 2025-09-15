@@ -339,16 +339,22 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                             return CustomButton(
                               loadingColor: AppColors.kPrimaryColor,
                               onTap: () {
-                                CartController.to.addToCart(
-                                    variant: controller.currentBannerImages[0],
-                                    productId: product.id ?? '',
-                                    quantity:
-                                        ProductController.to.cartQuantity.value,
-                                    size: controller.selectedSize.value ??
-                                        controller.sizes[0],
-                                    price: ProductController.to.cartQuantity.value *
-                                        double.parse(product.price.toString()).round()
-                                );
+                                if(controller.selectedSize.value!=null){
+                                  CartController.to.addToCart(
+                                      variant:
+                                          controller.currentBannerImages[0],
+                                      productId: product.id ?? '',
+                                      quantity: ProductController
+                                          .to.cartQuantity.value,
+                                      size: controller.selectedSize.value ??
+                                          controller.sizes[0],
+                                      price: ProductController
+                                              .to.cartQuantity.value *
+                                          double.parse(product.price.toString())
+                                              .round());
+                                }else{
+                                  showCustomSnackbar(title: "Waring", message: "Please select size first!!");
+                                }
                               },
                               isLoading: isLoading,
                               title: AppStaticStrings.addToCard,
