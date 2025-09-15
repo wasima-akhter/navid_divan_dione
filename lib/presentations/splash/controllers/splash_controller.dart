@@ -18,33 +18,7 @@ class SplashController extends GetxController{
   @override
   void onInit() {
     Future.delayed(Duration(seconds: 3),(){
-Get.dialog(AlertDialog(
-  content: SizedBox(
-    width: ScreenUtil().screenWidth*.8,
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-    children: [
-    CustomText(text: "Are you more then 21?"),
-    space6H,
-    Row(
-      children: [
-        Expanded(child: CustomButton(onTap: () {
-          Get.offAllNamed(NavigationPage.routeName);
-        },
-        title: "Yes",)),
-        space12W,
-        Expanded(child: CustomButton(onTap: () {
-    exit(0);
-        },
-        title: "No",)),
-      ],
-    )
-    ],
-    ),
-  ),
-
-));
-      
+      Get.offAllNamed(NavigationPage.routeName);
     });
     super.onInit();
   }
