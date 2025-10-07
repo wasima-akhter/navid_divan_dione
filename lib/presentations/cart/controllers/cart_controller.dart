@@ -52,7 +52,8 @@ class CartController extends GetxController {
     required num quantity,
     required num price,
     required String variant,
-  }) async {
+  })
+  async {
     try {
       isLoadingAddCart[productId] = true;
       final response = await ApiService().request(endpoint: addToCartEndPoint, method: 'POST', body: {

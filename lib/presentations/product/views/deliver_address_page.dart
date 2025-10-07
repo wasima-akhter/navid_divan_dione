@@ -34,12 +34,19 @@ class _DeliverAddressPageState extends State<DeliverAddressPage> {
   bool isFromCart = false;
   String? selectColor;
   String? selectSize;
+  int shippingPrice =0;
   @override
   void initState() {
     isFromCart=arg["isFromCart"];
     // selectColor=arg["color"]??'';
     // selectSize=arg["size"];
     // logger.d("img: $selectColor , size: $selectSize");
+    if(int.parse(isFromCart ? CartController.to.totalPrice.value.toString()
+        : ProductController.to.productModel.value.price.toString())>=100){
+      shippingPrice =0;
+    }else{
+      shippingPrice = 15;
+    }
     super.initState();
   }
   @override
@@ -127,7 +134,7 @@ class _DeliverAddressPageState extends State<DeliverAddressPage> {
             color: AppColors.kExtraLightGreyTextColor,
           ),
           CustomText(
-            text: '\$71',
+            text: '\$${shippingPrice}',
             fontSize: getFontSizeSmall(),
             color: AppColors.kExtraLightGreyTextColor,
           ),
@@ -146,7 +153,7 @@ class _DeliverAddressPageState extends State<DeliverAddressPage> {
             return CustomText(
               text:
               "\$${(int.parse(isFromCart ? CartController.to.totalPrice.value.toString() : (ProductController.to.productModel.value.price!.toInt() *
-                  ProductController.to.cartQuantity.value).toString()) + 71).toString()}",
+                  ProductController.to.cartQuantity.value).toString()) + shippingPrice).toString()}",
               fontSize: getFontSizeDefault(),
               color: AppColors.kSplashBackgroundColor,
             );
@@ -161,7 +168,7 @@ class _DeliverAddressPageState extends State<DeliverAddressPage> {
               ? () {
             if (ProductController.to.selectedShippingAddress.isNotEmpty && CartController.to.cartList.isNotEmpty) {
               ProductController.to.orderRequest(
-                  totalAmount: (int.parse(CartController.to.totalPrice.value.toString()) + 71).toString(),
+                  totalAmount: (int.parse(CartController.to.totalPrice.value.toString()) + shippingPrice).toString(),
                   deliveryAddress: ProductController.to.selectedShippingAddress.value,
                   item: List.generate(
                     CartController.to.cartList.length,
@@ -188,7 +195,7 @@ class _DeliverAddressPageState extends State<DeliverAddressPage> {
           }
               : () {
             ProductController.to.orderRequest(
-                totalAmount: (ProductController.to.productModel.value.price!.toInt() + 71).toString(),
+                totalAmount: (ProductController.to.productModel.value.price!.toInt() + shippingPrice).toString(),
                 item: [
                   {
                     "product": ProductController.to.productModel.value.id,
