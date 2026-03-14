@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:navid_e_commerce/core/constants/app_static_strings.dart';
 import 'package:navid_e_commerce/presentations/orders/model/order_model.dart';
@@ -7,47 +6,36 @@ import 'package:navid_e_commerce/presentations/product/controllers/product_contr
 import '../../../core/api-client/api_endpoints.dart';
 import '../../../core/api-client/api_service.dart';
 import '../../../core/helper/helper_function.dart';
-import '../../../core/utils/variable.dart';
 
 class OrderController extends GetxController {
   static OrderController get to => Get.find();
-  var tabItem = <Widget>[].obs;
+
   RxList<String> labelTabs =
       [AppStaticStrings.pending, AppStaticStrings.shipped, AppStaticStrings.delivered].obs;
   RxInt selectedIndex = 0.obs;
   RxBool isLoadingOrder = false.obs;
   RxList<OrderModel> orderList = <OrderModel>[].obs;
-  @override
-  void onInit() {
-    getOrderListRequest();
-    super.onInit();
-    Get.lazyPut(
-      () => ProductController(),
-    );
-  }
 
-  ///====================product pagination variable========================///
-
+  // ✅ pagination
   final RxInt currentOrderPage = 1.obs;
   final RxInt itemsOrderPerPage = 5.obs;
   final RxInt totalOrderPages = 5.obs;
   final RxBool isOrderLoadingMore = false.obs;
 
-  ///------------------------------ get order list method -------------------------///
+  @override
+  void onInit() {
+    super.onInit();
+    getOrderListRequest();
+    Get.lazyPut(() => ProductController());
+  }
 
-  Future<void> getOrderListRequest({
-    bool loadMore = false,
-  }) async {
+  Future<void> getOrderListRequest({bool loadMore = false}) async {
     try {
-      // Don't load more if we've reached the last page
-      if (loadMore && currentOrderPage.value >= totalOrderPages.value) {
-        return;
-      }
+      if (loadMore && currentOrderPage.value >= totalOrderPages.value) return;
 
       if (loadMore) {
         isOrderLoadingMore.value = true;
         currentOrderPage.value++;
-        // Don't increment page here - we'll do it after successful response
       } else {
         isLoadingOrder.value = true;
         currentOrderPage.value = 1;
@@ -58,7 +46,6 @@ class OrderController extends GetxController {
         method: 'GET',
         queryParams: {
           'page': currentOrderPage.value.toString(),
-          'limit': itemsOrderPerPage.value.toString(),
           'delivery_status': labelTabs[selectedIndex.value].toLowerCase(),
         },
       );
@@ -67,25 +54,28 @@ class OrderController extends GetxController {
       isOrderLoadingMore.value = false;
 
       if (response['success'] == true) {
+        print("response: $response");
         if (response['pagination'] != null) {
           currentOrderPage.value = response['pagination']['currentPage'] ?? 1;
-          totalOrderPages.value = response['pagination']['totalPages'] ?? 1; // Add this line
+          totalOrderPages.value = response['pagination']['totalPages'] ?? 1;
           itemsOrderPerPage.value = response['pagination']['itemsPerPage'] ?? 10;
         }
 
         final newOrders = (response['data'] as List).map((e) => OrderModel.fromJson(e)).toList();
 
         if (loadMore) {
-          // Only increment page after successful load
-
           orderList.addAll(newOrders);
         } else {
           orderList.value = newOrders;
         }
-        debugPrint("------------------Order List-------------------");
-        //   logger.d(response);
+
+        print("payment status: ${newOrders.map(
+          (e) => e.paymentStatus,
+        )} ");
+        print("deliveryStatus : ${newOrders.map(
+          (e) => e.deliveryStatus,
+        )} ");
       } else {
-        //   logger.e(response);
         showCustomSnackbar(
           title: 'Failed',
           message: response['message'],
@@ -93,9 +83,40 @@ class OrderController extends GetxController {
         );
       }
     } catch (e) {
-      //   logger.e(e.toString());
       isLoadingOrder.value = false;
       isOrderLoadingMore.value = false;
     }
+  }
+
+// ✅ tracks payment loading per orderId
+  RxMap<String, bool> isPaymentLoadingMap = <String, bool>{}.obs;
+
+  Future<void> payForOrder({required OrderModel orderModel}) async {
+    final orderId = orderModel.sId ?? "";
+    if (orderId.isEmpty) return;
+
+    isPaymentLoadingMap[orderId] = true;
+    isPaymentLoadingMap.refresh();
+
+    await ProductController.to.paymentRequest(
+      products: List.generate(
+        orderModel.items?.length ?? 0,
+        (index) {
+          final item = orderModel.items![index];
+          return {
+            "name": item.product?.name ?? "",
+            "unit_amount": item.variant?.priceAfterDiscount ?? 0,
+            "quantity": item.quantity ?? 1,
+          };
+        },
+      ),
+      orderId: orderId,
+    );
+
+    isPaymentLoadingMap[orderId] = false;
+    isPaymentLoadingMap.refresh();
+
+    // ✅ refresh order list so UI reflects updated payment status
+    await getOrderListRequest();
   }
 }

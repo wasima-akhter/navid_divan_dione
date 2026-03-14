@@ -12,7 +12,6 @@ import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
 import 'package:navid_e_commerce/presentations/home/widgets/product_card_item_widget.dart';
 import 'package:navid_e_commerce/presentations/orders/model/order_model.dart';
-import 'package:navid_e_commerce/presentations/product/controllers/product_controller.dart';
 
 import '../../../core/constants/custom_space.dart';
 import '../controllers/order_controller.dart';
@@ -21,17 +20,17 @@ class OrderCardItemWidget extends StatelessWidget {
   final Items itemModel;
   final OrderModel orderModel;
 
-  // final OrderStatus statusEnum;
   const OrderCardItemWidget({
     super.key,
-    /*required this.statusEnum,*/ required this.itemModel,
+    required this.itemModel,
     required this.orderModel,
   });
 
   @override
   Widget build(BuildContext context) {
     String? statusName;
-    Color color=AppColors.kPrimaryColor;
+    Color color = AppColors.kPrimaryColor;
+
     switch (orderModel.deliveryStatus) {
       case 'pending':
         statusName = AppStaticStrings.pending;
@@ -51,69 +50,98 @@ class OrderCardItemWidget extends StatelessWidget {
         break;
     }
 
-    return itemModel.product==null?SizedBox.shrink(): DefaultFadeContainerWidget(
-        child: Row(
-          spacing: 12.w,
-          children: [
-            Expanded(
-              flex: 2,
-              child: CustomNetworkImage(
-                imageUrl: "${ApiService().baseUrl}/${itemModel.color}",
-                height: 90.w,
-              ),
-            ),
-            Expanded(
-                flex: 6,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: CustomText(
-                            text: itemModel.product!.name ?? "n/a",
-                            color: AppColors.kPrimaryDarkColor,
+    // ✅ price lives in variant.priceAfterDiscount, NOT product.price (which is null)
+    final double variantPrice = (itemModel.variant?.priceAfterDiscount as num?)?.toDouble() ?? 0.0;
+    final int qty = (itemModel.quantity as num?)?.toInt() ?? 0;
+    final double totalItemPrice = variantPrice * qty;
+
+    // ✅ image from variant.img list, not variant.color
+    final String imageUrl = itemModel.variant?.img?.isNotEmpty == true
+        ? "${ApiService().baseUrl}${itemModel.variant!.img!.first}"
+        : "";
+
+    // ✅ address fallback
+    final String address =
+        orderModel.deliveryAddress?.address ?? orderModel.pickUpAddress?.address ?? "n/a";
+
+    return itemModel.product == null
+        ? const SizedBox.shrink()
+        : DefaultFadeContainerWidget(
+            child: Row(
+              spacing: 12.w,
+              children: [
+                // ✅ correct image
+                Expanded(
+                  flex: 2,
+                  child: CustomNetworkImage(
+                    imageUrl: imageUrl,
+                    height: 90.w,
+                  ),
+                ),
+                Expanded(
+                  flex: 6,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: CustomText(
+                              text: itemModel.product!.name ?? "n/a",
+                              color: AppColors.kPrimaryDarkColor,
+                            ),
                           ),
+                          Container(
+                            padding: padding8,
+                            decoration: BoxDecoration(
+                              color: color,
+                              borderRadius: BorderRadius.circular(8.r),
+                            ),
+                            child: CustomText(
+                              text: statusName ?? "n/a",
+                              color: AppColors.kWhiteColor,
+                              style: poppinsRegular,
+                            ),
+                          ),
+                        ],
+                      ),
+                      // ✅ safe price calculation — no double.parse on null
+                      CustomText(
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        text: '${AppStaticStrings.price}: \$${totalItemPrice.toStringAsFixed(2)}',
+                        fontSize: getFontSizeSmall(),
+                        style: poppinsRegular,
+                      ),
+                      CustomText(
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        text: '${AppStaticStrings.quantity}: $qty',
+                        fontSize: getFontSizeSmall(),
+                        style: poppinsRegular,
+                      ),
+                      // ✅ size & color from variant
+                      if (itemModel.variant?.size != null)
+                        CustomText(
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          text: 'Size: ${itemModel.variant!.size}',
+                          fontSize: getFontSizeSmall(),
+                          style: poppinsRegular,
                         ),
-                        Container(
-                          padding: padding8,
-                          decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(8.r)),
-                          child: CustomText(
-                            text:statusName ?? "n/a",
-                            color: AppColors.kWhiteColor,
-                            style: poppinsRegular,
-                          ),
-                        )
-                      ],
-                    ),
-                    CustomText(
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      text: '${AppStaticStrings.price}: \$${double.parse(itemModel.product!.price.toString()) *
-                          int.parse(itemModel.quantity.toString())}',
-                      fontSize: getFontSizeSmall(),
-                      style: poppinsRegular,
-                    ),
-                    CustomText(
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      text: '${AppStaticStrings.quantity}: ${itemModel.quantity}',
-                      fontSize: getFontSizeSmall(),
-                      style: poppinsRegular,
-                    ),
-                    CustomText(
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      text:
-                      '${AppStaticStrings.location}: ${orderModel.deliveryAddress != null ? orderModel.deliveryAddress?.address : orderModel
-                          .pickUpAddress?.address}',
-                      fontSize: getFontSizeSmall(),
-                      style: poppinsRegular,
-                    ),
-                  ],
-                )),
-          ],
-        ));
+                      CustomText(
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        text: '${AppStaticStrings.location}: $address',
+                        fontSize: getFontSizeSmall(),
+                        style: poppinsRegular,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
   }
 }
 
@@ -127,68 +155,86 @@ class OderTabItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, spacing: 6.h, children: [
-      space12H,
-      CustomText(
-        text: 'Order no: #${orderModel.sId.toString()}',
-        color: AppColors.kPrimaryTextDarkColor,
-        style: poppinsSemiBold,
-      ),
-      Row(
-        children: [
-          Expanded(
-            child: CustomText(
-              text: 'Total amount: \$${orderModel.totalAmount.toString()}',
-              color: AppColors.kPrimaryTextDarkColor,
-              style: poppinsSemiBold,
-            ),
-          ),space12W,
-          orderModel.paymentStatus == "pending"
-              ? Expanded(
-            child: Obx(() {
-              return CustomButton(
-                isLoading: ProductController.to.isPaymentLoading.value,
-                padding: EdgeInsets.symmetric(vertical: 6),
-                onTap: () {
-                  ProductController.to.paymentRequest(products: List.generate(
-                    orderModel.items!.length,
-                        (index) {
-                      final cart = orderModel.items![index];
-                      return {
-                        "name": cart.product!.name,
-                        "unit_amount": cart.product!.price,
-                        "quantity": cart.quantity,
-
-                      };
-                    },
-                  ), orderId: orderModel.sId.toString());
-
-                },
-                title: "Pay",
-              );
-            }),
-          ) : SizedBox.shrink()
-
-        ],
-      ),
-      orderModel.paymentStatus == "pending"
-          ? SizedBox.shrink()
-          : CustomText(
-        text: 'Payment Status: ${orderModel.paymentStatus}',
-        color: AppColors.kPrimaryTextDarkColor,
-        style: poppinsSemiBold,
-      ),
-      Column(
+    return Container(
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12.r),
+          border:
+              Border.all(width: 0.6, color: AppColors.kExtraLightGreyTextColor.withOpacity(0.6))),
+      padding: EdgeInsets.all(12.h),
+      margin: EdgeInsets.only(bottom: 12.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 6.h,
-        children: List.generate(
-          orderModel.items!.length,
-              (index) =>
-              OrderCardItemWidget(
+        children: [
+          CustomText(
+            text: 'Order no: #${orderModel.sId ?? "n/a"}',
+            color: AppColors.kPrimaryTextDarkColor,
+            style: poppinsSemiBold,
+          ),
+          // ✅ Wrap the whole payment row in Obx so it reacts to list updates
+          Obx(() {
+            // find the fresh order from the list (in case it was updated)
+            final fresh =
+                OrderController.to.orderList.firstWhereOrNull((o) => o.sId == orderModel.sId) ??
+                    orderModel;
+
+            return Row(
+              children: [
+                Expanded(
+                  child: CustomText(
+                    text: 'Total amount: \$${(fresh.totalAmount ?? 0.0).toStringAsFixed(2)}',
+                    color: AppColors.kPrimaryTextDarkColor,
+                    style: poppinsSemiBold,
+                  ),
+                ),
+                space12W,
+                if (fresh.paymentStatus == "pending")
+                  Expanded(
+                    child: Obx(() {
+                      // ✅ isLoading must be inside Obx, not Builder
+                      final isLoading =
+                          OrderController.to.isPaymentLoadingMap[fresh.sId ?? ""] == true;
+                      return CustomButton(
+                        isLoading: isLoading,
+                        padding: const EdgeInsets.symmetric(vertical: 6),
+                        onTap: () {
+                          isLoading //
+                              ? null
+                              : OrderController.to.payForOrder(orderModel: fresh);
+                        },
+                        title: "Pay",
+                      );
+                    }),
+                  ),
+              ],
+            );
+          }),
+
+// ✅ payment status text also reactive
+          Obx(() {
+            final fresh =
+                OrderController.to.orderList.firstWhereOrNull((o) => o.sId == orderModel.sId) ??
+                    orderModel;
+            if (fresh.paymentStatus == "pending") return const SizedBox.shrink();
+            return CustomText(
+              text: 'Payment Status: ${(fresh.paymentStatus ?? "n/a").toUpperCase()}',
+              color: AppColors.kPrimaryColor,
+              style: poppinsSemiBold,
+            );
+          }),
+
+          Column(
+            spacing: 6.h,
+            children: List.generate(
+              orderModel.items?.length ?? 0,
+              (index) => OrderCardItemWidget(
                 orderModel: orderModel,
                 itemModel: orderModel.items![index],
               ),
-        ),
-      )
-    ]);
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

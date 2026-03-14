@@ -1,18 +1,13 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:navid_e_commerce/core/components/custom_button.dart';
 import 'package:navid_e_commerce/core/components/custom_refresh_indicator.dart';
-import 'package:navid_e_commerce/core/components/dynamic_tab_widget.dart';
-import 'package:navid_e_commerce/core/constants/color_constants.dart';
-import 'package:navid_e_commerce/core/constants/color_constants.dart';
-import 'package:navid_e_commerce/core/constants/color_constants.dart';
-import 'package:navid_e_commerce/core/constants/custom_text.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/presentations/orders/controllers/order_controller.dart';
-import 'package:navid_e_commerce/presentations/orders/model/order_model.dart';
 import 'package:navid_e_commerce/presentations/orders/widgets/order_card_item_widget.dart';
+import 'package:navid_e_commerce/presentations/product/widgets/product_det_export.dart';
 
+import '../../../core/constants/custom_space.dart';
 import '../../home/widgets/pagination_loading_widget.dart';
+
 class OrderPage extends StatefulWidget {
   const OrderPage({super.key});
 
@@ -20,160 +15,114 @@ class OrderPage extends StatefulWidget {
   State<OrderPage> createState() => _OrderPageState();
 }
 
-class _OrderPageState extends State<OrderPage> {
-  final ScrollController scrollController = ScrollController();
+class _OrderPageState extends State<OrderPage> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
-    scrollController.addListener(() {
-      if (scrollController.position.pixels == scrollController.position.maxScrollExtent) {
+    super.initState();
+
+    _tabController = TabController(
+      length: OrderController.to.labelTabs.length,
+      vsync: this,
+    );
+
+    // Tab switch → fetch filtered orders
+    _tabController.addListener(() {
+      if (!_tabController.indexIsChanging) return;
+      OrderController.to.selectedIndex.value = _tabController.index;
+      OrderController.to.getOrderListRequest();
+    });
+
+    // Pagination on scroll
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
         OrderController.to.getOrderListRequest(loadMore: true);
       }
     });
-    super.initState();
   }
 
-  //
-  // List<Widget> _buildTabContent() {
-  //   return List.generate(3, (tabIndex) {
-  //     return Obx(() {
-  //       final isLoading = OrderController.to.isLoadingOrder.value;
-  //       final orders = OrderController.to.orderList;
-  //
-  //       if (isLoading) {
-  //         return const Padding(
-  //           padding: EdgeInsets.symmetric(vertical: 12),
-  //           child: DefaultProgressIndicator(color: AppColors.kPrimaryColor),
-  //         );
-  //       }
-  //
-  //       if (orders.isEmpty) {
-  //         return const Padding(
-  //           padding: EdgeInsets.symmetric(vertical: 12),
-  //           child: CustomText(text: "Order List is Empty!!"),
-  //         );
-  //       }
-  //
-  //       return SliverList(
-  //         delegate: SliverChildBuilderDelegate(
-  //               (context, index) {
-  //             return OderTabItemWidget(orderModel: orders[index]);
-  //           },
-  //           childCount: orders.length,
-  //         ),
-  //       );
-  //     });
-  //   });
-  // }
+  @override
+  void dispose() {
+    _tabController.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  // ✅ Builds reactive content for each tab — no state mutation
+  Widget _buildTabContent() {
+    return Obx(() {
+      if (OrderController.to.isLoadingOrder.value) {
+        return Padding(
+          padding: padding12V,
+          child: DefaultProgressIndicator(color: AppColors.kPrimaryColor),
+        );
+      }
+
+      if (OrderController.to.orderList.isEmpty) {
+        return Padding(
+          padding: padding12V,
+          child: CustomText(text: "Order List is Empty!!"),
+        );
+      }
+
+      return Column(
+        children: [
+          space12H,
+          ...List.generate(
+            OrderController.to.orderList.length,
+            (index) => OderTabItemWidget(
+              orderModel: OrderController.to.orderList[index],
+            ),
+          )
+        ],
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    OrderController.to.tabItem.addAll([
-      Obx(() {
-        return OrderController.to.isLoadingOrder.value
-            ? Padding(
-          padding: padding12V,
-          child: DefaultProgressIndicator(
-            color: AppColors.kPrimaryColor,
-          ),
-        )
-            : OrderController.to.orderList.isEmpty
-            ? Padding(
-          padding: padding12V,
-          child: CustomText(text: "Order List is Empty!!"),
-        )
-            : Column(
-          children: List.generate(
-            OrderController.to.orderList.length,
-                (index) {
-              return OderTabItemWidget(orderModel: OrderController.to.orderList[index]);
-            },
-          ),
-        );
-      }),
-      Obx(() {
-        return OrderController.to.isLoadingOrder.value
-            ? Padding(
-          padding: padding12V,
-          child: DefaultProgressIndicator(
-            color: AppColors.kPrimaryColor,
-          ),
-        )
-            : OrderController.to.orderList.isEmpty
-            ? Padding(
-          padding: padding12V,
-          child: CustomText(text: "Order List is Empty!!"),
-        )
-            : Column(
-          children: List.generate(
-            OrderController.to.orderList.length,
-                (index) {
-              return OderTabItemWidget(orderModel: OrderController.to.orderList[index]);
-            },
-          ),
-        );
-      }),
-      Obx(() {
-        return OrderController.to.isLoadingOrder.value
-            ? Padding(
-          padding: padding12V,
-          child: DefaultProgressIndicator(
-            color: AppColors.kPrimaryColor,
-          ),
-        )
-            : OrderController.to.orderList.isEmpty
-            ? Padding(
-          padding: padding12V,
-          child: CustomText(text: "Order List is Empty!!"),
-        )
-            : Column(
-          children: List.generate(
-            OrderController.to.orderList.length,
-                (index) {
-              return OderTabItemWidget(orderModel: OrderController.to.orderList[index]);
-            },
-          ),
-        );
-      }),
-    ]);
+    final controller = OrderController.to;
 
     return CustomRefreshIndicatorWidget(
-
-      onRefresh: () => OrderController.to.getOrderListRequest(),
-      child: CustomScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        controller: scrollController,
-        slivers: [
-          /// Header/tab section
+      onRefresh: () => controller.getOrderListRequest(),
+      child: NestedScrollView(
+        controller: _scrollController,
+        headerSliverBuilder: (context, _) => [
+          // ✅ Tab bar built statically — no addAll() in build
           SliverToBoxAdapter(
-            child: Padding(
-              padding: padding12H,
-              child: DynamicTabWidget(
-                tabs: OrderController.to.labelTabs,
-                tabContent: OrderController.to.tabItem,
-                function: (index) {
-                  OrderController.to.selectedIndex.value = index;
-                  OrderController.to.getOrderListRequest();
-                },
+            child: TabBar(
+              controller: _tabController,
+              isScrollable: false,
+              indicatorColor: AppColors.kPrimaryColor,
+              labelColor: AppColors.kPrimaryColor,
+              unselectedLabelColor: AppColors.kExtraLightGreyTextColor,
+              tabs: controller.labelTabs.map((label) => Tab(text: label)).toList(),
+            ),
+          ),
+        ],
+        body: TabBarView(
+          controller: _tabController,
+          // ✅ All tabs share the same reactive widget — data driven by selectedIndex
+          children: List.generate(
+            controller.labelTabs.length,
+            (_) => SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Column(
+                children: [
+                  Container(
+                      padding: EdgeInsets.symmetric(horizontal: 12.w), child: _buildTabContent()),
+                  // Pagination loader
+                  Obx(() => controller.isOrderLoadingMore.value
+                      ? PaginationLoadingWidget()
+                      : const SizedBox.shrink()),
+                ],
               ),
             ),
           ),
-
-          // /// Tab content
-          // Obx(() {
-          //   final index = OrderController.to.selectedIndex.value;
-          //   return OrderController.to.tabItem[index];
-          // }),
-
-          /// Loading indicator for pagination
-          Obx(() {
-            return OrderController.to.isOrderLoadingMore.value
-                ? SliverToBoxAdapter(child: PaginationLoadingWidget())
-                : const SliverToBoxAdapter(child: SizedBox.shrink());
-          }),
-        ],
+        ),
       ),
     );
   }
 }
-
