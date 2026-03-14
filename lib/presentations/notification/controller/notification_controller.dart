@@ -26,25 +26,25 @@ class NotificationController extends GetxController {
       final response = await ApiService().request(endpoint: getNotificationEndPoint, method: 'GET');
       isLoadingNotificationList.value = false;
       if (response['success'] == true) {
-        logger.d(response);
+        //   logger.d(response);
         notificationList.value = (response["data"] as List)
             .map(
               (e) => NotificationModel.fromJson(e),
             )
             .toList();
       } else {
-        logger.e(response);
-        showCustomSnackbar(title: 'Failed', message: response['message'], type: SnackBarType.failed);
+        //   logger.e(response);
+        showCustomSnackbar(
+            title: 'Failed', message: response['message'], type: SnackBarType.failed);
       }
     } catch (e) {
-      logger.e(e.toString());
+      //   logger.e(e.toString());
       isLoadingNotificationList.value = false;
     }
   }
 
-
   String formatDate(String dateString) {
     DateTime utcDate = DateTime.parse(dateString).toLocal(); // Convert to local time
-    return DateFormat('MM-dd-yyyy h:mm a').format(utcDate);  // Format it
+    return DateFormat('MM-dd-yyyy h:mm a').format(utcDate); // Format it
   }
 }

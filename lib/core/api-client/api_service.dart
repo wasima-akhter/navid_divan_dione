@@ -1,14 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:http_parser/http_parser.dart';
-import 'package:http/http.dart' as http;
-import 'package:connectivity_plus/connectivity_plus.dart';
 
-import '../utils/variable.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 
 class ApiService {
   // Base URL for your API
-  final String baseUrl = 'https://api.divandioneapp.com';
+  final String baseUrl = 'https://api.divandione.com';
   // final String baseUrl = 'http://10.10.11.25:5000';
 
   // Singleton pattern for API service
@@ -40,16 +40,17 @@ class ApiService {
   // Check internet connectivity
   Future<bool> checkInternetConnection() async {
     var connectivityResult = await Connectivity().checkConnectivity();
-    if (connectivityResult.contains(ConnectivityResult.none)) {
+
+    if (connectivityResult == ConnectivityResult.none) {
       return false;
     }
 
     try {
-      final response = await http
-          .get(Uri.parse('https://www.google.com'))
-          .timeout(const Duration(seconds: 5));
+      final response =
+          await http.get(Uri.parse('https://www.google.com')).timeout(const Duration(seconds: 5));
+
       return response.statusCode == 200;
-    } catch (e) {
+    } catch (_) {
       return false;
     }
   }
@@ -61,16 +62,17 @@ class ApiService {
     Map<String, dynamic>? body,
     Map<String, String>? queryParams,
     bool useAuth = true,
-  })
-  async {
+  }) async {
     // Check internet connection first
-    bool isConnected = await checkInternetConnection();
-    if (!isConnected) {
-      return {
-        'success': false,
-        'message': 'No internet connection',
-      };
-    }
+    // bool isConnected = await checkInternetConnection();
+    // if (!isConnected) {
+    //   return {
+    //     'success': false,
+    //     'message': 'No internet connection',
+    //   };
+    // }
+
+    debugPrint('request body  : $body');
 
     // Build the URL with query parameters if provided
     var uri = Uri.parse('$baseUrl/$endpoint');
@@ -78,12 +80,16 @@ class ApiService {
       uri = uri.replace(queryParameters: queryParams);
     }
 
+    debugPrint('---------uri : $uri ');
+
     http.Response response;
     final headers = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
       if (useAuth && _authToken != null) 'Authorization': 'Bearer $_authToken',
     };
+
+    // logger.d("Headers: $headers");
     try {
       switch (method) {
         case 'GET':
@@ -120,10 +126,13 @@ class ApiService {
         default:
           throw Exception('Unsupported HTTP method: $method');
       }
-if(body!=null){
-  logger.d(body);
-}
-      logger.d(uri);
+      // if (body != null) {
+      // //   logger.d(body);
+      // }
+      // logger.d(uri);
+
+      // logger.d("Status Code: ${response.statusCode}");
+      // logger.d("Response Body: ${response.body}");
 
       // Parse response
       var responseData = json.decode(response.body);
@@ -134,28 +143,47 @@ if(body!=null){
       } else {
         return {
           'success': false,
-          'message': responseData['message'] ??
-              'Request failed with status: ${response.statusCode}',
+          'message':
+              responseData['message'] ?? 'Request failed with status: ${response.statusCode}',
           'statusCode': response.statusCode,
           'data': responseData,
         };
       }
     } catch (e) {
+      if (e is SocketException) {
+        return {
+          'success': false,
+          'message': 'No internet connection',
+        };
+      }
+
+      if (e is HttpException) {
+        return {
+          'success': false,
+          'message': 'Server error',
+        };
+      }
+
+      if (e is FormatException) {
+        return {
+          'success': false,
+          'message': 'Invalid response format',
+        };
+      }
+
       return {
         'success': false,
-        'message': 'Request failed: ${e.toString()}',
+        'message': 'Request failed',
       };
     }
   }
-
 
   Future<dynamic> multipartRequest({
     required String endpoint,
     required String method,
     required Map<String, String> fields,
     required Map<String, dynamic> files, // Use dynamic to support both single files and lists
-  })
-  async {
+  }) async {
     // Check internet connection first
     bool isConnected = await checkInternetConnection();
     if (!isConnected) {
@@ -194,7 +222,8 @@ if(body!=null){
         case 'doc':
           return MediaType('application', 'msword');
         case 'docx':
-          return MediaType('application', 'vnd.openxmlformats-officedocument.wordprocessingml.document');
+          return MediaType(
+              'application', 'vnd.openxmlformats-officedocument.wordprocessingml.document');
         default:
           return MediaType('application', 'octet-stream'); // Default binary data
       }
@@ -218,8 +247,7 @@ if(body!=null){
           contentType: getMediaType(value.path),
         );
         request.files.add(multipartFile);
-      }
-      else if (value is List) {
+      } else if (value is List) {
         // List of files
         for (var file in value) {
           if (file is File) {
@@ -250,15 +278,23 @@ if(body!=null){
       } else {
         return {
           'success': false,
-          'message': jsonResponse['message'] ?? 'Request failed with status: ${response.statusCode}',
+          'message':
+              jsonResponse['message'] ?? 'Request failed with status: ${response.statusCode}',
           'statusCode': response.statusCode,
           'data': jsonResponse,
         };
       }
     } catch (e) {
+      if (e is SocketException) {
+        return {
+          'success': false,
+          'message': 'No internet connection',
+        };
+      }
+
       return {
         'success': false,
-        'message': 'Request failed: ${e.toString()}',
+        'message': 'Request failed',
       };
     }
   }

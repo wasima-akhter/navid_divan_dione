@@ -9,19 +9,54 @@ import '../../../core/api-client/api_service.dart';
 
 class CommonController extends GetxController {
   static CommonController get to => Get.find();
+
+  RxBool isLoggedIn = false.obs;
+
   WebViewController? webController;
-  var isLoading = true.obs;
+  RxBool isLoading = true.obs;
   RxString stripeUrl = ''.obs;
-  bool isLoggedIn = Boxes.getUserData().get(tokenKey) != null &&
-      Boxes.getUserData().get(tokenKey).toString().isNotEmpty;
+
   @override
   void onInit() {
-    ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
+    super.onInit();
+
+    final token = Boxes.getUserData().get(tokenKey);
 
     debugPrint("---------token---------");
-    logger.d(Boxes.getUserData().get(tokenKey));
-    super.onInit();
+    debugPrint(token.toString());
+
+    if (token != null && token.toString().isNotEmpty) {
+      isLoggedIn.value = true;
+
+      /// set api token once
+      ApiService().setAuthToken(token.toString());
+    } else {
+      isLoggedIn.value = false;
+    }
   }
+
+  /// call after login
+  void updateLogin(String token) {
+    Boxes.getUserData().put(tokenKey, token);
+
+    ApiService().setAuthToken(token);
+
+    isLoggedIn.value = true;
+  }
+
+  /// call after logout
+  void logout() {
+    Boxes.getUserData().delete(tokenKey);
+
+    ApiService().setAuthToken("");
+
+    isLoggedIn.value = false;
+  }
+
+  ///
+
+  // bool isLoggedIn = Boxes.getUserData().get(tokenKey) != null &&
+  //     Boxes.getUserData().get(tokenKey).toString().isNotEmpty;
 
   RxInt count = 1.obs;
   void increment(int currentIndex) {
@@ -63,8 +98,7 @@ class CommonController extends GetxController {
             /* if (request.url.startsWith("https://www.google.com/webhp?hl=en&sa=X&ved=0ahUKEwj4-qy6koSLAxVLRmwGHT7zHXIQPAgI")) {
               return NavigationDecision.prevent;
             }*/
-            if (request.url
-                .contains('${ApiService().baseUrl}/payment/success')) {
+            if (request.url.contains('${ApiService().baseUrl}/payment/success')) {
               Get.offAllNamed(NavigationPage.routeName);
             }
             return NavigationDecision.navigate;

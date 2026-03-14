@@ -24,84 +24,93 @@ class CartItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // ✅ Use product ID (matches localQty key), not cart document ID
+    final String productId = cartModel.product?.sId ?? "";
+
     return DefaultFadeContainerWidget(
       child: Row(
         spacing: 8.w,
         children: [
           Expanded(
             flex: 2,
-            child: CustomNetworkImage(
-              imageUrl: "${ApiService().baseUrl}/${cartModel.variant}",
-              height: 100.w,
-            ),
+            child: Builder(builder: (context) {
+              debugPrint(
+                  ' cart item image :  "${ApiService().baseUrl}${cartModel.variant?.img?.first ?? ''}"');
+              return CustomNetworkImage(
+                imageUrl: "${ApiService().baseUrl}${cartModel.variant?.img?.first ?? ''}",
+                height: 100.w,
+              );
+            }),
           ),
           Expanded(
-              flex: 5,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 6.h,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                          child: CustomText(
-                        text: cartModel.productId?.name ?? "",
+            flex: 5,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 6.h,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: CustomText(
+                        text: cartModel.product?.name ?? "",
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: poppinsRegular,
                         fontSize: getFontSizeDefault(),
-                      )),
-                      space6W,
-                      CartCounterWidget(
-                        count: (cartModel.quantity ?? 0).obs,
-                        onIncrement: () {
-                          CartController.to.addToCart(
-                            size: cartModel.size??"",
-                              productId: cartModel.productId?.sId ?? "",
-                              quantity: (cartModel.quantity ?? 0) + 1,
-                              price: cartModel.productId!.price ?? 0,
-                              variant: cartModel.variant ?? "");
-
-
-                          CartController.to.cartList.refresh();
-                        },onDecrement: () {
-                          CartController.to.addToCart(
-                            size: cartModel.size??"",
-                              productId: cartModel.productId?.sId ?? "",
-                              quantity: (cartModel.quantity ?? 0) - 1,
-                              price: cartModel.productId!.price ?? 0,
-                              variant: cartModel.variant ?? "");
-
-
-                          CartController.to.cartList.refresh();
-                        },
-                      )
-                    ],
-                  ),
-                  CustomText(
-                      text: 'size: ${cartModel.size??"n/a"}  ',
-                      style: poppinsMedium.copyWith(color: AppColors.kPrimaryTextDarkColor, fontSize: getFontSizeSemiSmall())),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: CustomText(
-                            text: 'price: \$${cartModel.price.toString()}  ',
-                            style: poppinsMedium.copyWith(color: AppColors.kPrimaryTextDarkColor, fontSize: getFontSizeSemiSmall())),
                       ),
-                      IconButton(
-                          onPressed: () {
-                            CartController.to.deleteCartItem(cartId: cartModel.productId!.sId ?? "");
+                    ),
+                    space6W,
+                    // ✅ Obx here to reactively read localQty
+                    Obx(() {
+                      final controller = CartController.to;
+                      // ✅ localQty returns int, wrap in RxInt for CartCounterWidget
+                      final RxInt qty =
+                          (controller.localQty[productId] ?? cartModel.quantity ?? 1).obs;
 
-                          },
-                          icon: Icon(
-                            CupertinoIcons.delete,
-                            color: Colors.red,
-                            size: 16.sp,
-                          ))
-                    ],
+                      return CartCounterWidget(
+                        count: qty,
+                        increLoading: controller.isIncreLoading[productId],
+                        decreLoading: controller.isDecreLoading[productId],
+                        // ✅ local — no API call
+                        onIncrement: () => controller.incrementLocal(productId),
+                        onDecrement: () => controller.decrementLocal(productId),
+                      );
+                    }),
+                  ],
+                ),
+                CustomText(
+                  text: 'size: ${cartModel.variant?.size ?? "n/a"}  ',
+                  style: poppinsMedium.copyWith(
+                    color: AppColors.kPrimaryTextDarkColor,
+                    fontSize: getFontSizeSemiSmall(),
                   ),
-                ],
-              ))
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: CustomText(
+                        text: 'price: \$${(cartModel.variant?.price ?? 0.0).toString()}  ',
+                        style: poppinsMedium.copyWith(
+                          color: AppColors.kPrimaryTextDarkColor,
+                          fontSize: getFontSizeSemiSmall(),
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        CartController.to.deleteCartItem(cartId: cartModel.product!.sId ?? "");
+                      },
+                      icon: Icon(
+                        CupertinoIcons.delete,
+                        color: Colors.red,
+                        size: 16.sp,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -112,44 +121,64 @@ class CartCounterWidget extends StatelessWidget {
   final RxInt count;
   final Function()? onIncrement;
   final Function()? onDecrement;
-const CartCounterWidget({
+  final RxBool? increLoading;
+  final RxBool? decreLoading;
+
+  const CartCounterWidget({
     super.key,
     required this.count,
     this.onIncrement,
     this.onDecrement,
+    this.increLoading,
+    this.decreLoading,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() => Row(
-          spacing: 4.w,
-          children: [
-            BlueContainerWithIcon(
-              onTap: onDecrement ??
-                  () {
-                    if (count.value > 1) {
-                      count.value--;
-                    }
-                  },
-              icon: 'assets/icons/minius_icon.svg',
-            ),
-            BlueContainerWithIcon(
-              child: Padding(
-                  padding: paddingH16V6,
-                  child: CustomText(
-                    text: count.value.toString(),
-                    color: AppColors.kPrimaryTextDarkColor,
-                    fontSize: getFontSizeSmall(),
-                  )),
-            ),
-            BlueContainerWithIcon(
-              onTap: onIncrement ??
-                  () {
-                    count.value++;
-                  },
-              icon: 'assets/icons/plus_icon.svg',
-            )
-          ],
-        ));
+    return Row(
+      spacing: 4.w,
+      children: [
+        BlueContainerWithIcon(
+          icon: 'assets/icons/minius_icon.svg',
+          onTap: onDecrement,
+          isLoading: decreLoading?.value,
+        ),
+        Obx(() => BlueContainerWithIcon(
+                // ✅ wrapped
+                child: Padding(
+              padding: paddingH16V6,
+              child: CustomText(
+                text: count.value.toString(),
+                color: AppColors.kPrimaryTextDarkColor,
+                fontSize: getFontSizeSmall(),
+              ),
+            ))),
+        BlueContainerWithIcon(
+          icon: 'assets/icons/plus_icon.svg',
+          onTap: onIncrement,
+          isLoading: increLoading?.value,
+        ),
+        // Obx(() => BlueContainerWithIcon(
+        //       icon: 'assets/icons/minius_icon.svg',
+        //       onTap: onDecrement,
+        //       isLoading: decreLoading?.value,
+        //     )),
+        // Obx(() => BlueContainerWithIcon(
+        //         // ✅ wrapped
+        //         child: Padding(
+        //       padding: paddingH16V6,
+        //       child: CustomText(
+        //         text: count.value.toString(),
+        //         color: AppColors.kPrimaryTextDarkColor,
+        //         fontSize: getFontSizeSmall(),
+        //       ),
+        //     ))),
+        // Obx(() => BlueContainerWithIcon(
+        //       icon: 'assets/icons/plus_icon.svg',
+        //       onTap: onIncrement,
+        //       isLoading: increLoading?.value,
+        //     )),
+      ],
+    );
   }
 }

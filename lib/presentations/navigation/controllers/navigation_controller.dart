@@ -28,7 +28,7 @@ class NavigationController extends GetxController {
         Boxes.getUserData().get(tokenKey).toString().isNotEmpty) {
       Get.put(ProfileController());
       Get.put(OrderController());
-       ProfileController.to.getUserProfileRequest();
+      ProfileController.to.getUserProfileRequest();
 
       Get.put(NotificationController());
     }
@@ -40,9 +40,9 @@ class NavigationController extends GetxController {
   List<Widget> getPages() {
     return [
       HomePage(),
-      if (CommonController.to.isLoggedIn) CartPage(),
-      if (CommonController.to.isLoggedIn) OrderPage(),
-      if (CommonController.to.isLoggedIn) NotificationPage()
+      if (CommonController.to.isLoggedIn.value) CartPage(),
+      if (CommonController.to.isLoggedIn.value) OrderPage(),
+      if (CommonController.to.isLoggedIn.value) NotificationPage()
     ];
   }
 
@@ -64,12 +64,12 @@ class NavigationController extends GetxController {
       );
       isLoadingLogout.value = false;
       if (response['success'] == true) {
-        logger.d(response);
+        //   logger.d(response);
         showCustomSnackbar(
           title: 'Success',
           message: response['message'],
         );
-        CommonController.to.isLoggedIn=false;
+        // CommonController.to.isLoggedIn.value = false;
         if (Hive.isBoxOpen(userBoxName)) {
           await Hive.box(userBoxName).close();
         }
@@ -77,14 +77,12 @@ class NavigationController extends GetxController {
 
         Get.offAllNamed(LoginPage.routeName);
       } else {
-        logger.e(response);
+        //   logger.e(response);
         showCustomSnackbar(
-            title: 'Failed',
-            message: response['message'],
-            type: SnackBarType.failed);
+            title: 'Failed', message: response['message'], type: SnackBarType.failed);
       }
     } catch (e) {
-      logger.e(e.toString());
+      //   logger.e(e.toString());
     }
   }
 }

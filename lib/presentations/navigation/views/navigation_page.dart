@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:navid_e_commerce/core/components/custom_appbar.dart';
 import 'package:navid_e_commerce/core/components/custom_drawer_widget.dart';
 import 'package:navid_e_commerce/core/constants/app_static_strings.dart';
@@ -31,44 +30,40 @@ class NavigationPage extends StatelessWidget {
           }
         },
         child: Scaffold(
-            drawer: NavigationController.to.currentNavIndex.value == 0
-                ? CustomDrawerWidget()
-                : null,
+            drawer:
+                NavigationController.to.currentNavIndex.value == 0 ? CustomDrawerWidget() : null,
             appBar: PreferredSize(
                 preferredSize: Size.fromHeight(kToolbarHeight),
                 child: NavigationController.to.currentNavIndex.value == 0
                     ? Builder(builder: (context) {
-                  return CustomHomeAppbar(
-                    onActionTap: () {
-                      Scaffold.of(context).openDrawer();
-                    },
-                  );
-                })
+                        return CustomHomeAppbar(
+                          onActionTap: () {
+                            Scaffold.of(context).openDrawer();
+                          },
+                        );
+                      })
                     : CustomDefaultAppbar(
-                  leading: IconButton(
-                      onPressed: () {
-                        NavigationController.to.currentNavIndex.value = 0;
-                      },
-                      icon: Icon(Icons.arrow_back_rounded)),
-                  title: NavigationController.to.appbarTitle[
-                  NavigationController.to.currentNavIndex.value - 1],
-                )
-            ),
+                        leading: IconButton(
+                            onPressed: () {
+                              NavigationController.to.currentNavIndex.value = 0;
+                            },
+                            icon: Icon(Icons.arrow_back_rounded)),
+                        title: NavigationController
+                            .to.appbarTitle[NavigationController.to.currentNavIndex.value - 1],
+                      )),
             body: Column(
               children: [
                 Expanded(
-                    child:
-                    IndexedStack(
-                      index: NavigationController.to.currentNavIndex.value,
-                      children: NavigationController.to.getPages(),
-                    )
-                ),
+                    child: IndexedStack(
+                  index: NavigationController.to.currentNavIndex.value,
+                  children: NavigationController.to.getPages(),
+                )),
               ],
             ),
             bottomNavigationBar: BottomNavigationBar(
               currentIndex: NavigationController.to.currentNavIndex.value,
               onTap: (value) {
-                if (!CommonController.to.isLoggedIn) {
+                if (!CommonController.to.isLoggedIn.value) {
                   if (value == 0) {
                     NavigationController.to.currentNavIndex.value = value;
                   } else {
@@ -93,9 +88,7 @@ class NavigationPage extends StatelessWidget {
                 BottomNavigationBarItem(
                     backgroundColor: AppColors.kPrimaryExtraLightColor,
                     icon: SvgPicture.asset(
-                      NavigationController.to.currentNavIndex.value == 1
-                          ? cartFillIcon
-                          : cartIcon,
+                      NavigationController.to.currentNavIndex.value == 1 ? cartFillIcon : cartIcon,
                       height: 24.w,
                       width: 24.w,
                     ),
@@ -119,8 +112,7 @@ class NavigationPage extends StatelessWidget {
                     ),
                     label: AppStaticStrings.notifications),
               ],
-            )
-        ),
+            )),
       );
     });
   }

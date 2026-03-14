@@ -1,0 +1,12 @@
+export 'package:chewie/chewie.dart';
+export 'package:flutter/material.dart';
+export 'package:flutter_screenutil/flutter_screenutil.dart';
+export 'package:get/get.dart';
+export 'package:navid_e_commerce/core/api-client/api_service.dart';
+export 'package:navid_e_commerce/core/components/custom_network_image.dart';
+export 'package:navid_e_commerce/core/constants/app_static_strings.dart';
+export 'package:navid_e_commerce/core/constants/color_constants.dart';
+export 'package:navid_e_commerce/core/constants/custom_text.dart';
+export 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
+export 'package:navid_e_commerce/core/helper/helper_function.dart';
+export 'package:navid_e_commerce/presentations/product/widgets/color_item_widget.dart';

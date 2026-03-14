@@ -24,7 +24,6 @@ class SetNewPasswordPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return AuthScaffoldStructureWidget(
         bottom: Obx(() {
           return CustomButton(
@@ -33,7 +32,7 @@ class SetNewPasswordPage extends StatelessWidget {
               if (formKey.currentState!.validate()) {
                 AuthController.to.resetPasswordRequest();
               }
-              logger.d(Boxes.getUserData().get(verifyTokenKey).toString());
+              //   logger.d(Boxes.getUserData().get(verifyTokenKey).toString());
             },
             title: AppStaticStrings.confirm,
           );
@@ -77,14 +76,12 @@ class SetNewPasswordPage extends StatelessWidget {
                 CustomTextField(
                   title: AppStaticStrings.confirmPassword,
                   hintText: AppStaticStrings.enterPassword,
-                  textEditingController:
-                      AuthController.to.confirmPassNewController,
+                  textEditingController: AuthController.to.confirmPassNewController,
                   isPassword: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return AppStaticStrings.passRequired;
-                    } else if (value !=
-                        AuthController.to.passNewController.text) {
+                    } else if (value != AuthController.to.passNewController.text) {
                       return AppStaticStrings.passNotMatch;
                     }
                     return null;

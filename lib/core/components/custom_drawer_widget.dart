@@ -6,22 +6,17 @@ import 'package:navid_e_commerce/core/components/custom_button.dart';
 import 'package:navid_e_commerce/core/components/custom_button_tap.dart';
 import 'package:navid_e_commerce/core/constants/app_static_strings.dart';
 import 'package:navid_e_commerce/core/constants/color_constants.dart';
-
 import 'package:navid_e_commerce/core/constants/custom_space.dart';
 import 'package:navid_e_commerce/core/constants/custom_text.dart';
 import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
 import 'package:navid_e_commerce/core/constants/image_constants.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/presentations/auth/views/login_page.dart';
-import 'package:navid_e_commerce/presentations/auth/views/login_page.dart';
-import 'package:navid_e_commerce/presentations/auth/views/login_page.dart';
 import 'package:navid_e_commerce/presentations/navigation/controllers/navigation_controller.dart';
 import 'package:navid_e_commerce/presentations/profile/views/profile_page.dart';
 import 'package:navid_e_commerce/presentations/settings/views/feedback_page.dart';
 import 'package:navid_e_commerce/presentations/settings/views/privacy_terms_page.dart';
 import 'package:navid_e_commerce/presentations/settings/views/settings_page.dart';
-import 'package:navid_e_commerce/presentations/splash/controllers/common_controller.dart';
-import 'package:navid_e_commerce/presentations/splash/controllers/common_controller.dart';
 import 'package:navid_e_commerce/presentations/splash/controllers/common_controller.dart';
 
 class CustomDrawerWidget extends StatelessWidget {
@@ -53,7 +48,7 @@ class CustomDrawerWidget extends StatelessWidget {
                       text: AppStaticStrings.myProfile,
                       onTap: () {
                         Navigator.pop(context);
-                        if(CommonController.to.isLoggedIn){
+                        if(CommonController.to.isLoggedIn.value){
                           Get.toNamed(ProfilePage.routeName);
                         }else{
                           Get.toNamed(LoginPage.routeName);
@@ -63,7 +58,7 @@ class CustomDrawerWidget extends StatelessWidget {
                     DrawerContentWidget(
                       onTap: () {
                         Navigator.pop(context);
-                        if(CommonController.to.isLoggedIn){
+                        if(CommonController.to.isLoggedIn.value){
                           Get.toNamed(SettingPage.routeName);
                         }else{
                           Get.toNamed(LoginPage.routeName);
@@ -75,7 +70,7 @@ class CustomDrawerWidget extends StatelessWidget {
                     DrawerContentWidget(
                       onTap: () {
                         Navigator.pop(context);
-                        if(CommonController.to.isLoggedIn){
+                        if(CommonController.to.isLoggedIn.value){
                           Get.toNamed(FeedbackPage.routeName);
                         }else{
                           Get.toNamed(LoginPage.routeName);
@@ -106,7 +101,7 @@ class CustomDrawerWidget extends StatelessWidget {
                 ),
               ),
             ),
-        CommonController.to.isLoggedIn?   Obx(() =>  NavigationController.to.isLoadingLogout.value?
+        CommonController.to.isLoggedIn.value?   Obx(() =>  NavigationController.to.isLoadingLogout.value?
            DefaultProgressIndicator(color: AppColors.kPrimaryColor,)
                :   ButtonTapWidget(
              onTap: () {

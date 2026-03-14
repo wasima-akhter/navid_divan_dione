@@ -4,10 +4,9 @@ import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:navid_e_commerce/presentations/home/model/category_model.dart';
 import 'package:navid_e_commerce/presentations/product/model/product_model.dart';
-import 'package:navid_e_commerce/presentations/profile/controllers/profile_controller.dart';
 import 'package:navid_e_commerce/presentations/splash/controllers/common_controller.dart';
-import '../../../core/api-client/api_endpoints.dart';
 
+import '../../../core/api-client/api_endpoints.dart';
 import '../../../core/api-client/api_service.dart';
 import '../../../core/constants/app_static_strings.dart';
 import '../../../core/helper/helper_function.dart';
@@ -24,8 +23,8 @@ class HomeController extends GetxController {
   String? selectedCategory;
   String? selectedSubCategory;
   String searchQuery = "";
-  final PagingController<int, ProductModel> pagingController =
-  PagingController(firstPageKey: 1);
+  final PagingController<int, ProductModel> pagingController = PagingController(firstPageKey: 1);
+
   ///=======================dynamic list==========================///
 
   RxList<CategoryModel> catList = <CategoryModel>[].obs;
@@ -65,12 +64,9 @@ class HomeController extends GetxController {
     // isLoadingCategory.value = true;
     // isLoadingProduct.value = true;
 
-
-     Future.wait([
-     getBannerRequest(),
+    Future.wait([
+      getBannerRequest(),
       getCategoryListRequest(),
-      // getProductListRequest(),
-
     ]);
 
     // isLoadingCategory.value = false;
@@ -80,7 +76,12 @@ class HomeController extends GetxController {
   Future<void> refreshCall() async {
     searchController.value.clear();
     await getCategoryListRequest();
-pageController.refresh();  }
+
+    await getBannerRequest();
+
+    await getProductListRequest(pageKey: 1);
+    pageController.refresh();
+  }
 
   ///------------------------------ get category list method -------------------------///
 
@@ -99,8 +100,8 @@ pageController.refresh();  }
       }
       ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
 
-      final response = await ApiService()
-          .request(endpoint: catGetAllEndPoint, method: 'GET', queryParams: {
+      final response =
+          await ApiService().request(endpoint: catGetAllEndPoint, method: 'GET', queryParams: {
         'page': currentPage.value.toString(),
         'limit': itemsPerPage.value.toString(),
         'sort': 'updatedAt',
@@ -112,21 +113,19 @@ pageController.refresh();  }
       if (response['success'] == true) {
         if (response['pagination'] != null) {
           currentPage.value = response['pagination']['currentPage'] ?? 1;
-          totalCategoryPages.value =
-              response['pagination']['totalPages'] ?? 1; // Add this line
+          totalCategoryPages.value = response['pagination']['totalPages'] ?? 1; // Add this line
 
           itemsPerPage.value = response['pagination']['itemsPerPage'] ?? 10;
         }
-        final newCategories = (response['data'] as List)
-            .map((e) => CategoryModel.fromJson(e))
-            .toList();
+        final newCategories =
+            (response['data'] as List).map((e) => CategoryModel.fromJson(e)).toList();
 
         if (loadMore) {
           catList.addAll(newCategories); // Append for load more
         } else {
           catList.value = newCategories; // Replace for refresh
         }
-        logger.d(response);
+        // logger.d(response);
       } else if (response['message'] == AppStaticStrings.noInternet) {
         showCustomSnackbar(
           title: 'Failed',
@@ -138,23 +137,25 @@ pageController.refresh();  }
           },
         );
       } else {
-        logger.e(response);
+        //   logger.e(response);
         showCustomSnackbar(
-            title: 'Failed',
-            message: response['message'],
-            type: SnackBarType.failed);
+            title: 'Failed', message: response['message'], type: SnackBarType.failed);
       }
     } catch (e) {
-      logger.e(e.toString());
+      //   logger.e(e.toString());
       isLoadingCategory.value = false;
     }
   }
+
+  //------------------------------ apply filters method -------------------------///
+
   void applyFilters({String? category, String? subCategory, String? search}) {
     selectedCategory = category;
     selectedSubCategory = subCategory;
     searchQuery = search ?? "";
     pagingController.refresh(); // reload data with filters
   }
+
   ///-------------------- get sub category list method ---------------------///
 
   Future<void> getSubCategoryRequest({required String catId}) async {
@@ -162,26 +163,22 @@ pageController.refresh();  }
       isLoadingSubCategory.value = true;
 
       final response = await ApiService().request(
-          endpoint: subCateGetAllEndPoint,
-          method: 'GET',
-          queryParams: {"category": catId});
+          endpoint: subCateGetAllEndPoint, method: 'GET', queryParams: {"category": catId});
 
       if (response['success'] == true) {
-        logger.d(response);
+        //   logger.d(response);
         subCategoryList.value = (response["data"] as List)
             .map(
               (e) => SubCategoryModel.fromJson(e),
             )
             .toList();
       } else {
-        logger.e(response);
+        //   logger.e(response);
         showCustomSnackbar(
-            title: 'Failed',
-            message: response['message'],
-            type: SnackBarType.failed);
+            title: 'Failed', message: response['message'], type: SnackBarType.failed);
       }
     } catch (e) {
-      logger.e(e.toString());
+      //   logger.e(e.toString());
     } finally {
       isLoadingSubCategory.value = false;
     }
@@ -193,25 +190,26 @@ pageController.refresh();  }
     try {
       isLoadingSubCategory.value = true;
 
-      final response = await ApiService()
-          .request(endpoint: bannerGetAllEndPoint, method: 'GET');
+      final response = await ApiService().request(endpoint: bannerGetAllEndPoint, method: 'GET');
+
+      debugPrint("Banner Response: ${response}");
 
       if (response['success'] == true) {
-        logger.d(response);
+        // logger.d(response);
         bannerList.value = (response["data"] as List)
             .map(
               (e) => BannerModel.fromJson(e),
             )
             .toList();
+
+        debugPrint("bannerList : ${bannerList[0].img}");
       } else {
-        logger.e(response);
+        //   logger.e(response);
         showCustomSnackbar(
-            title: 'Failed',
-            message: response['message'],
-            type: SnackBarType.failed);
+            title: 'Failed', message: response['message'], type: SnackBarType.failed);
       }
     } catch (e) {
-      logger.e(e.toString());
+      //   logger.e(e.toString());
     } finally {
       isLoadingSubCategory.value = false;
     }
@@ -220,35 +218,36 @@ pageController.refresh();  }
   ///------------------------------ get product list method -------------------------///
 
   Future<void> getProductListRequest({required int pageKey}) async {
+    debugPrint(' calling  getProductListRequest....: ');
     try {
       bool hasTax = false;
-      if (CommonController.to.isLoggedIn) {
-        ApiService().setAuthToken(
-            Boxes.getUserData().get(tokenKey).toString());
+      if (CommonController.to.isLoggedIn.value) {
+        ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
         hasTax = (await Boxes.getUserData().get("hasTax")) ?? false;
       }
 
       final response = await ApiService().request(
         endpoint: productGetAllEndPoint,
         method: 'GET',
-        useAuth: CommonController.to.isLoggedIn,
+        useAuth: CommonController.to.isLoggedIn.value,
         queryParams: {
-          if (CommonController.to.isLoggedIn) "whole_sale": hasTax.toString(),
+          if (CommonController.to.isLoggedIn.value) "whole_sale": false.toString(),
+          //  hasTax.toString(),
           'page': pageKey.toString(),
           'limit': itemsProductPerPage.value.toString(),
           if (searchQuery.isNotEmpty) 'search': searchQuery,
-          if (selectedCategory != null) 'category': selectedCategory??"",
-          if (selectedSubCategory != null) 'sub_category': selectedSubCategory??"",
+          if (selectedCategory != null) 'category': selectedCategory ?? "",
+          if (selectedSubCategory != null) 'sub_category': selectedSubCategory ?? "",
         },
       );
 
-      if (response['success'] == true) {
-        final newProducts = (response['data'] as List)
-            .map((e) => ProductModel.fromJson(e))
-            .toList();
+      debugPrint(' response in home Contr product list : $response');
 
-        final isLastPage =
-            pageKey >= (response['pagination']?['totalPages'] ?? 1);
+      if (response['success'] == true) {
+        final newProducts =
+            (response['data'] as List).map((e) => ProductModel.fromJson(e)).toList();
+
+        final isLastPage = pageKey >= (response['pagination']?['totalPages'] ?? 1);
 
         if (isLastPage) {
           pagingController.appendLastPage(newProducts);

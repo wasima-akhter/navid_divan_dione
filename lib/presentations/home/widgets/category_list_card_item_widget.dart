@@ -21,7 +21,8 @@ class CategoryListCardItemWidget extends StatelessWidget {
   final CategoryModel categoryModel;
 
   const CategoryListCardItemWidget({
-    super.key, required this.categoryModel,
+    super.key,
+    required this.categoryModel,
   });
 
   @override
@@ -33,16 +34,14 @@ class CategoryListCardItemWidget extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(4.r),
-            border: Border.all(
-                color: AppColors.kPrimaryColor, width: 1.5)),
+            border: Border.all(color: AppColors.kPrimaryColor, width: 1.5)),
         child: Row(
           children: [
             CustomNetworkImage(
-              imageUrl: '${ApiService().baseUrl}/${categoryModel.img}',
+              imageUrl: '${ApiService().baseUrl}${categoryModel.img}',
               height: 47.w,
               width: 52.w,
-              borderRadius:
-              BorderRadius.horizontal(left: Radius.circular(4.r)),
+              borderRadius: BorderRadius.horizontal(left: Radius.circular(4.r)),
             ),
 
             ///=====================dynamic cat name ===================///
@@ -58,49 +57,65 @@ class CategoryListCardItemWidget extends StatelessWidget {
             ),
             Obx(() {
               return ButtonTapWidget(
-               onTap: () async {
-                await HomeController.to.getSubCategoryRequest(catId: categoryModel.sId.toString());
+                  onTap: () async {
+                    await HomeController.to
+                        .getSubCategoryRequest(catId: categoryModel.sId.toString());
 
-                if (HomeController.to.subCategoryList.isNotEmpty) {
-                  showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-                    ),
-                    builder: (context) {
-                      return Obx(() {
-                        return ListView.separated(
-                          shrinkWrap: true,
-                          itemCount: HomeController.to.subCategoryList.length,
-                          separatorBuilder: (_, __) => Divider(),
-                          itemBuilder: (context, index) {
-                            final subCat = HomeController.to.subCategoryList[index];
-                            return ListTile(
-                              leading: CustomNetworkImage(imageUrl: "${ApiService().baseUrl}/${subCat.img}",height: 40.sp,width: 40.sp,),
-                              title: CustomText(text:subCat.name ?? 'Unnamed',style: poppinsMedium,),
-                              onTap: () {
-                                // handle subcategory tap
-                                Navigator.pop(context);
-                                 HomeController.to.applyFilters(subCategory: subCat.sId);
+                    if (HomeController.to.subCategoryList.isNotEmpty) {
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                        ),
+                        builder: (context) {
+                          return Obx(() {
+                            return ListView.separated(
+                              shrinkWrap: true,
+                              itemCount: HomeController.to.subCategoryList.length,
+                              separatorBuilder: (_, __) => Divider(),
+                              itemBuilder: (context, index) {
+                                final subCat = HomeController.to.subCategoryList[index];
+                                return Container(
+                                  margin: EdgeInsets.only(top: 10.h),
+                                  child: ListTile(
+                                    leading: CustomNetworkImage(
+                                      imageUrl: "${ApiService().baseUrl}${subCat.img}",
+                                      height: 40.sp,
+                                      width: 40.sp,
+                                    ),
+                                    title: CustomText(
+                                      text: subCat.name ?? 'Unnamed',
+                                      style: poppinsMedium,
+                                    ),
+                                    onTap: () {
+                                      // handle subcategory tap
+                                      Navigator.pop(context);
+                                      HomeController.to.applyFilters(subCategory: subCat.sId);
+                                    },
+                                  ),
+                                );
                               },
                             );
-                          },
-                        );
-                      });
-                    },
-                  );
-                } else {
-                  showCustomSnackbar(
-                    title: 'No Subcategories',
-                    message: 'No subcategories found for this category.',
-                    type:SnackBarType.alert,
-                  );
-                }
-              },
-                  child: Padding(padding: padding8,child: HomeController.to.isLoadingSubCategory.value
-                      ? PaginationLoadingWidget(size: 10.sp,)
-                      : SvgPicture.asset(arrowDownIcon),));
+                          });
+                        },
+                      );
+                    } else {
+                      showCustomSnackbar(
+                        title: 'No Subcategories',
+                        message: 'No subcategories found for this category.',
+                        type: SnackBarType.alert,
+                      );
+                    }
+                  },
+                  child: Padding(
+                    padding: padding8,
+                    child: HomeController.to.isLoadingSubCategory.value
+                        ? PaginationLoadingWidget(
+                            size: 10.sp,
+                          )
+                        : SvgPicture.asset(arrowDownIcon),
+                  ));
             }),
             space8W
           ],

@@ -4,26 +4,34 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:navid_e_commerce/core/components/custom_button.dart';
+import 'package:navid_e_commerce/core/constants/app_static_strings.dart';
 import 'package:navid_e_commerce/core/constants/color_constants.dart';
 import 'package:navid_e_commerce/core/constants/custom_text.dart';
 import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
-import 'package:navid_e_commerce/core/components/custom_button.dart';
-import 'package:navid_e_commerce/core/constants/app_static_strings.dart';
 
 import '../../presentations/product/views/deliver_address_page.dart';
 import '../../presentations/product/views/pickup_address_page.dart';
 
-void showPopupMenu(BuildContext context, Offset offset) async {
+Color hexToColor(String hex) {
+  hex = hex.replaceAll('#', '');
+  if (hex.length == 6) {
+    hex = 'FF$hex';
+  }
+  return Color(int.parse(hex, radix: 16));
+}
 
+void showPopupMenu(BuildContext context, Offset offset) async {
   // if (result != null) {
   //   setState(() {
   //     selectedItem = result;
   //   });
   // }
 }
-Future<dynamic> buyProductDialog(BuildContext context, {bool isFromCart = false, String? selectedColor, String? selectedSize}) {
+Future<dynamic> buyProductDialog(BuildContext context,
+    {bool isFromCart = false, String? selectedColor, String? selectedSize}) {
   return showDialog(
     context: context,
     builder: (context) => AlertDialog(
@@ -33,14 +41,22 @@ Future<dynamic> buyProductDialog(BuildContext context, {bool isFromCart = false,
         children: [
           CustomButton(
             onTap: () {
-            Get.toNamed(PickupAddressPage.routeName,arguments: {"isFromCart":isFromCart, "color":selectedColor, "size":selectedSize});
+              Get.toNamed(PickupAddressPage.routeName, arguments: {
+                "isFromCart": isFromCart,
+                "color": selectedColor,
+                "size": selectedSize
+              });
             },
             title: AppStaticStrings.pickUp,
           ),
           CustomText(text: 'or'),
           CustomButton(
             onTap: () {
-            Get.toNamed(DeliverAddressPage.routeName,arguments: {"isFromCart":isFromCart, "color":selectedColor, "size":selectedSize});
+              Get.toNamed(DeliverAddressPage.routeName, arguments: {
+                "isFromCart": isFromCart,
+                "color": selectedColor,
+                "size": selectedSize
+              });
             },
             fillColor: AppColors.kPrimaryDarkColor,
             borderColor: AppColors.kPrimaryDarkColor,
@@ -51,7 +67,6 @@ Future<dynamic> buyProductDialog(BuildContext context, {bool isFromCart = false,
     ),
   );
 }
-
 
 List<PopupMenuEntry<dynamic>> items = [
   PopupMenuItem(
@@ -72,10 +87,8 @@ List<PopupMenuEntry<dynamic>> items = [
   ),
 ];
 
-
 Future<dynamic> defaultAlertDialog(BuildContext context,
-    {required Widget child, String? title, Color? backgroundColor})
-{
+    {required Widget child, String? title, Color? backgroundColor}) {
   return showDialog(
     barrierDismissible: false,
     context: context,
@@ -86,19 +99,17 @@ Future<dynamic> defaultAlertDialog(BuildContext context,
         backgroundColor: backgroundColor,
         title: Row(
           children: [
-
             title != null
                 ? Expanded(
-                  child: Padding(
-                    padding:padding12H,
-                    child: CustomText(
+                    child: Padding(
+                      padding: padding12H,
+                      child: CustomText(
                         text: title,
                         style: poppinsMedium.copyWith(fontSize: getFontSizeLarge()),
                       ),
-                  ),
-                )
+                    ),
+                  )
                 : SizedBox.shrink(),
-
             IconButton(
                 onPressed: () {
                   Navigator.pop(context);
@@ -117,21 +128,20 @@ Future<dynamic> defaultAlertDialog(BuildContext context,
     },
   );
 }
-void removeImage(
-    {required RxList<String> uploadImages, required String imagePath})
-{
+
+void removeImage({required RxList<String> uploadImages, required String imagePath}) {
   if (uploadImages.contains(imagePath)) {
     uploadImages.remove(imagePath);
   } else {
     debugPrint("Image not found in the list.");
   }
 }
-Future<void> pickImages({
-  bool allowMultiple = false,
-  RxList<String>? uploadImages,
-  RxString? singleImagePath,
-  FileType fileType= FileType.image
-}) async {
+
+Future<void> pickImages(
+    {bool allowMultiple = false,
+    RxList<String>? uploadImages,
+    RxString? singleImagePath,
+    FileType fileType = FileType.image}) async {
   try {
     final result = await FilePicker.platform.pickFiles(
         type: fileType, // Restrict to image files
@@ -169,38 +179,32 @@ Future<void> pickImages({
 Future<String?> selectAndFormatTime({
   required BuildContext context,
   required TimeOfDay initialTime,
-})
-async {
+}) async {
   try {
     final ThemeData customTimePickerTheme = Theme.of(context).copyWith(
       textButtonTheme: TextButtonThemeData(
-          style: ButtonStyle(
-              foregroundColor:
-                  WidgetStatePropertyAll(AppColors.kPrimaryColor))),
+          style: ButtonStyle(foregroundColor: WidgetStatePropertyAll(AppColors.kPrimaryColor))),
       timePickerTheme: TimePickerThemeData(
-        backgroundColor:
-            AppColors.kWhiteColor, // Background color of the dialog
+        backgroundColor: AppColors.kWhiteColor, // Background color of the dialog
         hourMinuteShape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8.0),
         ),
         dayPeriodColor: AppColors.kPrimaryExtraLightColor,
         dialHandColor: AppColors.kPrimaryColor,
-        hourMinuteTextColor: WidgetStateColor.resolveWith(
-            (states) => states.contains(WidgetState.selected)
+        hourMinuteTextColor:
+            WidgetStateColor.resolveWith((states) => states.contains(WidgetState.selected)
                 ? Colors.white // Text color when selected
                 : AppColors.kPrimaryTextDarkColor),
-        hourMinuteColor: WidgetStateColor.resolveWith(
-            (states) => states.contains(WidgetState.selected)
+        hourMinuteColor:
+            WidgetStateColor.resolveWith((states) => states.contains(WidgetState.selected)
                 ? AppColors.kPrimaryColor // Background color when selected
                 : AppColors.kPrimaryExtraLightColor),
-        dialBackgroundColor:
-            AppColors.kPrimaryExtraLightColor, // Dial's background color
-        dialTextColor: WidgetStateColor.resolveWith(
-            (states) => states.contains(WidgetState.selected)
+        dialBackgroundColor: AppColors.kPrimaryExtraLightColor, // Dial's background color
+        dialTextColor:
+            WidgetStateColor.resolveWith((states) => states.contains(WidgetState.selected)
                 ? Colors.white // Dial text color when selected
                 : AppColors.kPrimaryTextDarkColor),
-        entryModeIconColor:
-            AppColors.kPrimaryColor, // Color of the entry mode icon
+        entryModeIconColor: AppColors.kPrimaryColor, // Color of the entry mode icon
       ),
     );
     // Show time picker dialog
@@ -220,8 +224,7 @@ async {
       final now = DateTime.now();
       final formattedTime = DateFormat.jm()
           .format(
-            DateTime(now.year, now.month, now.day, pickedTime.hour,
-                pickedTime.minute),
+            DateTime(now.year, now.month, now.day, pickedTime.hour, pickedTime.minute),
           )
           .replaceAll('\u202F', ' ');
       return formattedTime; // Return the formatted time
@@ -233,62 +236,62 @@ async {
     return null;
   }
 }
+
 enum SnackBarType { success, failed, alert }
 
 void showCustomSnackbar({
   required String title,
   required String message,
- bool noInternet =false,
+  bool noInternet = false,
   Function()? retryTap,
-   SnackBarType type=SnackBarType.success,
+  SnackBarType type = SnackBarType.success,
   SnackPosition position = SnackPosition.BOTTOM, // Default position
-})
-{
-  Color backgroundColor= AppColors.kWhiteColor.withValues(alpha: .5);
-  Color textColor= AppColors.kTextDarkColor;
+}) {
+  Color backgroundColor = AppColors.kWhiteColor.withValues(alpha: .5);
+  Color textColor = AppColors.kTextDarkColor;
 
   switch (type) {
     case SnackBarType.success:
-  backgroundColor= AppColors.kWhiteColor.withValues(alpha: .5);
+      backgroundColor = AppColors.kWhiteColor.withValues(alpha: .5);
 
       break;
     case SnackBarType.failed:
       backgroundColor = Color(0xff8a0600);
-      textColor =AppColors.kWhiteColor;
+      textColor = AppColors.kWhiteColor;
 
       break;
-  // TODO: Handle this case.
+    // TODO: Handle this case.
     case SnackBarType.alert:
-      backgroundColor =Color(0xffc86900);
-      textColor=AppColors.kWhiteColor;
+      backgroundColor = Color(0xffc86900);
+      textColor = AppColors.kWhiteColor;
       break;
-  // TODO: Handle this case.
+    // TODO: Handle this case.
   }
-  Get.snackbar(
-    title,
-    message,
-    backgroundColor: backgroundColor,
-    padding: const EdgeInsets.all(12),
-    margin: const EdgeInsets.all(12),
-    colorText:textColor,
-    dismissDirection: DismissDirection.horizontal,
-    snackPosition: position,
-    duration: const Duration(
-        seconds: 3),
-    mainButton:noInternet==true? TextButton(onPressed: retryTap??() {
-
-    }, child: CustomText(text: 'Retry',color: AppColors.kWhiteColor,)):null
-  );
+  Get.snackbar(title, message,
+      backgroundColor: backgroundColor,
+      padding: const EdgeInsets.all(12),
+      margin: const EdgeInsets.all(12),
+      colorText: textColor,
+      dismissDirection: DismissDirection.horizontal,
+      snackPosition: position,
+      duration: const Duration(seconds: 3),
+      mainButton: noInternet == true
+          ? TextButton(
+              onPressed: retryTap ?? () {},
+              child: CustomText(
+                text: 'Retry',
+                color: AppColors.kWhiteColor,
+              ))
+          : null);
 }
+
 Future<String> selectDate(
-    BuildContext context,
-    )
-async {
+  BuildContext context,
+) async {
   final DateTime? pickedDate = await showDatePicker(
     barrierDismissible: false,
     builder: (context, child) {
       return Theme(
-
         data: Theme.of(context).copyWith(
           colorScheme: ColorScheme.light(
             primary: AppColors.kPrimaryColor, // header background color
@@ -301,7 +304,8 @@ async {
             headerHelpStyle: TextStyle(
               color: AppColors.kPrimaryTextDarkColor,
               fontSize: 16.sp,
-            ), yearOverlayColor: const WidgetStatePropertyAll<Color>(AppColors.kPrimaryTextDarkColor) ,
+            ),
+            yearOverlayColor: const WidgetStatePropertyAll<Color>(AppColors.kPrimaryTextDarkColor),
             headerForegroundColor: AppColors.kPrimaryTextDarkColor,
             rangePickerHeaderForegroundColor: AppColors.kPrimaryTextDarkColor,
             shape: RoundedRectangleBorder(
@@ -309,33 +313,29 @@ async {
             ),
             dayBackgroundColor: WidgetStateProperty.resolveWith<Color?>((states) {
               if (states.contains(WidgetState.selected)) {
-                return AppColors.kPrimaryTextDarkColor;  // Change this color
+                return AppColors.kPrimaryTextDarkColor; // Change this color
               }
               return null; // Default background
             }),
             rangeSelectionBackgroundColor: AppColors.kPrimaryTextDarkColor,
-            todayBackgroundColor: const WidgetStatePropertyAll<Color>(AppColors.kPrimaryTextDarkColor),
+            todayBackgroundColor:
+                const WidgetStatePropertyAll<Color>(AppColors.kPrimaryTextDarkColor),
             yearForegroundColor:
-            const WidgetStatePropertyAll<Color>(AppColors.kPrimaryTextDarkColor),
-            dayForegroundColor:
-            WidgetStateProperty.resolveWith<Color?>((states) {
+                const WidgetStatePropertyAll<Color>(AppColors.kPrimaryTextDarkColor),
+            dayForegroundColor: WidgetStateProperty.resolveWith<Color?>((states) {
               if (states.contains(WidgetState.selected)) {
-                return AppColors.kWhiteColor;   // Change this color
+                return AppColors.kWhiteColor; // Change this color
               }
               return AppColors.kPrimaryTextDarkColor; // Default background
             }),
-            todayForegroundColor:
-            const WidgetStatePropertyAll<Color>(AppColors.kWhiteColor),
+            todayForegroundColor: const WidgetStatePropertyAll<Color>(AppColors.kWhiteColor),
             confirmButtonStyle: const ButtonStyle(
-              foregroundColor:
-              WidgetStatePropertyAll<Color>(AppColors.kPrimaryTextDarkColor),
+              foregroundColor: WidgetStatePropertyAll<Color>(AppColors.kPrimaryTextDarkColor),
             ),
-            rangePickerHeaderHeadlineStyle:
-            const TextStyle(color: AppColors.kPrimaryTextDarkColor),
+            rangePickerHeaderHeadlineStyle: const TextStyle(color: AppColors.kPrimaryTextDarkColor),
             rangePickerSurfaceTintColor: AppColors.kPrimaryTextDarkColor,
             cancelButtonStyle: const ButtonStyle(
-              foregroundColor:
-              WidgetStatePropertyAll<Color>(AppColors.kPrimaryTextDarkColor),
+              foregroundColor: WidgetStatePropertyAll<Color>(AppColors.kPrimaryTextDarkColor),
             ),
             backgroundColor: AppColors.kWhiteColor,
             dividerColor: Colors.transparent,
@@ -344,8 +344,8 @@ async {
               color: AppColors.kPrimaryTextDarkColor,
               fontSize: 16.sp,
             ),
-            inputDecorationTheme: const InputDecorationTheme(
-                fillColor: AppColors.kPrimaryTextDarkColor),
+            inputDecorationTheme:
+                const InputDecorationTheme(fillColor: AppColors.kPrimaryTextDarkColor),
             weekdayStyle: TextStyle(
               color: AppColors.kPrimaryTextDarkColor, // Color for week names
               fontSize: 14.sp,
@@ -353,8 +353,7 @@ async {
             ),
             // rangeSelectionBackgroundColor: AppColors.kPrimaryTextDarkColor,
             headerHeadlineStyle: TextStyle(
-              color:
-              AppColors.kPrimaryTextDarkColor, // Color for month/year in header
+              color: AppColors.kPrimaryTextDarkColor, // Color for month/year in header
               fontSize: 16.sp,
               fontWeight: FontWeight.bold,
             ),

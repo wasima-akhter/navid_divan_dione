@@ -1,35 +1,37 @@
-import 'package:navid_e_commerce/presentations/home/model/category_model.dart';
-
 class ProductModel {
   String? id;
   String? name;
   String? description;
-  num? price;
+  double? price;
+  double? priceAfterDiscount;
+  double? discount;
   Category? category;
- // SubCategoryModel? subCategory; // ✅ new field
+
+  String? subCategoryId; // from "sub_category"
+  SubCategory? subCategory; // from "sub_categories"
+
   bool? wholeSale;
-  int? quantity;
-  num? previousPrice;
-  Map<String, VariantData>? variantImages;
-  List<String>? banner;
-  List<String>? variantColors;
+  String? image; // from "img"
+
+  List<String>? colors;
+  List<String>? size;
 
   ProductModel({
     this.id,
     this.name,
     this.description,
     this.price,
+    this.priceAfterDiscount,
+    this.discount,
     this.category,
-    // this.subCategory,
+    this.subCategoryId,
+    this.subCategory,
     this.wholeSale,
-    this.quantity,
-    this.previousPrice,
-    this.variantImages,
-    this.banner,
-    this.variantColors,
+    this.image,
+    this.colors,
+    this.size,
   });
 
-  // FromJson Constructor
   factory ProductModel.fromJson(Map<String, dynamic>? json) {
     if (json == null) return ProductModel();
 
@@ -37,58 +39,44 @@ class ProductModel {
       id: json['_id'],
       name: json['name'],
       description: json['description'],
-      price: json['price'],
-      category: json['category'] != null
-          ? Category.fromJson(json['category'])
-          : null,
-      // subCategory: subCategory is SubCategoryModel? json['sub_category']!= null
-      //     ? SubCategory.fromJson(json['sub_category'])
-      //     : null:json['sub_category'],
+      price: (json['price'] as dynamic?)?.toDouble(),
+      priceAfterDiscount: (json['price_after_discount'] as dynamic)?.toDouble(),
+      discount: (json['discount'] as dynamic?)?.toDouble(),
+      category: json['category'] != null ? Category.fromJson(json['category']) : null,
+      subCategoryId: json['sub_category'],
+      subCategory:
+          json['sub_categories'] != null ? SubCategory.fromJson(json['sub_categories']) : null,
       wholeSale: json['whole_sale'],
-      quantity: json['quantity'],
-      previousPrice: json['previous_price'],
-      variantImages: (json['variantImages'] as Map<String, dynamic>?)?.map(
-            (key, value) => MapEntry(
-          key,
-              value is Map<String, dynamic>
-                  ? VariantData.fromJson(value)
-                  : VariantData(),
-        ),
-      ),
-      banner: json['banner'] != null ? List<String>.from(json['banner']) : null,
-      variantColors: json['variantColors'] != null
-          ? List<String>.from(json['variantColors'])
-          : null,
+      image: json['img'],
+      colors: json['colors'] != null ? List<String>.from(json['colors']) : [],
+      size: json['size'] != null ? List<String>.from(json['size']) : [],
     );
   }
 
-  // ToJson Method
   Map<String, dynamic> toJson() {
     return {
       '_id': id,
       'name': name,
       'description': description,
       'price': price,
+      'price_after_discount': priceAfterDiscount,
+      'discount': discount,
       'category': category?.toJson(),
-      // 'sub_category':subCategory is SubCategoryModel? subCategory?.toJson():subCategory, // ✅ added
+      'sub_category': subCategoryId,
+      'sub_categories': subCategory?.toJson(),
       'whole_sale': wholeSale,
-      'quantity': quantity,
-      'previous_price': previousPrice,
-      'variantImages':
-      variantImages?.map((key, value) => MapEntry(key, value.toJson())),
-      'banner': banner,
-      'variantColors': variantColors,
+      'img': image,
+      'colors': colors,
+      'size': size,
     };
   }
 }
 
 class Category {
-  String? id;
   String? name;
   String? img;
 
   Category({
-    this.id,
     this.name,
     this.img,
   });
@@ -97,7 +85,6 @@ class Category {
     if (json == null) return Category();
 
     return Category(
-      id: json['_id'],
       name: json['name'],
       img: json['img'],
     );
@@ -105,22 +92,17 @@ class Category {
 
   Map<String, dynamic> toJson() {
     return {
-      '_id': id,
       'name': name,
       'img': img,
     };
   }
 }
 
-
-
 class SubCategory {
-  String? id;
   String? name;
   String? img;
 
   SubCategory({
-    this.id,
     this.name,
     this.img,
   });
@@ -129,7 +111,6 @@ class SubCategory {
     if (json == null) return SubCategory();
 
     return SubCategory(
-      id: json['_id'],
       name: json['name'],
       img: json['img'],
     );
@@ -137,34 +118,8 @@ class SubCategory {
 
   Map<String, dynamic> toJson() {
     return {
-      '_id': id,
       'name': name,
       'img': img,
     };
   }
 }
-
-class VariantData {
-  List<String>? img;
-  List<String>? size;
-  int? quantity;
-
-  VariantData({this.img, this.size, this.quantity});
-
-  factory VariantData.fromJson(Map<String, dynamic>? json) {
-    if (json == null) return VariantData();
-
-    return VariantData(
-      img: json['img'] != null ? List<String>.from(json['img']) : [],
-      size: json['size'] != null ? List<String>.from(json['size']) : [],
-      quantity: json['quantity'] ?? 0,
-    );
-  }
-
-  Map<String, dynamic> toJson() => {
-    'img': img,
-    'size': size,
-    'quantity': quantity,
-  };
-}
-

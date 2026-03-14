@@ -26,10 +26,12 @@ class SettingsController extends GetxController {
     getTermsRequest();
     super.onInit();
   }
-  Future<void> refresh() async{
-  await getPrivacyPolicyRequest();
-  await getTermsRequest();
-}
+
+  Future<void> refresh() async {
+    await getPrivacyPolicyRequest();
+    await getTermsRequest();
+  }
+
   Future<void> getPrivacyPolicyRequest() async {
     try {
       isLoadingPolicy.value = true;
@@ -38,7 +40,7 @@ class SettingsController extends GetxController {
       final response = await ApiService().request(endpoint: settingPrivacyEndPoint, method: 'GET');
 
       if (response['success'] == true) {
-        logger.d(response);
+        //   logger.d(response);
         policyModel.value = SettingsModel.fromJson(response['data']);
         isLoadingPolicy.value = false;
       } else if (response['message'] == AppStaticStrings.noInternet) {
@@ -51,12 +53,12 @@ class SettingsController extends GetxController {
         isLoadingPolicy.value = false;
       } else {
         isLoadingPolicy.value = false;
-        logger.e(response);
-        showCustomSnackbar(title: 'Failed', message: response['message'], type: SnackBarType.failed);
+        //   logger.e(response);
+        showCustomSnackbar(
+            title: 'Failed', message: response['message'], type: SnackBarType.failed);
       }
     } catch (e) {
-
-      logger.e(e.toString());
+      //   logger.e(e.toString());
       isLoadingPolicy.value = false;
     }
   }
@@ -69,7 +71,7 @@ class SettingsController extends GetxController {
       final response = await ApiService().request(endpoint: settingTermsEndPoint, method: 'GET');
       isLoadingPolicy.value = false;
       if (response['success'] == true) {
-        logger.d(response);
+        //   logger.d(response);
         termsModel.value = SettingsModel.fromJson(response['data']);
       } else if (response['message'] == AppStaticStrings.noInternet) {
         showCustomSnackbar(
@@ -79,11 +81,12 @@ class SettingsController extends GetxController {
           noInternet: true,
         );
       } else {
-        logger.e(response);
-        showCustomSnackbar(title: 'Failed', message: response['message'], type: SnackBarType.failed);
+        //   logger.e(response);
+        showCustomSnackbar(
+            title: 'Failed', message: response['message'], type: SnackBarType.failed);
       }
     } catch (e) {
-      logger.e(e.toString());
+      //   logger.e(e.toString());
       isLoadingPolicy.value = false;
     }
   }
@@ -107,7 +110,8 @@ class SettingsController extends GetxController {
   Future<void> changePassRequest() async {
     try {
       isLoadingChangePass.value = true;
-      final response = await ApiService().request(endpoint: changePassEndPoint, method: 'POST', body: {
+      final response =
+          await ApiService().request(endpoint: changePassEndPoint, method: 'POST', body: {
         "confirm_password": confirmPasswordController.text,
         "password": newPasswordController.text,
         "old_password": currentPasswordController.text
@@ -119,16 +123,17 @@ class SettingsController extends GetxController {
           message: response['message'],
         );
         clearControllers();
-        logger.d(response);
+        //   logger.d(response);
         // Get.back();
       } else {
-        logger.e(response);
-        showCustomSnackbar(title: 'Failed', message: response['message'], type: SnackBarType.failed);
+        //   logger.e(response);
+        showCustomSnackbar(
+            title: 'Failed', message: response['message'], type: SnackBarType.failed);
       }
     } catch (e) {
       isLoadingChangePass.value = false;
 
-      logger.e(e.toString());
+      //   logger.e(e.toString());
     }
   }
 }

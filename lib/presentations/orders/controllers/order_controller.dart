@@ -11,22 +11,19 @@ import '../../../core/utils/variable.dart';
 
 class OrderController extends GetxController {
   static OrderController get to => Get.find();
-  var tabItem = <Widget>[
-
-  ].obs;
-  RxList<String> labelTabs = [
-    AppStaticStrings.pending,
-    AppStaticStrings.shipped,
-    AppStaticStrings.delivered
-  ].obs;
-RxInt selectedIndex =0.obs;
+  var tabItem = <Widget>[].obs;
+  RxList<String> labelTabs =
+      [AppStaticStrings.pending, AppStaticStrings.shipped, AppStaticStrings.delivered].obs;
+  RxInt selectedIndex = 0.obs;
   RxBool isLoadingOrder = false.obs;
   RxList<OrderModel> orderList = <OrderModel>[].obs;
-@override
+  @override
   void onInit() {
-
-getOrderListRequest();    super.onInit();
-Get.lazyPut(() => ProductController(),);
+    getOrderListRequest();
+    super.onInit();
+    Get.lazyPut(
+      () => ProductController(),
+    );
   }
 
   ///====================product pagination variable========================///
@@ -40,8 +37,7 @@ Get.lazyPut(() => ProductController(),);
 
   Future<void> getOrderListRequest({
     bool loadMore = false,
-  })
-  async {
+  }) async {
     try {
       // Don't load more if we've reached the last page
       if (loadMore && currentOrderPage.value >= totalOrderPages.value) {
@@ -49,7 +45,6 @@ Get.lazyPut(() => ProductController(),);
       }
 
       if (loadMore) {
-
         isOrderLoadingMore.value = true;
         currentOrderPage.value++;
         // Don't increment page here - we'll do it after successful response
@@ -58,8 +53,6 @@ Get.lazyPut(() => ProductController(),);
         currentOrderPage.value = 1;
       }
 
-
-
       final response = await ApiService().request(
         endpoint: getOrderEndPoint,
         method: 'GET',
@@ -67,7 +60,6 @@ Get.lazyPut(() => ProductController(),);
           'page': currentOrderPage.value.toString(),
           'limit': itemsOrderPerPage.value.toString(),
           'delivery_status': labelTabs[selectedIndex.value].toLowerCase(),
-
         },
       );
 
@@ -91,9 +83,9 @@ Get.lazyPut(() => ProductController(),);
           orderList.value = newOrders;
         }
         debugPrint("------------------Order List-------------------");
-        logger.d(response);
+        //   logger.d(response);
       } else {
-        logger.e(response);
+        //   logger.e(response);
         showCustomSnackbar(
           title: 'Failed',
           message: response['message'],
@@ -101,7 +93,7 @@ Get.lazyPut(() => ProductController(),);
         );
       }
     } catch (e) {
-      logger.e(e.toString());
+      //   logger.e(e.toString());
       isLoadingOrder.value = false;
       isOrderLoadingMore.value = false;
     }

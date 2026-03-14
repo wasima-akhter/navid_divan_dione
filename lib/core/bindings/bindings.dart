@@ -21,7 +21,6 @@ class CommonBinding extends Bindings {
   @override
   void dependencies() {
     Get.put(CommonController(), permanent: true);
-
   }
 }
 
@@ -43,9 +42,11 @@ class NavigationBinding extends Bindings {
   @override
   void dependencies() {
     Get.put(NavigationController());
-    Get.lazyPut(()=>CartController());
+    Get.put(CartController());
   }
-}class HomeBinding extends Bindings {
+}
+
+class HomeBinding extends Bindings {
   @override
   void dependencies() {
     Get.put(HomeController());

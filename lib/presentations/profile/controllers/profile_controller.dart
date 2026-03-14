@@ -25,8 +25,7 @@ class ProfileController extends GetxController {
 
   ///=====================add dynmic email ====================///
   Rx<TextEditingController> emailController =
-      TextEditingController(/*text: kDebugMode ? 'youremail@gmail.com' : ''*/)
-          .obs;
+      TextEditingController(/*text: kDebugMode ? 'youremail@gmail.com' : ''*/).obs;
 
   ///=====================add dynmic contactNumber ====================///
   Rx<TextEditingController> contactNumberController =
@@ -56,8 +55,8 @@ class ProfileController extends GetxController {
 
     ///=====================add dynmic tax id ====================///
     taxIdController.value.text = userModel.value.taxId ?? '';
-
   }
+
   RxList<String> docPhotosList = <String>[].obs;
 
   @override
@@ -67,21 +66,26 @@ class ProfileController extends GetxController {
   }
 
   ///------------------------------ get User profile method -------------------------///
+  final userId = ''.obs;
 
   Future<void> getUserProfileRequest() async {
     try {
       isLoadingProfile.value = true;
       ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
 
-      final response = await ApiService()
-          .request(endpoint: getProfileEndPoint, method: 'GET');
+      final response = await ApiService().request(endpoint: getProfileEndPoint, method: 'GET');
       isLoadingProfile.value = false;
       if (response['success'] == true) {
-        logger.d(response);
+        //   logger.d(response);
         userModel.value = UserProfileModel.fromJson(response['data']);
-        if(response['data']['tax_id']!=null){
+
+        // store UserId
+        userId.value = userModel.value.sId ?? '';
+
+        //
+        if (response['data']['tax_id'] != null) {
           Boxes.getUserData().put("hasTax", true);
-        }else{
+        } else {
           Boxes.getUserData().put("hasTax", false);
         }
         reinitializeProfileControllers();
@@ -96,14 +100,12 @@ class ProfileController extends GetxController {
           },
         );
       } else {
-        logger.e(response);
+        //   logger.e(response);
         showCustomSnackbar(
-            title: 'Failed',
-            message: response['message'],
-            type: SnackBarType.failed);
+            title: 'Failed', message: response['message'], type: SnackBarType.failed);
       }
     } catch (e) {
-      logger.e(e.toString());
+      //   logger.e(e.toString());
       isLoadingProfile.value = false;
     }
   }
@@ -141,23 +143,21 @@ class ProfileController extends GetxController {
           files['documents'] = docFiles;
         }
       }
-      final response = await ApiService()
-          .multipartRequest(endpoint: updateProfileEndPoint, method: 'PATCH', fields: fields, files: files);
+      final response = await ApiService().multipartRequest(
+          endpoint: updateProfileEndPoint, method: 'PATCH', fields: fields, files: files);
       isLoadingUpdateProfile.value = false;
       if (response['success'] == true) {
-        logger.d(response);
+        //   logger.d(response);
         getUserProfileRequest();
 
         Get.offAllNamed(NavigationPage.routeName);
       } else {
-        logger.e(response);
+        //   logger.e(response);
         showCustomSnackbar(
-            title: 'Failed',
-            message: response['message'],
-            type: SnackBarType.failed);
+            title: 'Failed', message: response['message'], type: SnackBarType.failed);
       }
     } catch (e) {
-      logger.e(e.toString());
+      //   logger.e(e.toString());
       isLoadingUpdateProfile.value = false;
     }
   }

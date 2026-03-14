@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:navid_e_commerce/core/constants/color_constants.dart';
-import 'package:navid_e_commerce/core/utils/variable.dart';
 import 'package:navid_e_commerce/presentations/product/views/full_screen_image_view.dart';
 import 'package:navid_e_commerce/presentations/profile/widgets/custom_loading_widget.dart';
 
@@ -61,11 +59,15 @@ class _CustomNetworkImageState extends State<CustomNetworkImage> {
 
     return isSvgUrl(widget.imageUrl)
         ? GestureDetector(
-            onTap:widget.isPreview == true? () {
-              if (widget.imageUrl.isNotEmpty && widget.isPreview == true) {
-               Get.to(FullScreenImageViewer(imageUrl: widget.imageUrl,));
-              }
-            }:null,
+            onTap: widget.isPreview == true
+                ? () {
+                    if (widget.imageUrl.isNotEmpty && widget.isPreview == true) {
+                      Get.to(FullScreenImageViewer(
+                        imageUrl: widget.imageUrl,
+                      ));
+                    }
+                  }
+                : null,
             child: Container(
               height: widget.height,
               width: widget.width,
@@ -73,8 +75,7 @@ class _CustomNetworkImageState extends State<CustomNetworkImage> {
                 border: widget.border,
                 borderRadius: widget.boxShape == BoxShape.circle
                     ? null
-                    : widget.borderRadius ??
-                        BorderRadius.circular(widget.radius ?? 8.r),
+                    : widget.borderRadius ?? BorderRadius.circular(widget.radius ?? 8.r),
                 shape: widget.boxShape,
                 color: widget.backgroundColor,
               ),
@@ -87,7 +88,7 @@ class _CustomNetworkImageState extends State<CustomNetworkImage> {
                   width: widget.width,
                 ),
                 errorBuilder: (context, error, stackTrace) {
-                  logger.e(error);
+                  //   logger.e(error);
                   return Container(
                     height: widget.height,
                     width: widget.width,
@@ -116,11 +117,15 @@ class _CustomNetworkImageState extends State<CustomNetworkImage> {
             ),
           )
         : GestureDetector(
-      onTap:widget.isPreview == true? () {
-        if (widget.imageUrl.isNotEmpty && widget.isPreview == true) {
-          Get.to(FullScreenImageViewer(imageUrl: widget.imageUrl,));
-        }
-      }:null,
+            onTap: widget.isPreview == true
+                ? () {
+                    if (widget.imageUrl.isNotEmpty && widget.isPreview == true) {
+                      Get.to(FullScreenImageViewer(
+                        imageUrl: widget.imageUrl,
+                      ));
+                    }
+                  }
+                : null,
             child: CachedNetworkImage(
               imageUrl: widget.imageUrl,
               imageBuilder: (context, imageProvider) {
@@ -131,8 +136,7 @@ class _CustomNetworkImageState extends State<CustomNetworkImage> {
                     border: widget.border,
                     borderRadius: widget.boxShape == BoxShape.circle
                         ? null
-                        : widget.borderRadius ??
-                            BorderRadius.circular(widget.radius ?? 8.r),
+                        : widget.borderRadius ?? BorderRadius.circular(widget.radius ?? 8.r),
                     shape: widget.boxShape,
                     color: widget.backgroundColor,
                     image: DecorationImage(
