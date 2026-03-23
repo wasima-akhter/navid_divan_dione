@@ -121,6 +121,7 @@ class OrderVariant {
   String? size;
   int? quantity; // ✅ stock quantity — always int
   double? priceAfterDiscount;
+  double? price;
   double? discount;
 
   OrderVariant({
@@ -130,6 +131,7 @@ class OrderVariant {
     this.size,
     this.quantity,
     this.priceAfterDiscount,
+    this.price,
     this.discount,
   });
 
@@ -141,6 +143,7 @@ class OrderVariant {
     // ✅ num → int / double
     quantity = (json['quantity'] as num?)?.toInt();
     priceAfterDiscount = (json['price_after_discount'] as num?)?.toDouble();
+    price = (json['price'] as num?)?.toDouble();
     discount = (json['discount'] as num?)?.toDouble();
   }
 
@@ -151,6 +154,7 @@ class OrderVariant {
         'size': size,
         'quantity': quantity,
         'price_after_discount': priceAfterDiscount,
+        'price': price,
         'discount': discount,
       };
 }
@@ -158,21 +162,18 @@ class OrderVariant {
 class Product {
   String? sId;
   String? name;
-  double? price;
 
-  Product({this.sId, this.name, this.price});
+  Product({this.sId, this.name});
 
   Product.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
     name = json['name'];
     // ✅ num → double (price can be null in order items response)
-    price = (json['price'] as num?)?.toDouble();
   }
 
   Map<String, dynamic> toJson() => {
         '_id': sId,
         'name': name,
-        'price': price,
       };
 }
 

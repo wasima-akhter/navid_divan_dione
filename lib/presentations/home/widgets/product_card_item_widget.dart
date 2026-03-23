@@ -44,12 +44,10 @@ class ProductCardItemWidget extends StatelessWidget {
     return DefaultFadeContainerWidget(
       child: ButtonTapWidget(
         onTap: () {
-          Get.lazyPut(
-            () => ProductController(),
-          );
+          // ✅ Delete existing instance so onInit runs again with new arguments
+          Get.delete<ProductController>(force: true);
 
-          debugPrint('productID: from product Card item Widget  : ${product.id}');
-          // ProductController.to.getProductDetailsRequest(productID: product.id ?? '');
+          debugPrint('productID: from product Card item Widget : ${product.id}');
           Get.toNamed(ProductDetailsPage.routeName, arguments: product.id ?? '');
         },
         child: Container(

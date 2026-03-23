@@ -12,6 +12,7 @@ import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
 import 'package:navid_e_commerce/presentations/cart/controllers/cart_controller.dart';
 import 'package:navid_e_commerce/presentations/home/widgets/default_scaffold_structure_widget.dart';
+import 'package:navid_e_commerce/presentations/product/controllers/address_order_controller.dart';
 import 'package:navid_e_commerce/presentations/product/controllers/product_controller.dart';
 import 'package:navid_e_commerce/presentations/product/model/pick_address_model.dart';
 import 'package:navid_e_commerce/presentations/product/widgets/expand_able_text.dart';
@@ -54,11 +55,11 @@ class _PickupAddressPageState extends State<PickupAddressPage> {
         children: [
           _buildSectionTitle(AppStaticStrings.pickUpFromLabel),
           Obx(() {
-            return ProductController.to.isLoadingPickUpAddress.value
+            return AddressOrderController.to.isLoadingPickUpAddress.value
                 ? DefaultProgressIndicator(
                     color: AppColors.kPrimaryColor,
                   )
-                : ProductController.to.pickAddressList.isEmpty
+                : AddressOrderController.to.pickAddressList.isEmpty
                     ? Padding(
                         padding: padding12V,
                         child: CustomText(text: "No pickup Address found!!"),
@@ -66,24 +67,22 @@ class _PickupAddressPageState extends State<PickupAddressPage> {
                     : Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: List.generate(
-                          ProductController.to.pickAddressList.length,
-                          (index) => _buildInfoText(ProductController.to.pickAddressList[index]),
+                          AddressOrderController.to.pickAddressList.length,
+                          (index) =>
+                              _buildInfoText(AddressOrderController.to.pickAddressList[index]),
                         ),
                       );
           }),
           _buildSectionTitle(AppStaticStrings.pickUpInfoLabel),
-          Obx(() {
-            return CustomTextField(
-              title: AppStaticStrings.nameLabel,
-              textEditingController: ProductController.to.nameController.value,
-            );
-          }),
-          Obx(() {
-            return CustomTextField(
-              title: AppStaticStrings.contactNumberLabel,
-              textEditingController: ProductController.to.phoneController.value,
-            );
-          }),
+          CustomTextField(
+            title: AppStaticStrings.nameLabel,
+            textEditingController: AddressOrderController.to.nameController,
+          ),
+
+          CustomTextField(
+            title: AppStaticStrings.contactNumberLabel,
+            textEditingController: AddressOrderController.to.phoneController,
+          ),
           _buildSectionTitle(AppStaticStrings.productsInfoLabel),
 
           // info of product
@@ -132,23 +131,23 @@ class _PickupAddressPageState extends State<PickupAddressPage> {
           space12H,
           Obx(() {
             return CustomButton(
-              isLoading: ProductController.to.isLoadingOrder.value ||
-                  ProductController.to.isPaymentLoading.value,
+              isLoading: AddressOrderController.to.isLoadingOrder.value ||
+                  AddressOrderController.to.isPaymentLoading.value,
               onTap: () {
-                if (ProductController.to.selectedPickAddress.isNotEmpty &&
+                if (AddressOrderController.to.selectedPickAddress.isNotEmpty &&
                     CartController.to.cartList.isNotEmpty) {
                   final items = CartController.to.buildOrderItems();
 
-                  final userId = ProductController.to.pickAddressList
+                  final userId = AddressOrderController.to.pickAddressList
                           .firstWhere(
-                              (e) => e.sId == ProductController.to.selectedPickAddress.value)
+                              (e) => e.sId == AddressOrderController.to.selectedPickAddress.value)
                           .user ??
                       "";
 
-                  ProductController.to.orderRequest(
+                  AddressOrderController.to.orderRequest(
                     userId: userId,
                     totalAmount: double.parse(CartController.to.totalPrice.value),
-                    pickupAddress: ProductController.to.selectedPickAddress.value,
+                    pickupAddress: AddressOrderController.to.selectedPickAddress.value,
                     items: items,
                   );
                 } else {
@@ -177,12 +176,13 @@ class _PickupAddressPageState extends State<PickupAddressPage> {
     return Row(
       children: [
         Checkbox(
-          value: ProductController.to.selectedPickAddress.value == pickAddressModel.sId.toString()
-              ? true
-              : false,
+          value:
+              AddressOrderController.to.selectedPickAddress.value == pickAddressModel.sId.toString()
+                  ? true
+                  : false,
           onChanged: (value) {
-            ProductController.to.selectedPickAddress.value = pickAddressModel.sId ?? "";
-            ProductController.to.fetchPickUpAddress();
+            AddressOrderController.to.selectedPickAddress.value = pickAddressModel.sId ?? "";
+            AddressOrderController.to.fetchPickUpAddress();
           },
         ),
         CustomText(

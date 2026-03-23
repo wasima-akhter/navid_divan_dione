@@ -1,12 +1,9 @@
-import 'dart:convert';
-
 import 'package:better_player_plus/better_player_plus.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:navid_e_commerce/core/api-client/api_endpoints.dart';
-import 'package:navid_e_commerce/presentations/product/model/pick_address_model.dart';
 import 'package:navid_e_commerce/presentations/product/model/product_model.dart';
 
 import '../../../core/api-client/api_service.dart';
@@ -14,7 +11,6 @@ import '../../../core/helper/helper_function.dart';
 import '../../cart/controllers/cart_controller.dart';
 import '../../splash/controllers/common_controller.dart';
 import '../model/product_details_model.dart';
-import '../views/payment_page.dart';
 
 class ProductController extends GetxController {
   static ProductController get to => Get.find();
@@ -46,34 +42,20 @@ class ProductController extends GetxController {
 ////////////////////////////
 
   RxString selectedTime = ''.obs;
-  RxString orderId = ''.obs;
-  RxString selectedPickAddress = ''.obs;
-  RxString selectedShippingAddress = ''.obs;
-  Rx<TextEditingController> nameController = TextEditingController().obs;
-  Rx<TextEditingController> phoneController = TextEditingController().obs;
-  TextEditingController nameAddressController = TextEditingController();
-  TextEditingController contactAddressController = TextEditingController();
-  TextEditingController deliveryAddressController = TextEditingController();
+
   Rx<TextEditingController> dateController =
       TextEditingController(text: kDebugMode ? '2025-01-22' : '').obs;
   RxBool isLoadingProductDetails = false.obs;
-  RxBool isLoadingPickUpAddress = false.obs;
-  RxBool isLoadingShippingAddress = false.obs;
-  RxBool isLoadingAddShippingAddress = false.obs;
-  RxBool isLoadingOrder = false.obs;
+
   Rx<ProductDetailsModel> productDetailsModel = ProductDetailsModel().obs;
   RxList<ProductModel> relatedProductList = <ProductModel>[].obs;
-  RxList<PickAddressModel> pickAddressList = <PickAddressModel>[].obs;
-  RxList<PickAddressModel> shippingAddressList = <PickAddressModel>[].obs;
   Rx<String?> selectedColor = Rx<String?>(null);
   Rx<String?> selectedSize = Rx<String?>(null);
   RxList<String> currentBannerImages = <String>[].obs;
   RxList<String> sizes = <String>[].obs;
   Rxn<int> quantity = Rxn<int>();
   RxMap<String, bool> isLoadingDeleteAddress = <String, bool>{}.obs;
-  RxBool isPaymentLoading = false.obs;
-  // final Rxn<VideoPlayerController> videoController =
-  //     Rxn<VideoPlayerController>();
+
   final Rxn<ChewieController> chewieController = Rxn<ChewieController>();
 
   // tracks the currently visible page
@@ -105,21 +87,6 @@ class ProductController extends GetxController {
     setupPageListener(); // ✅ Add this here
 
     await getProductDetailsRequest(productID: productId.value);
-
-    if (CommonController.to.isLoggedIn.value) {
-      getPickUpAddressRequest();
-      getShippingAddressRequest();
-    }
-  }
-
-  fetchPickUpAddress() {
-    for (PickAddressModel pickAddressModel in pickAddressList) {
-      if (pickAddressModel.sId == selectedPickAddress.value) {
-        nameController.value.text = pickAddressModel.name.toString();
-
-        phoneController.value.text = pickAddressModel.phone.toString();
-      }
-    }
   }
 
   /// Call this to get the variant to use for Add to Cart
@@ -282,218 +249,6 @@ class ProductController extends GetxController {
     super.onClose();
   }
 
-//
-  ///-------------------- get pick up addresses method ---------------------///
-
-  Future<void> getPickUpAddressRequest() async {
-    try {
-      isLoadingPickUpAddress.value = true;
-
-      final response = await ApiService().request(endpoint: pickAddressEndPoint, method: 'GET');
-
-      if (response['success'] == true) {
-        //   logger.d(response);
-        pickAddressList.value = (response["data"] as List)
-            .map(
-              (e) => PickAddressModel.fromJson(e),
-            )
-            .toList();
-        selectedPickAddress.value = pickAddressList[0].sId.toString();
-        fetchPickUpAddress();
-      } else {
-        //   logger.e(response);
-        showCustomSnackbar(
-            title: 'Failed', message: response['message'], type: SnackBarType.failed);
-      }
-    } catch (e) {
-      //   logger.e(e.toString());
-    } finally {
-      isLoadingPickUpAddress.value = false;
-    }
-  }
-
-  ///-------------------- get shipping addresses method ---------------------///
-
-  Future<void> getShippingAddressRequest() async {
-    try {
-      isLoadingShippingAddress.value = true;
-
-      final response =
-          await ApiService().request(endpoint: shippingAddressGetEndPoint, method: 'GET');
-      isLoadingShippingAddress.value = false;
-      if (response['success'] == true) {
-        //   logger.d(response);
-        shippingAddressList.value = (response["data"] as List)
-            .map(
-              (e) => PickAddressModel.fromJson(e),
-            )
-            .toList();
-        selectedShippingAddress.value = shippingAddressList[0].sId.toString();
-      } else {
-        //   logger.e(response);
-        showCustomSnackbar(
-            title: 'Failed', message: response['message'], type: SnackBarType.failed);
-      }
-    } catch (e) {
-      //   logger.e(e.toString());
-      isLoadingShippingAddress.value = false;
-    }
-  }
-
-  ///------------------------------- add shipping address ----------------------------///
-
-  Future<void> addShippingAddressRequest({
-    required String address,
-    required String phone,
-    required String name,
-  }) async {
-    try {
-      isLoadingAddShippingAddress.value = true;
-      final response = await ApiService().request(
-          endpoint: shippingAddressCreateEndPoint,
-          method: 'POST',
-          body: {"address": address, "phone": phone, "name": name});
-      isLoadingAddShippingAddress.value = false;
-      if (response['success'] == true) {
-        //   logger.d(response);
-        getShippingAddressRequest();
-        showCustomSnackbar(
-          title: 'Success',
-          message: response['message'],
-        );
-      } else {
-        //   logger.e(response);
-        showCustomSnackbar(
-            title: 'Failed', message: response['message'], type: SnackBarType.failed);
-      }
-    } catch (e) {
-      isLoadingAddShippingAddress.value = false;
-      //   logger.e(e.toString());
-    }
-  }
-
-  ///------------------------------- order Product ----------------------------///
-
-  Future<void> orderRequest({
-    required String userId,
-    required double totalAmount,
-    required List<Map<String, dynamic>> items,
-    String? pickupAddress,
-    String? deliveryAddress,
-  }) async {
-    try {
-      isLoadingOrder.value = true;
-
-      print(
-          " { \n user : $userId,  \nitems : $items,  \ntotalAmount : $totalAmount  \n delivery_address : $deliveryAddress,  \npick_up_address : $pickupAddress},");
-
-      final response = await ApiService().request(
-        endpoint: orderCreateEndPoint,
-        method: 'POST',
-        body: {
-          "user": userId,
-          "items": items,
-          "totalAmount": totalAmount,
-          if (deliveryAddress != null) "delivery_address": deliveryAddress,
-          if (pickupAddress != null) "pick_up_address": pickupAddress,
-        },
-      );
-
-      if (response['success'] == true) {
-        print("response in orderRequest : ${jsonEncode(response).toString()}");
-        // ✅ key is "order" and it's a List — take the first item
-        final orderData = (response['order'] as List?)?.first;
-
-        if (orderData != null && orderData["_id"] != null) {
-          orderId.value = orderData["_id"];
-
-          paymentRequest(
-            orderId: orderId.value,
-            products: items,
-          );
-        }
-        showCustomSnackbar(
-          title: 'Success',
-          message: response['message'],
-        );
-      } else {
-        showCustomSnackbar(
-          title: 'Failed',
-          message: response['message'],
-          type: SnackBarType.failed,
-        );
-      }
-    } catch (e) {
-      debugPrint("Order error: $e");
-    } finally {
-      isLoadingOrder.value = false;
-    }
-  }
-
-  ///----------------------- Delete address item ----------------------///
-
-  Future<void> deleteAddress({required String id}) async {
-    try {
-      isLoadingDeleteAddress[id] = true;
-      final response = await ApiService().request(
-        endpoint: "$deletesShippingAddressEndPoint$id",
-        method: 'DELETE',
-      );
-      isLoadingDeleteAddress[id] = false;
-      if (response['success'] == true) {
-        //   logger.d(response);
-        getShippingAddressRequest();
-        if (shippingAddressList.isEmpty) {
-          selectedShippingAddress.value = "";
-        }
-        showCustomSnackbar(
-          title: 'Success',
-          message: response['message'],
-        );
-      } else {
-        //   logger.e(response);
-        showCustomSnackbar(
-            title: 'Failed', message: response['message'], type: SnackBarType.failed);
-      }
-    } catch (e) {
-      isLoadingDeleteAddress[id] = false;
-      //   logger.e(e.toString());
-    }
-  }
-
-  ///------------------------------- payment ----------------------------///
-
-  Future<void> paymentRequest(
-      {required List<Map<String, dynamic>> products, required String orderId}) async {
-    try {
-      isPaymentLoading.value = true;
-      final response =
-          await ApiService().request(endpoint: paymentCreateEndPoint, method: 'POST', body: {
-        "price_data": products,
-        "_id": orderId
-        // "purpose": "buy_product"
-        // "currency": "USD"
-      });
-      isPaymentLoading.value = false;
-      if (response['success'] == true) {
-        CommonController.to.stripeUrl.value = response["url"];
-        Get.toNamed(PaymentScreen.routeName);
-        //   logger.d(response);
-        showCustomSnackbar(
-          title: 'Success',
-          message: response['message'],
-        );
-      } else {
-        //   logger.e(response);
-        showCustomSnackbar(
-            title: 'Failed', message: response['message'], type: SnackBarType.failed);
-      }
-    } catch (e) {
-      isPaymentLoading.value = false;
-      //   logger.e(e.toString());
-    }
-  }
-
   void initializeBannerImages() {
     final product = productDetailsModel.value;
 
@@ -528,4 +283,18 @@ class ProductController extends GetxController {
     pageController.value.jumpToPage(0);
     currentPreviewPage.value = 0;
   }
+
+  ///
+
+  @override
+  void dispose() {
+    // ✅ Guard — controller may already be gone during navigation
+    if (Get.isRegistered<ProductController>()) {
+      if (ProductController.to.chewieController.value != null) {
+        ProductController.to.chewieController.value!.dispose();
+      }
+    }
+    super.dispose();
+  }
+//
 }

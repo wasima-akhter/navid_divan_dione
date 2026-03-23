@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:navid_e_commerce/core/components/custom_button.dart';
 import 'package:navid_e_commerce/core/constants/app_static_strings.dart';
 import 'package:navid_e_commerce/core/constants/color_constants.dart';
-
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../home/widgets/default_scaffold_structure_widget.dart';
@@ -39,12 +37,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
               child: WebViewWidget(controller: commonController.webController!),
             ),
             Obx(
-                  () => commonController.isLoading.value
+              () => commonController.isLoading.value
                   ? const Center(
-                child: DefaultProgressIndicator(
-                  color: AppColors.kPrimaryColor,
-                ),
-              )
+                      child: DefaultProgressIndicator(
+                        color: AppColors.kPrimaryColor,
+                      ),
+                    )
                   : const SizedBox.shrink(),
             ),
           ],

@@ -25,9 +25,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   Widget build(BuildContext context) {
     final controller = ProductController.to;
 
-    final productId = controller.productId.value;
     return DefaultScaffoldStructureWidget(
       onRefresh: () async {
+        // ✅ use controller.productId.value, not the snapshotted local variable
         controller.getProductDetailsRequest(productID: controller.productId.value);
       },
       appBarTitle: AppStaticStrings.productDetails,
@@ -38,8 +38,10 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             ? GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () {
-                  NavigationController.to.currentNavIndex.value = 1;
-                  Get.toNamed(NavigationPage.routeName);
+                  // ✅ Go back to NavigationPage (already in stack), then switch tab
+                  // Get.offAllNamed destroys the stack and recreates controllers
+                  Get.until((route) => route.settings.name == NavigationPage.routeName);
+                  NavigationController.to.currentNavIndex.value = 1; // cart tab
                 },
                 child: CircleAvatar(
                   radius: 20.r,

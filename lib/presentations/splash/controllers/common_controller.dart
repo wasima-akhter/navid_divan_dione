@@ -94,13 +94,36 @@ class CommonController extends GetxController {
           onWebResourceError: (WebResourceError error) {
             debugPrint("Web Resource Error: ${error.description}");
           },
-          onNavigationRequest: (NavigationRequest request) {
+          onNavigationRequest: (NavigationRequest request) async {
             /* if (request.url.startsWith("https://www.google.com/webhp?hl=en&sa=X&ved=0ahUKEwj4-qy6koSLAxVLRmwGHT7zHXIQPAgI")) {
               return NavigationDecision.prevent;
             }*/
-            if (request.url.contains('${ApiService().baseUrl}/payment/success')) {
-              Get.offAllNamed(NavigationPage.routeName);
+
+            /// 🔥 IMPORTANT: Detect success / cancel URL
+            if (request.url.contains("success")) {
+              // await Future.delayed(Duration(seconds: 1));
+              Get.offAllNamed(
+                NavigationPage.routeName,
+                arguments: {"index": 2}, // 👈 Orders tab
+              );
+              Get.snackbar("Success", "Payment completed");
+              // call verify API here
+              return NavigationDecision.prevent;
             }
+
+            if (request.url.contains("cancel")) {
+              Get.back();
+              Get.snackbar("Cancelled", "Payment cancelled");
+              return NavigationDecision.prevent;
+            }
+
+            // if (request.url.contains('${ApiService().baseUrl}/payment/success')) {
+            //   // await Future.delayed(Duration(seconds: 1));
+//           Get.offAllNamed(
+//   NavigationPage.routeName,
+//   arguments: {"index": 2}, // 👈 Orders tab
+// );
+
             return NavigationDecision.navigate;
           },
         ),

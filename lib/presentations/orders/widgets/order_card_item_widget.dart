@@ -51,9 +51,15 @@ class OrderCardItemWidget extends StatelessWidget {
     }
 
     // ✅ price lives in variant.priceAfterDiscount, NOT product.price (which is null)
-    final double variantPrice = (itemModel.variant?.priceAfterDiscount as num?)?.toDouble() ?? 0.0;
+    final discount = itemModel.variant?.discount ?? 0;
+    final double variantPrice = discount == 0
+        ? (itemModel.variant?.price ?? 0.0)
+        : (itemModel.variant?.priceAfterDiscount ?? 0.0);
     final int qty = (itemModel.quantity as num?)?.toInt() ?? 0;
-    final double totalItemPrice = variantPrice * qty;
+    final double totalItemPrice = variantPrice;
+
+    print("totalItemPrice: $totalItemPrice");
+    print("itemModel.variant?.price: ${itemModel.variant?.price}");
 
     // ✅ image from variant.img list, not variant.color
     final String imageUrl = itemModel.variant?.img?.isNotEmpty == true
@@ -62,7 +68,7 @@ class OrderCardItemWidget extends StatelessWidget {
 
     // ✅ address fallback
     final String address =
-        orderModel.deliveryAddress?.address ?? orderModel.pickUpAddress?.address ?? "n/a";
+        orderModel.deliveryAddress?.address ?? orderModel.pickUpAddress?.address ?? "N/A";
 
     return itemModel.product == null
         ? const SizedBox.shrink()
@@ -87,7 +93,7 @@ class OrderCardItemWidget extends StatelessWidget {
                         children: [
                           Expanded(
                             child: CustomText(
-                              text: itemModel.product!.name ?? "n/a",
+                              text: itemModel.product!.name ?? "N/A",
                               color: AppColors.kPrimaryDarkColor,
                             ),
                           ),
@@ -98,7 +104,7 @@ class OrderCardItemWidget extends StatelessWidget {
                               borderRadius: BorderRadius.circular(8.r),
                             ),
                             child: CustomText(
-                              text: statusName ?? "n/a",
+                              text: statusName ?? "N/A",
                               color: AppColors.kWhiteColor,
                               style: poppinsRegular,
                             ),
@@ -155,6 +161,7 @@ class OderTabItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("orderModel.sId: ${orderModel.sId}");
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12.r),
@@ -167,7 +174,7 @@ class OderTabItemWidget extends StatelessWidget {
         spacing: 6.h,
         children: [
           CustomText(
-            text: 'Order no: #${orderModel.sId ?? "n/a"}',
+            text: 'Order no: #${orderModel.sId ?? "N/A"}',
             color: AppColors.kPrimaryTextDarkColor,
             style: poppinsSemiBold,
           ),
@@ -217,7 +224,7 @@ class OderTabItemWidget extends StatelessWidget {
                     orderModel;
             if (fresh.paymentStatus == "pending") return const SizedBox.shrink();
             return CustomText(
-              text: 'Payment Status: ${(fresh.paymentStatus ?? "n/a").toUpperCase()}',
+              text: 'Payment Status: ${(fresh.paymentStatus ?? "N/A").toUpperCase()}',
               color: AppColors.kPrimaryColor,
               style: poppinsSemiBold,
             );

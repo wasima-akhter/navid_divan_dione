@@ -17,6 +17,7 @@ import 'package:navid_e_commerce/presentations/product/model/pick_address_model.
 import 'package:navid_e_commerce/presentations/product/views/edit_address_page.dart';
 
 import '../../cart/controllers/cart_controller.dart';
+import '../controllers/address_order_controller.dart';
 
 class DeliverAddressPage extends StatefulWidget {
   static const String routeName = '/deliver-add';
@@ -85,13 +86,13 @@ class _DeliverAddressPageState extends State<DeliverAddressPage> {
 
         // ───── Shipping Address List ─────
         Obx(() {
-          if (ProductController.to.isLoadingShippingAddress.value) {
+          if (AddressOrderController.to.isLoadingShippingAddress.value) {
             return Padding(
               padding: padding12V,
               child: DefaultProgressIndicator(color: AppColors.kPrimaryColor),
             );
           }
-          if (ProductController.to.shippingAddressList.isEmpty) {
+          if (AddressOrderController.to.shippingAddressList.isEmpty) {
             return Padding(
               padding: padding12V,
               child: CustomText(text: "Shipping Address not found!!"),
@@ -99,9 +100,9 @@ class _DeliverAddressPageState extends State<DeliverAddressPage> {
           }
           return Column(
             children: List.generate(
-              ProductController.to.shippingAddressList.length,
+              AddressOrderController.to.shippingAddressList.length,
               (index) => _shippingAddressCard(
-                ProductController.to.shippingAddressList[index],
+                AddressOrderController.to.shippingAddressList[index],
               ),
             ),
           );
@@ -224,16 +225,16 @@ class _DeliverAddressPageState extends State<DeliverAddressPage> {
 
         // ───── Payment Button ─────
         Obx(() => CustomButton(
-              isLoading: ProductController.to.isLoadingOrder.value ||
-                  ProductController.to.isPaymentLoading.value,
+              isLoading: AddressOrderController.to.isLoadingOrder.value ||
+                  AddressOrderController.to.isPaymentLoading.value,
               onTap: () {
-                if (ProductController.to.selectedShippingAddress.value.isNotEmpty &&
+                if (AddressOrderController.to.selectedShippingAddress.value.isNotEmpty &&
                     CartController.to.cartList.isNotEmpty) {
                   final items = CartController.to.buildOrderItems();
 
-                  final userId = ProductController.to.shippingAddressList
-                          .firstWhereOrNull(
-                              (e) => e.sId == ProductController.to.selectedShippingAddress.value)
+                  final userId = AddressOrderController.to.shippingAddressList
+                          .firstWhereOrNull((e) =>
+                              e.sId == AddressOrderController.to.selectedShippingAddress.value)
                           ?.user ??
                       '';
 
@@ -246,10 +247,10 @@ class _DeliverAddressPageState extends State<DeliverAddressPage> {
                       ) ??
                       0;
 
-                  ProductController.to.orderRequest(
+                  AddressOrderController.to.orderRequest(
                     userId: userId,
                     totalAmount: subtotal + shippingPrice,
-                    deliveryAddress: ProductController.to.selectedShippingAddress.value,
+                    deliveryAddress: AddressOrderController.to.selectedShippingAddress.value,
                     items: items,
                   );
                 } else {
@@ -278,10 +279,11 @@ class _DeliverAddressPageState extends State<DeliverAddressPage> {
     return Obx(() => Row(
           children: [
             Checkbox(
-              value:
-                  ProductController.to.selectedShippingAddress.value == pickAddress.sId.toString(),
+              value: AddressOrderController.to.selectedShippingAddress.value ==
+                  pickAddress.sId.toString(),
               onChanged: (_) {
-                ProductController.to.selectedShippingAddress.value = pickAddress.sId.toString();
+                AddressOrderController.to.selectedShippingAddress.value =
+                    pickAddress.sId.toString();
               },
             ),
             Expanded(
@@ -294,7 +296,8 @@ class _DeliverAddressPageState extends State<DeliverAddressPage> {
               ),
             ),
             IconButton(
-              onPressed: () => ProductController.to.deleteAddress(id: pickAddress.sId.toString()),
+              onPressed: () =>
+                  AddressOrderController.to.deleteAddress(id: pickAddress.sId.toString()),
               icon: Icon(CupertinoIcons.delete, color: Colors.red),
             ),
           ],

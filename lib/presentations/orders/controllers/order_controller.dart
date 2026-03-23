@@ -6,6 +6,7 @@ import 'package:navid_e_commerce/presentations/product/controllers/product_contr
 import '../../../core/api-client/api_endpoints.dart';
 import '../../../core/api-client/api_service.dart';
 import '../../../core/helper/helper_function.dart';
+import '../../product/controllers/address_order_controller.dart';
 
 class OrderController extends GetxController {
   static OrderController get to => Get.find();
@@ -98,18 +99,7 @@ class OrderController extends GetxController {
     isPaymentLoadingMap[orderId] = true;
     isPaymentLoadingMap.refresh();
 
-    await ProductController.to.paymentRequest(
-      products: List.generate(
-        orderModel.items?.length ?? 0,
-        (index) {
-          final item = orderModel.items![index];
-          return {
-            "name": item.product?.name ?? "",
-            "unit_amount": item.variant?.priceAfterDiscount ?? 0,
-            "quantity": item.quantity ?? 1,
-          };
-        },
-      ),
+    await AddressOrderController.to.paymentRequest(
       orderId: orderId,
     );
 

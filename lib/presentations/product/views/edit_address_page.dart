@@ -4,10 +4,10 @@ import 'package:get/get.dart';
 import 'package:navid_e_commerce/core/components/custom_button.dart';
 import 'package:navid_e_commerce/core/components/custom_textfield.dart';
 import 'package:navid_e_commerce/core/constants/custom_space.dart';
-import 'package:navid_e_commerce/presentations/product/controllers/product_controller.dart';
 
 import '../../../core/constants/app_static_strings.dart';
 import '../../home/widgets/default_scaffold_structure_widget.dart';
+import '../controllers/address_order_controller.dart';
 
 class EditAddressPage extends StatelessWidget {
   static const String routeName = "/edit-address";
@@ -22,26 +22,26 @@ class EditAddressPage extends StatelessWidget {
       children: [
         CustomTextField(
           title: AppStaticStrings.name,
-          textEditingController: ProductController.to.nameAddressController,
+          textEditingController: AddressOrderController.to.nameAddressController,
         ),
         CustomTextField(
           title: AppStaticStrings.contactNumberLabel,
-          textEditingController: ProductController.to.contactAddressController,
+          textEditingController: AddressOrderController.to.contactAddressController,
           keyboardType: TextInputType.number,
         ),
         CustomTextField(
           title: AppStaticStrings.deliveryAddress,
-          textEditingController: ProductController.to.deliveryAddressController,
+          textEditingController: AddressOrderController.to.deliveryAddressController,
         ),
         space12H,
         Obx(() {
           return CustomButton(
-            isLoading: ProductController.to.isLoadingAddShippingAddress.value,
+            isLoading: AddressOrderController.to.isLoadingAddShippingAddress.value,
             onTap: () {
-              ProductController.to.addShippingAddressRequest(
-                  address: ProductController.to.deliveryAddressController.text,
-                  phone: ProductController.to.contactAddressController.text,
-                  name: ProductController.to.nameAddressController.text);
+              AddressOrderController.to.addShippingAddressRequest(
+                  address: AddressOrderController.to.deliveryAddressController.text,
+                  phone: AddressOrderController.to.contactAddressController.text,
+                  name: AddressOrderController.to.nameAddressController.text);
             },
             title: AppStaticStrings.save,
           );

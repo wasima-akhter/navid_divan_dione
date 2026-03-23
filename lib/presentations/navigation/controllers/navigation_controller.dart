@@ -24,6 +24,14 @@ class NavigationController extends GetxController {
   RxInt currentNavIndex = 0.obs;
   @override
   void onInit() async {
+    /// ✅ Read navigation index from arguments
+    final args = Get.arguments;
+
+    if (args != null && args is Map && args["index"] != null) {
+      currentNavIndex.value = args["index"];
+    }
+
+    //////
     if (Boxes.getUserData().get(tokenKey) != null &&
         Boxes.getUserData().get(tokenKey).toString().isNotEmpty) {
       Get.put(ProfileController());

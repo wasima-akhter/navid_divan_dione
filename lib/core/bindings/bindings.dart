@@ -9,6 +9,7 @@ import 'package:navid_e_commerce/presentations/splash/controllers/common_control
 import 'package:navid_e_commerce/presentations/splash/controllers/splash_controller.dart';
 
 import '../../presentations/home/controllers/home_controller.dart';
+import '../../presentations/product/controllers/address_order_controller.dart';
 
 class SplashBinding extends Bindings {
   @override
@@ -27,7 +28,8 @@ class CommonBinding extends Bindings {
 class ProductBinding extends Bindings {
   @override
   void dependencies() {
-    Get.put(ProductController());
+    // ✅ fenix: true — recreates when needed, but doesn't create a new instance every time
+    Get.lazyPut<ProductController>(() => ProductController(), fenix: true);
   }
 }
 
@@ -43,6 +45,18 @@ class NavigationBinding extends Bindings {
   void dependencies() {
     Get.put(NavigationController());
     Get.put(CartController());
+
+    // ✅ Persistent — survives tab switches, never recreated with wrong args
+    Get.put(AddressOrderController(), permanent: true);
+  }
+}
+
+// bindings.dart — add this
+class AddressOrderBinding extends Bindings {
+  @override
+  void dependencies() {
+    // AddressOrderController is already permanent, nothing extra needed
+    // but we need this binding to NOT register ProductController
   }
 }
 

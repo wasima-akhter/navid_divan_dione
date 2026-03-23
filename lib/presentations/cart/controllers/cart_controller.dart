@@ -86,10 +86,9 @@ class CartController extends GetxController {
 
   // Call this when entering product details page to sync quantity
   void syncQuantityFromCart(String productId, String variantId) {
-    final item = cartList.firstWhereOrNull(
-      (e) => e.product?.sId == productId,
-    );
-    // return current quantity or 1 as default
+    // ✅ Never touch ProductController from CartController unless it's already alive
+    if (!Get.isRegistered<ProductController>()) return;
+    final item = cartList.firstWhereOrNull((e) => e.product?.sId == productId);
     ProductController.to.cartQuantity.value = item?.quantity ?? 1;
   }
 
