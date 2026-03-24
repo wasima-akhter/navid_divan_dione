@@ -49,6 +49,14 @@ class ProductListController extends GetxController {
     pagingController.refresh(); // 🔥 reload API
   }
 
+  void clearFilters() {
+    searchQuery = "";
+    selectedCategory = null;
+    selectedSubCategory = null;
+
+    pagingController.refresh(); // 🔥 reload API
+  }
+
   RxList<CategoryModel> catList = <CategoryModel>[].obs;
   final RxBool isLoadingMore = false.obs;
   RxBool isLoadingCategory = false.obs;

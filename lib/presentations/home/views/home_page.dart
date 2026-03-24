@@ -157,28 +157,30 @@ class HomePage extends StatelessWidget {
           /// ============ product List Title & Button =============
           SliverPadding(
               padding: padding12H,
-              sliver: SliverToBoxAdapter(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: CustomText(
-                        text: AppStaticStrings.recentProducts,
-                        style: poppinsMedium,
-                        fontSize: getFontSizeDefault(),
-                        color: AppColors.kPrimaryTextDarkColor,
+              sliver: Obx(() => hCtrl.isProductLoadingMore.value
+                  ? SliverToBoxAdapter(child: PaginationLoadingWidget())
+                  : SliverToBoxAdapter(
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: CustomText(
+                              text: AppStaticStrings.recentProducts,
+                              style: poppinsMedium,
+                              fontSize: getFontSizeDefault(),
+                              color: AppColors.kPrimaryTextDarkColor,
+                            ),
+                          ),
+                          CustomTextButton(
+                            onPressed: () {
+                              Get.toNamed(ProductListPage.routeName);
+                            },
+                            title: AppStaticStrings.viewAll,
+                            fontSize: getFontSizeSemiSmall(),
+                            textColor: AppColors.kPrimaryTextDarkColor,
+                          )
+                        ],
                       ),
-                    ),
-                    CustomTextButton(
-                      onPressed: () {
-                        Get.toNamed(ProductListPage.routeName);
-                      },
-                      title: AppStaticStrings.viewAll,
-                      fontSize: getFontSizeSemiSmall(),
-                      textColor: AppColors.kPrimaryTextDarkColor,
-                    )
-                  ],
-                ),
-              )),
+                    ))),
 
           /// ============ Spacing =============
           SliverToBoxAdapter(child: SizedBox(height: 6.h)),

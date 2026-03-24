@@ -1,5 +1,5 @@
 import 'package:flutter_svg/svg.dart';
-import 'package:navid_e_commerce/core/components/custom_refresh_indicator.dart';
+import 'package:navid_e_commerce/core/components/custom_button.dart';
 import 'package:navid_e_commerce/core/constants/custom_space.dart';
 import 'package:navid_e_commerce/presentations/home/controllers/product_list_controller.dart';
 import 'package:navid_e_commerce/presentations/home/widgets/default_scaffold_structure_widget.dart';
@@ -46,88 +46,122 @@ class _ProductListPageState extends State<ProductListPage> {
         // HomeController.to.productList.refresh();
         // HomeController.to.searchController.value.clear();
       },
-      child: CustomRefreshIndicatorWidget(
-        onRefresh: () async {
-          // return HomeController.to.pagingController.refresh();
-        },
-        child: DefaultScaffoldStructureWidget(appBarTitle: 'Products', children: [
-          Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Row(
-                children: [
-                  // fitlter icon
-                  IconButton(
-                      onPressed: () {
-                        controller.searchController.text = '';
-                        controller.searchFocusNode.unfocus();
-                        showModalBottomSheet(
-                          context: context,
-                          builder: (context) {
-                            return Container(
-                                width: double.maxFinite,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(8.r),
-                                        topRight: Radius.circular(8.r))),
-                                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 20.h),
-                                child: Obx(() {
-                                  if (controller.isLoadingCategory.value) {
-                                    return CustomLoadingWidget(height: 40.h);
-                                  } else if (controller.catList.isEmpty) {
-                                    return CustomText(text: 'There is no Category available!!');
-                                  } else {
-                                    return SingleChildScrollView(
-                                      scrollDirection: Axis.vertical,
-                                      child: Column(
+      child: DefaultScaffoldStructureWidget(
+          appBarTitle: 'Products',
+          onRefresh: () async {
+            controller.pagingController.refresh();
+          },
+          children: [
+            Column(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Row(
+                  children: [
+                    // fitlter icon
+                    IconButton(
+                        onPressed: () {
+                          controller.searchController.text = '';
+                          controller.searchFocusNode.unfocus();
+                          showModalBottomSheet(
+                            context: context,
+                            builder: (context) {
+                              return Container(
+                                  width: double.maxFinite,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(8.r),
+                                          topRight: Radius.circular(8.r))),
+                                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 20.h),
+                                  child: Obx(() {
+                                    if (controller.isLoadingCategory.value) {
+                                      return CustomLoadingWidget(height: 40.h);
+                                    } else if (controller.catList.isEmpty) {
+                                      return CustomText(text: 'There is no Category available!!');
+                                    } else {
+                                      return Column(
                                         mainAxisSize: MainAxisSize.min,
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         spacing: 12.w,
-                                        children: List.generate(
-                                            controller.catList.length,
-                                            (index) => CategoryListCardItemWidget(
-                                                categoryModel: controller.catList[index],
-                                                onTapItem: () {
+                                        children: [
+                                          Builder(builder: (context) {
+                                            final hasFilter =
+                                                controller.searchController.text.isNotEmpty ||
+                                                    controller.selectedCategory != null ||
+                                                    controller.selectedSubCategory != null;
+
+                                            if (!hasFilter) return const SizedBox.shrink();
+
+                                            return Align(
+                                              alignment: Alignment.centerRight,
+                                              child: CustomButton(
+                                                onTap: () {
                                                   Get.back();
-                                                  controller.applyFilters(
-                                                      category: controller.catList[index].sId);
+                                                  controller.searchController.clear();
+                                                  controller
+                                                      .clearFilters(); // ✅ better to use your method
                                                 },
-                                                arrowDownWidget: ProductFilterWidget(
-                                                  controller: controller,
-                                                  index: index,
-                                                ))),
-                                      ),
-                                    );
-                                  }
-                                }));
-                          },
-                        );
-                      },
-                      icon: Icon(
-                        Icons.filter_list,
-                        size: 26.h,
-                      )),
-                  12.horizontalSpace,
-                  Flexible(
-                    child: SearchTextFieldWidget(
-                      searchController: controller.searchController,
-                      focusNode: controller.searchFocusNode,
-                      onChanged: (value) {
-                        controller.applyFilters(search: value);
-                      },
+                                                title: 'Reset Filters',
+                                                fillColor: AppColors.kPrimaryColor,
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 24.w, vertical: 10.h),
+                                                // marginHorizontal: 1.sw * 0.3,
+                                              ),
+                                            );
+                                          }),
+                                          SingleChildScrollView(
+                                            scrollDirection: Axis.vertical,
+                                            child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                spacing: 12.w,
+                                                children: [
+                                                  ...List.generate(
+                                                      controller.catList.length,
+                                                      (index) => CategoryListCardItemWidget(
+                                                          categoryModel: controller.catList[index],
+                                                          onTapItem: () {
+                                                            Get.back();
+                                                            controller.applyFilters(
+                                                                category:
+                                                                    controller.catList[index].sId);
+                                                          },
+                                                          arrowDownWidget: ProductFilterWidget(
+                                                            controller: controller,
+                                                            index: index,
+                                                          ))),
+                                                ]),
+                                          ),
+                                        ],
+                                      );
+                                    }
+                                  }));
+                            },
+                          );
+                        },
+                        icon: Icon(
+                          Icons.filter_list,
+                          size: 26.h,
+                        )),
+                    12.horizontalSpace,
+                    Flexible(
+                      child: SearchTextFieldWidget(
+                        searchController: controller.searchController,
+                        focusNode: controller.searchFocusNode,
+                        onChanged: (value) {
+                          controller.applyFilters(search: value);
+                        },
+                      ),
                     ),
-                  ),
-                ],
-              )
-            ],
-          ),
-          space12H,
-          //
-          DynamicProductList(
-            controller: controller,
-          )
-        ]),
-      ),
+                  ],
+                )
+              ],
+            ),
+            space12H,
+            //
+            DynamicProductList(
+              controller: controller,
+            )
+          ]),
     );
   }
 }

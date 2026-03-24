@@ -153,6 +153,10 @@ class _DeliverAddressPageState extends State<DeliverAddressPage> {
               ? (double.tryParse(CartController.to.shippingCharge.value) ?? 0)
               : shippingPrice;
 
+          final quantity = isFromCart
+              ? (CartController.to.cartList.length)
+              : ProductController.to.cartQuantity.value;
+
           final total = subtotal + tax + shipping;
 
           return Column(
@@ -164,16 +168,14 @@ class _DeliverAddressPageState extends State<DeliverAddressPage> {
                 '${AppStaticStrings.salesTax}\n${AppStaticStrings.includedTax}',
                 '\$${tax.toStringAsFixed(2)}',
               ),
-              if (!isFromCart)
-                _summaryRow(
-                  AppStaticStrings.shippingCharge,
-                  shipping == 0 ? 'Free' : '\$${shipping.toStringAsFixed(2)}',
-                ),
-              if (!isFromCart)
-                _summaryRow(
-                  AppStaticStrings.quantity,
-                  ProductController.to.cartQuantity.value.toString(),
-                ),
+              _summaryRow(
+                AppStaticStrings.shippingCharge,
+                shipping == 0 ? 'Free' : '\$${shipping.toStringAsFixed(2)}',
+              ),
+              _summaryRow(
+                AppStaticStrings.quantity,
+                quantity.toString(),
+              ),
               const Divider(),
               _summaryRow(
                 AppStaticStrings.totalLabel,
