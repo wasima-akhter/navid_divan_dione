@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -58,14 +57,12 @@ class ProfilePage extends StatelessWidget {
                         clipBehavior: Clip.none,
                         children: [
                           Obx(
-                            () => ProfileController
-                                        .to.uploadProfileImg.value.isNotEmpty &&
+                            () => ProfileController.to.uploadProfileImg.value.isNotEmpty &&
                                     argument != null &&
                                     argument == 'edit'
                                 ? ClipOval(
                                     child: Image.file(
-                                      File(ProfileController
-                                          .to.uploadProfileImg.value),
+                                      File(ProfileController.to.uploadProfileImg.value),
                                       height: 100.w,
                                       width: 100.w,
                                       fit: BoxFit.cover,
@@ -73,7 +70,7 @@ class ProfilePage extends StatelessWidget {
                                   )
                                 : CustomNetworkImage(
                                     imageUrl:
-                                        '${ApiService().baseUrl}/${ProfileController.to.userModel.value.img ?? ''}',
+                                        '${ApiService().baseUrl}${ProfileController.to.userModel.value.img ?? ''}',
                                     boxShape: BoxShape.circle,
                                     height: 100.w,
                                     imageErrorUrl: placeholderImage,
@@ -86,8 +83,7 @@ class ProfilePage extends StatelessWidget {
                                   child: IconButton(
                                       onPressed: () async {
                                         await pickImages(
-                                            singleImagePath: ProfileController
-                                                .to.uploadProfileImg);
+                                            singleImagePath: ProfileController.to.uploadProfileImg);
                                         // if (argument != null && argument == 'edit') {
                                         //   await pickImages(
                                         //       singleImagePath:
@@ -104,49 +100,36 @@ class ProfilePage extends StatelessWidget {
 
                       ///====================dynamic name=====================///
                       UserInfoText(
-                        text:
-                            ProfileController.to.userModel.value.name ?? 'n/a',
+                        text: ProfileController.to.userModel.value.name ?? 'n/a',
                         fontSize: getFontSizeDefault(),
                       ),
 
                       ///====================dynamic email=====================///
                       UserInfoText(
-                        text:
-                            ProfileController.to.userModel.value.email ?? 'n/a',
+                        text: ProfileController.to.userModel.value.email ?? 'n/a',
                         style: poppinsRegular,
                       ),
 
                       CustomTextField(
                         title: AppStaticStrings.name,
-                        isEnable: argument != null && argument == 'edit'
-                            ? true
-                            : false,
-                        textEditingController:
-                            ProfileController.to.nameController.value,
+                        isEnable: argument != null && argument == 'edit' ? true : false,
+                        textEditingController: ProfileController.to.nameController.value,
                       ),
                       CustomTextField(
                         title: AppStaticStrings.email,
-                        isEnable:
-                            /*argument != null && argument == 'edit' ? true :*/ false,
-                        textEditingController:
-                            ProfileController.to.emailController.value,
+                        isEnable: /*argument != null && argument == 'edit' ? true :*/ false,
+                        textEditingController: ProfileController.to.emailController.value,
                       ),
                       CustomTextField(
                         title: AppStaticStrings.contactNumber,
                         keyboardType: TextInputType.number,
-                        isEnable: argument != null && argument == 'edit'
-                            ? true
-                            : false,
-                        textEditingController:
-                            ProfileController.to.contactNumberController.value,
+                        isEnable: argument != null && argument == 'edit' ? true : false,
+                        textEditingController: ProfileController.to.contactNumberController.value,
                       ),
                       CustomTextField(
                         title: AppStaticStrings.age,
-                        isEnable: argument != null && argument == 'edit'
-                            ? true
-                            : false,
-                        textEditingController:
-                            ProfileController.to.birthDayController.value,
+                        isEnable: argument != null && argument == 'edit' ? true : false,
+                        textEditingController: ProfileController.to.birthDayController.value,
                       ),
                       Row(
                         children: [
@@ -160,16 +143,13 @@ class ProfilePage extends StatelessWidget {
                       ),
                       CustomTextField(
                         title: AppStaticStrings.taxId,
-                        isEnable: argument != null && argument == 'edit'
-                            ? true
-                            : false,
-                        textEditingController:
-                            ProfileController.to.taxIdController.value,
+                        isEnable: argument != null && argument == 'edit' ? true : false,
+                        textEditingController: ProfileController.to.taxIdController.value,
                       ),
                       space8H,
                       ProfileController.to.docPhotosList.isNotEmpty
                           ? Wrap(
-                        // spacing: 8.h, runSpacing: 8.w,
+                              // spacing: 8.h, runSpacing: 8.w,
                               crossAxisAlignment: WrapCrossAlignment.center,
                               children: [
                                 ...List.generate(
@@ -179,11 +159,9 @@ class ProfilePage extends StatelessWidget {
                                       Padding(
                                         padding: padding12,
                                         child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(12.r),
+                                          borderRadius: BorderRadius.circular(12.r),
                                           child: Image.file(
-                                            File(ProfileController
-                                                .to.docPhotosList[index]),
+                                            File(ProfileController.to.docPhotosList[index]),
                                             height: 70.w,
                                             width: 70.w,
                                             fit: BoxFit.cover,
@@ -196,15 +174,12 @@ class ProfilePage extends StatelessWidget {
                                         child: IconButton(
                                             onPressed: () {
                                               removeImage(
-                                                  uploadImages:
-                                                      ProfileController
-                                                          .to.docPhotosList,
-                                                  imagePath: ProfileController
-                                                      .to.docPhotosList[index]);
+                                                  uploadImages: ProfileController.to.docPhotosList,
+                                                  imagePath:
+                                                      ProfileController.to.docPhotosList[index]);
                                             },
                                             icon: const Icon(
-                                              CupertinoIcons
-                                                  .multiply_circle_fill,
+                                              CupertinoIcons.multiply_circle_fill,
                                               color: AppColors.kPrimaryColor,
                                             )),
                                       )
@@ -215,8 +190,7 @@ class ProfilePage extends StatelessWidget {
                                     onPressed: () {
                                       pickImages(
                                           allowMultiple: true,
-                                          uploadImages: ProfileController
-                                              .to.docPhotosList);
+                                          uploadImages: ProfileController.to.docPhotosList);
                                     },
                                     icon: Icon(
                                       Icons.add_circle_outline_sharp,
@@ -226,17 +200,18 @@ class ProfilePage extends StatelessWidget {
                             )
                           : Stack(
                               children: [
-                                ProfileController.to.userModel.value.documents!
-                                        .isNotEmpty
+                                ProfileController.to.userModel.value.documents!.isNotEmpty
                                     ? Wrap(
-                                  spacing: 8.w, runSpacing: 8.w,
+                                        spacing: 8.w,
+                                        runSpacing: 8.w,
                                         children: List.generate(
-                                          ProfileController.to.userModel.value
-                                              .documents!.length,
+                                          ProfileController.to.userModel.value.documents!.length,
                                           (index) => CustomNetworkImage(
-
-                                              imageUrl:
-                                                  '${ApiService().baseUrl}/${ProfileController.to.userModel.value.documents![index]}',height: 100.w,width: 100.w,),
+                                            imageUrl:
+                                                '${ApiService().baseUrl}/${ProfileController.to.userModel.value.documents![index]}',
+                                            height: 100.w,
+                                            width: 100.w,
+                                          ),
                                         ),
                                       )
                                     : Image.asset(
@@ -245,16 +220,14 @@ class ProfilePage extends StatelessWidget {
                                 argument != null && argument == 'edit'
                                     ? Positioned.fill(
                                         child: Container(
-                                          decoration: BoxDecoration(
-                                              color: Colors.black45),
+                                          decoration: BoxDecoration(color: Colors.black45),
                                           child: Center(
                                             child: IconButton(
                                                 onPressed: () {
                                                   pickImages(
                                                       allowMultiple: true,
                                                       uploadImages:
-                                                          ProfileController.to
-                                                              .docPhotosList);
+                                                          ProfileController.to.docPhotosList);
                                                 },
                                                 icon: Icon(
                                                   Icons.mode_edit_outlined,
@@ -268,11 +241,9 @@ class ProfilePage extends StatelessWidget {
                             ),
                       argument != null && argument == 'edit'
                           ? CustomButton(
-                              isLoading: ProfileController
-                                  .to.isLoadingUpdateProfile.value,
+                              isLoading: ProfileController.to.isLoadingUpdateProfile.value,
                               onTap: () async {
-                                await ProfileController.to
-                                    .updateProfileRequest();
+                                await ProfileController.to.updateProfileRequest();
                               },
                               title: AppStaticStrings.save,
                             )

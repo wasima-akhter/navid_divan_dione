@@ -9,6 +9,7 @@ import 'package:navid_e_commerce/presentations/splash/controllers/common_control
 import 'package:navid_e_commerce/presentations/splash/controllers/splash_controller.dart';
 
 import '../../presentations/home/controllers/home_controller.dart';
+import '../../presentations/home/controllers/product_list_controller.dart';
 import '../../presentations/product/controllers/address_order_controller.dart';
 
 class SplashBinding extends Bindings {
@@ -63,7 +64,14 @@ class AddressOrderBinding extends Bindings {
 class HomeBinding extends Bindings {
   @override
   void dependencies() {
-    Get.put(HomeController());
+    Get.put(HomeController(), permanent: true);
+  }
+}
+
+class ProductListBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.put(ProductListController(), permanent: true);
   }
 }
 

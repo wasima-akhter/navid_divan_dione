@@ -184,4 +184,7 @@ class AppStaticStrings {
   static const String seeMore = "see more...";
   static const String defaultTotal = "\$771.00";
   static const String pickUpDummyAddress = "13th Street. 47 W 13th St, New York, NY 10011";
+
+  //
+  static const String recentProducts = "Recent Products";
 }

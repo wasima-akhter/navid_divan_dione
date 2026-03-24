@@ -77,11 +77,13 @@ class _PickupAddressPageState extends State<PickupAddressPage> {
           CustomTextField(
             title: AppStaticStrings.nameLabel,
             textEditingController: AddressOrderController.to.nameController,
+            readOnly: true,
           ),
 
           CustomTextField(
             title: AppStaticStrings.contactNumberLabel,
             textEditingController: AddressOrderController.to.phoneController,
+            readOnly: true,
           ),
           _buildSectionTitle(AppStaticStrings.productsInfoLabel),
 
@@ -112,22 +114,96 @@ class _PickupAddressPageState extends State<PickupAddressPage> {
                     color: selectColor,
                     size: selectSize);
           }),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CustomText(
-                text: AppStaticStrings.totalLabel,
-                fontSize: getFontSizeDefault(),
-                color: AppColors.kSplashBackgroundColor,
-              ),
-              CustomText(
-                text:
-                    "\$${isFromCart ? CartController.to.totalPrice.value.toString() : (ProductController.to.getSelectedVariantForCart()?.price ?? 0) * ProductController.to.cartQuantity.value}",
-                fontSize: getFontSizeDefault(),
-                color: AppColors.kSplashBackgroundColor,
-              ),
-            ],
-          ),
+// ✅ With this full summary:
+          Obx(() {
+            final subtotal = isFromCart
+                ? (double.tryParse(CartController.to.subTotal.value) ?? 0)
+                : ((ProductController.to.getSelectedVariantForCart()?.price ?? 0) *
+                        ProductController.to.cartQuantity.value)
+                    .toDouble();
+            final tax = isFromCart
+                ? (double.tryParse(CartController.to.salesTax.value) ?? 0)
+                : subtotal * 0.06625;
+            final shipping = isFromCart
+                ? (double.tryParse(CartController.to.shippingCharge.value) ?? 0)
+                : (subtotal > 100 ? 0.0 : 15.0);
+            final total = isFromCart
+                ? (double.tryParse(CartController.to.totalPrice.value) ?? 0)
+                : subtotal + tax + shipping;
+
+            return Column(
+              children: [
+                const Divider(),
+                // Subtotal
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CustomText(
+                      text: AppStaticStrings.subTotal,
+                      fontSize: getFontSizeSmall(),
+                      color: AppColors.kExtraLightGreyTextColor,
+                    ),
+                    CustomText(
+                      text: '\$${subtotal.toStringAsFixed(2)}',
+                      fontSize: getFontSizeSmall(),
+                      color: AppColors.kExtraLightGreyTextColor,
+                    ),
+                  ],
+                ),
+                SizedBox(height: 6.h),
+                // Sales Tax
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CustomText(
+                      text: AppStaticStrings.salesTax + "\n${AppStaticStrings.includedTax}",
+                      fontSize: getFontSizeSmall(),
+                      color: AppColors.kExtraLightGreyTextColor,
+                    ),
+                    CustomText(
+                      text: '\$${tax.toStringAsFixed(2)}',
+                      fontSize: getFontSizeSmall(),
+                      color: AppColors.kExtraLightGreyTextColor,
+                    ),
+                  ],
+                ),
+                SizedBox(height: 6.h),
+                // Shipping
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CustomText(
+                      text: AppStaticStrings.shippingCharge,
+                      fontSize: getFontSizeSmall(),
+                      color: AppColors.kExtraLightGreyTextColor,
+                    ),
+                    CustomText(
+                      text: shipping == 0 ? 'Free' : '\$${shipping.toStringAsFixed(2)}',
+                      fontSize: getFontSizeSmall(),
+                      color: AppColors.kExtraLightGreyTextColor,
+                    ),
+                  ],
+                ),
+                const Divider(),
+                // Total
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CustomText(
+                      text: AppStaticStrings.totalLabel,
+                      fontSize: getFontSizeDefault(),
+                      color: AppColors.kSplashBackgroundColor,
+                    ),
+                    CustomText(
+                      text: '\$${total.toStringAsFixed(2)}',
+                      fontSize: getFontSizeDefault(),
+                      color: AppColors.kSplashBackgroundColor,
+                    ),
+                  ],
+                ),
+              ],
+            );
+          }),
           space12H,
           Obx(() {
             return CustomButton(
@@ -144,9 +220,15 @@ class _PickupAddressPageState extends State<PickupAddressPage> {
                           .user ??
                       "";
 
+                  // ✅ Use calculated total (includes tax + shipping)
+                  final subtotal = double.tryParse(CartController.to.subTotal.value) ?? 0;
+                  final tax = double.tryParse(CartController.to.salesTax.value) ?? 0;
+                  final shipping = double.tryParse(CartController.to.shippingCharge.value) ?? 0;
+                  final totalAmount = subtotal + tax + shipping;
+
                   AddressOrderController.to.orderRequest(
                     userId: userId,
-                    totalAmount: double.parse(CartController.to.totalPrice.value),
+                    totalAmount: totalAmount,
                     pickupAddress: AddressOrderController.to.selectedPickAddress.value,
                     items: items,
                   );

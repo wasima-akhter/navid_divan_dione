@@ -195,7 +195,7 @@ class CartController extends GetxController {
     }
 
     final double tax = subtotal * 0.06625;
-    final double shipping = subtotal > 100 ? 0.0 : 10.0;
+    final double shipping = subtotal > 100 ? 0.0 : 15.0;
     final double total = subtotal + tax + shipping;
 
     subTotal.value = subtotal.toStringAsFixed(2);

@@ -7,7 +7,7 @@ import 'package:navid_e_commerce/core/components/custom_network_image.dart';
 import 'package:navid_e_commerce/core/constants/color_constants.dart';
 import 'package:navid_e_commerce/core/constants/custom_text.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
-import 'package:navid_e_commerce/presentations/home/controllers/home_controller.dart';
+import 'package:navid_e_commerce/presentations/home/controllers/product_list_controller.dart';
 import 'package:navid_e_commerce/presentations/home/model/category_model.dart';
 import 'package:navid_e_commerce/presentations/home/views/product_list_page.dart';
 
@@ -28,7 +28,9 @@ class CategoryCardItemWidget extends StatelessWidget {
       child: ButtonTapWidget(
         radius: 8.r,
         onTap: () {
-          HomeController.to.applyFilters(category: categoryModel.sId);
+          ProductListController.to.applyFilters(category: categoryModel.sId);
+          //
+
           Get.toNamed(ProductListPage.routeName);
         },
         child: Padding(

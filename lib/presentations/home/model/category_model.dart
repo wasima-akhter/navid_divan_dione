@@ -1,3 +1,5 @@
+import 'package:get/get.dart';
+
 class CategoryModel {
   String? sId;
   String? name;
@@ -6,15 +8,10 @@ class CategoryModel {
   String? createdAt;
   String? updatedAt;
   int? iV;
+  RxBool isLoadingSub = false.obs;
 
   CategoryModel(
-      {this.sId,
-        this.name,
-        this.img,
-        this.isActive,
-        this.createdAt,
-        this.updatedAt,
-        this.iV});
+      {this.sId, this.name, this.img, this.isActive, this.createdAt, this.updatedAt, this.iV});
 
   CategoryModel.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
@@ -38,6 +35,7 @@ class CategoryModel {
     return data;
   }
 }
+
 class SubCategoryModel {
   String? sId;
   String? name;
@@ -59,6 +57,7 @@ class SubCategoryModel {
     return data;
   }
 }
+
 class BannerModel {
   String? sId;
   String? img;

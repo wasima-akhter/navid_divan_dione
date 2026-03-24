@@ -53,7 +53,9 @@ class AppRoutes {
             page: () => CategoryListPage(),
             binding: HomeBinding()),
         GetPage(
-            name: ProductListPage.routeName, page: () => ProductListPage(), binding: HomeBinding()),
+            name: ProductListPage.routeName,
+            page: () => ProductListPage(),
+            binding: ProductListBinding()),
         GetPage(
             name: ProductDetailsPage.routeName,
             page: () => ProductDetailsPage(),

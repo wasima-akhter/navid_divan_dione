@@ -49,12 +49,14 @@ class HomeController extends GetxController {
   ///=======================search controller============================///
 
   Rx<TextEditingController> searchController = TextEditingController().obs;
+  Rx<FocusNode> searchFocusNode = FocusNode().obs;
   Rx<PageController> pageController = PageController(initialPage: 0).obs;
   @override
   void onInit() async {
     pagingController.addPageRequestListener((pageKey) {
       getProductListRequest(pageKey: pageKey);
     });
+
     fetchInitialData();
 
     super.onInit();
@@ -80,7 +82,8 @@ class HomeController extends GetxController {
     await getBannerRequest();
 
     // await getProductListRequest(pageKey: 1);
-    pageController.refresh();
+    // ✅ Correct — this resets and refetches the product grid
+    pagingController.refresh();
   }
 
   ///------------------------------ get category list method -------------------------///
@@ -158,29 +161,53 @@ class HomeController extends GetxController {
 
   ///-------------------- get sub category list method ---------------------///
 
-  Future<void> getSubCategoryRequest({required String catId}) async {
+  // Future<void> getSubCategoryRequest({required String catId}) async {
+  //   try {
+  //     isLoadingSubCategory.value = true;
+
+  //     final response = await ApiService().request(
+  //         endpoint: subCateGetAllEndPoint, method: 'GET', queryParams: {"category": catId});
+
+  //     if (response['success'] == true) {
+  //       //   logger.d(response);
+  //       subCategoryList.value = (response["data"] as List)
+  //           .map(
+  //             (e) => SubCategoryModel.fromJson(e),
+  //           )
+  //           .toList();
+  //     } else {
+  //       //   logger.e(response);
+  //       showCustomSnackbar(
+  //           title: 'Failed', message: response['message'], type: SnackBarType.failed);
+  //     }
+  //   } catch (e) {
+  //     //   logger.e(e.toString());
+  //   } finally {
+  //     isLoadingSubCategory.value = false;
+  //   }
+  // }
+
+  Future<void> getSubCategoryRequest({required CategoryModel category}) async {
     try {
-      isLoadingSubCategory.value = true;
+      category.isLoadingSub.value = true; // 👈 only this category
 
       final response = await ApiService().request(
-          endpoint: subCateGetAllEndPoint, method: 'GET', queryParams: {"category": catId});
+        endpoint: subCateGetAllEndPoint,
+        method: 'GET',
+        queryParams: {"category": category.sId ?? ''},
+      );
 
       if (response['success'] == true) {
-        //   logger.d(response);
-        subCategoryList.value = (response["data"] as List)
-            .map(
-              (e) => SubCategoryModel.fromJson(e),
-            )
-            .toList();
+        subCategoryList.value =
+            (response["data"] as List).map((e) => SubCategoryModel.fromJson(e)).toList();
       } else {
-        //   logger.e(response);
         showCustomSnackbar(
             title: 'Failed', message: response['message'], type: SnackBarType.failed);
       }
     } catch (e) {
-      //   logger.e(e.toString());
+      // handle error if needed
     } finally {
-      isLoadingSubCategory.value = false;
+      category.isLoadingSub.value = false; // 👈 reset only this
     }
   }
 
@@ -188,7 +215,7 @@ class HomeController extends GetxController {
 
   Future<void> getBannerRequest() async {
     try {
-      isLoadingSubCategory.value = true;
+      isLoadingBanner.value = true;
 
       final response = await ApiService().request(endpoint: bannerGetAllEndPoint, method: 'GET');
 
@@ -211,7 +238,7 @@ class HomeController extends GetxController {
     } catch (e) {
       //   logger.e(e.toString());
     } finally {
-      isLoadingSubCategory.value = false;
+      isLoadingBanner.value = false;
     }
   }
 
@@ -246,6 +273,12 @@ class HomeController extends GetxController {
       if (response['success'] == true) {
         final newProducts =
             (response['data'] as List).map((e) => ProductModel.fromJson(e)).toList();
+
+// // 👇 duplicate for testing
+//         final expandedList = List.generate(
+//           5, // multiply factor
+//           (_) => newProducts,
+//         ).expand((e) => e).toList();
 
         final isLastPage = pageKey >= (response['pagination']?['totalPages'] ?? 1);
 

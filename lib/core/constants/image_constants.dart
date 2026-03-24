@@ -26,7 +26,9 @@ String pdfImg = 'assets/images/pdf_imga.png';
 String loadingImg = 'assets/images/loading.webp';
 String placeholderImage = 'assets/images/dummy_profile_img.svg';
 String arrowDownIcon = 'assets/icons/arrow_down.svg';
-String  notificationOutlineIcon ='assets/icons/notification_outline_icon.svg';
+String notificationOutlineIcon = 'assets/icons/notification_outline_icon.svg';
+
+String emptyListImg = 'assets/images/empty_list.png';
 // String  addDocIcon ='';
 // String  addDocIcon ='';
 // String  addDocIcon ='';

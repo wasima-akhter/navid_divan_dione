@@ -15,12 +15,14 @@ import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
 import 'package:navid_e_commerce/presentations/home/controllers/home_controller.dart';
 import 'package:navid_e_commerce/presentations/home/views/category_list_page.dart';
+import 'package:navid_e_commerce/presentations/home/views/product_list_page.dart';
 import 'package:navid_e_commerce/presentations/home/widgets/category_list_card_item_widget.dart';
 import 'package:navid_e_commerce/presentations/home/widgets/product_card_item_widget.dart';
 import 'package:navid_e_commerce/presentations/home/widgets/search_text_field_widget.dart';
 import 'package:navid_e_commerce/presentations/product/model/product_model.dart';
 import 'package:navid_e_commerce/presentations/profile/widgets/custom_loading_widget.dart';
 
+import '../widgets/no_product_widget.dart';
 import '../widgets/pagination_loading_widget.dart';
 
 class HomePage extends StatelessWidget {
@@ -42,6 +44,7 @@ class HomePage extends StatelessWidget {
             sliver: SliverToBoxAdapter(
               child: SearchTextFieldWidget(
                 searchController: hCtrl.searchController.value,
+                focusNode: hCtrl.searchFocusNode.value,
               ),
             ),
           ),
@@ -151,6 +154,35 @@ class HomePage extends StatelessWidget {
           /// ============ Spacing =============
           SliverToBoxAdapter(child: SizedBox(height: 6.h)),
 
+          /// ============ product List Title & Button =============
+          SliverPadding(
+              padding: padding12H,
+              sliver: SliverToBoxAdapter(
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: CustomText(
+                        text: AppStaticStrings.recentProducts,
+                        style: poppinsMedium,
+                        fontSize: getFontSizeDefault(),
+                        color: AppColors.kPrimaryTextDarkColor,
+                      ),
+                    ),
+                    CustomTextButton(
+                      onPressed: () {
+                        Get.toNamed(ProductListPage.routeName);
+                      },
+                      title: AppStaticStrings.viewAll,
+                      fontSize: getFontSizeSemiSmall(),
+                      textColor: AppColors.kPrimaryTextDarkColor,
+                    )
+                  ],
+                ),
+              )),
+
+          /// ============ Spacing =============
+          SliverToBoxAdapter(child: SizedBox(height: 6.h)),
+
           /// ============ Product Grid ============
           SliverPadding(
             padding: padding12H4V,
@@ -162,8 +194,13 @@ class HomePage extends StatelessWidget {
                 },
                 firstPageProgressIndicatorBuilder: (context) => CustomLoadingWidget(height: 200.h),
                 newPageProgressIndicatorBuilder: (context) => PaginationLoadingWidget(),
-                noItemsFoundIndicatorBuilder: (context) =>
-                    CustomText(text: 'There is no product available!!'),
+                noItemsFoundIndicatorBuilder: (_) => NoProductWidget(
+                    searchController: hCtrl.searchController,
+                    searchQuery: hCtrl.searchQuery,
+                    selectedCategory: hCtrl.selectedCategory,
+                    selectedSubCategory: hCtrl.selectedSubCategory,
+                    applyFilters: ({category, search, subCategory}) => hCtrl.applyFilters(
+                        category: category, search: search, subCategory: subCategory)),
                 firstPageErrorIndicatorBuilder: (context) =>
                     CustomText(text: 'Something went wrong!'),
                 newPageErrorIndicatorBuilder: (context) =>
@@ -193,38 +230,4 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class DynamicProductList extends StatelessWidget {
-  const DynamicProductList({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final hCtrl = Get.find<HomeController>();
-    return Obx(() {
-      return hCtrl.isLoadingProduct.value
-          ? CustomLoadingWidget(
-              height: 200.h,
-            )
-          : hCtrl.productList.isEmpty
-              ? CustomText(text: 'There is no product available!!')
-              : GridView.builder(
-                  padding: EdgeInsets.zero,
-                  shrinkWrap: true,
-                  primary: false,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: hCtrl.productList.length,
-                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                    crossAxisSpacing: 8.w,
-                    mainAxisSpacing: 8.w,
-                    mainAxisExtent: 265.w,
-                    // childAspectRatio: .5,
-                    maxCrossAxisExtent: 210.w,
-                  ),
-                  itemBuilder: (context, index) => ProductCardItemWidget(
-                    product: hCtrl.productList[index],
-                  ),
-                );
-    });
-  }
-}
+//

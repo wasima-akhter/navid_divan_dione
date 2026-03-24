@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:navid_e_commerce/core/components/custom_appbar.dart';
+import 'package:navid_e_commerce/core/components/custom_refresh_indicator.dart';
 import 'package:navid_e_commerce/core/constants/app_static_strings.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/presentations/home/controllers/home_controller.dart';
 import 'package:navid_e_commerce/presentations/home/widgets/category_card_item_widget.dart';
-import 'package:navid_e_commerce/core/components/custom_refresh_indicator.dart';
+
 import '../widgets/pagination_loading_widget.dart';
 
 class CategoryListPage extends StatefulWidget {
@@ -23,8 +24,7 @@ class _CategoryListPageState extends State<CategoryListPage> {
   @override
   void initState() {
     scrollController.addListener(() {
-      if (scrollController.position.pixels ==
-          scrollController.position.maxScrollExtent) {
+      if (scrollController.position.pixels == scrollController.position.maxScrollExtent) {
         HomeController.to.getCategoryListRequest(loadMore: true);
       }
     });
@@ -56,7 +56,7 @@ class _CategoryListPageState extends State<CategoryListPage> {
                     mainAxisSpacing: 8.w,
                   ),
                   delegate: SliverChildBuilderDelegate(
-                        (context, index) {
+                    (context, index) {
                       return CategoryCardItemWidget(
                         categoryModel: catList[index],
                       );

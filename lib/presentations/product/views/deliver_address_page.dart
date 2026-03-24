@@ -55,7 +55,7 @@ class _DeliverAddressPageState extends State<DeliverAddressPage> {
                   .toString(),
         ) ??
         0;
-    return subtotal > 100 ? 0 : 10;
+    return subtotal > 100 ? 0 : 15;
   }
 
   @override
@@ -138,88 +138,51 @@ class _DeliverAddressPageState extends State<DeliverAddressPage> {
                 size: selectSize,
               )),
 
-        // ───── Subtotal ─────
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            CustomText(
-              text: AppStaticStrings.subTotal,
-              fontSize: getFontSizeSmall(),
-              color: AppColors.kExtraLightGreyTextColor,
-            ),
-            Obx(() => CustomText(
-                  text:
-                      '\$${isFromCart ? CartController.to.subTotal.value : ((ProductController.to.getSelectedVariantForCart()?.price ?? 0) * ProductController.to.cartQuantity.value).toStringAsFixed(2)}',
-                  fontSize: getFontSizeSmall(),
-                  color: AppColors.kExtraLightGreyTextColor,
-                )),
-          ],
-        ),
+// ───── Summary Section ─────
+        Obx(() {
+          final subtotal = isFromCart
+              ? (double.tryParse(CartController.to.subTotal.value) ?? 0)
+              : (ProductController.to.getSelectedVariantForCart()?.price ?? 0).toDouble() *
+                  ProductController.to.cartQuantity.value;
 
-        // ───── Quantity (single product only) ─────
-        if (!isFromCart)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          final tax = isFromCart
+              ? (double.tryParse(CartController.to.salesTax.value) ?? 0)
+              : subtotal * 0.06625;
+
+          final shipping = isFromCart
+              ? (double.tryParse(CartController.to.shippingCharge.value) ?? 0)
+              : shippingPrice;
+
+          final total = subtotal + tax + shipping;
+
+          return Column(
+            spacing: 6.h,
             children: [
-              CustomText(
-                text: AppStaticStrings.quantity,
-                fontSize: getFontSizeSmall(),
-                color: AppColors.kExtraLightGreyTextColor,
+              const Divider(),
+              _summaryRow(AppStaticStrings.subTotal, '\$${subtotal.toStringAsFixed(2)}'),
+              _summaryRow(
+                '${AppStaticStrings.salesTax}\n${AppStaticStrings.includedTax}',
+                '\$${tax.toStringAsFixed(2)}',
               ),
-              Obx(() => CustomText(
-                    text: ProductController.to.cartQuantity.value.toString(),
-                    fontSize: getFontSizeSmall(),
-                    color: AppColors.kExtraLightGreyTextColor,
-                  )),
+              if (!isFromCart)
+                _summaryRow(
+                  AppStaticStrings.shippingCharge,
+                  shipping == 0 ? 'Free' : '\$${shipping.toStringAsFixed(2)}',
+                ),
+              if (!isFromCart)
+                _summaryRow(
+                  AppStaticStrings.quantity,
+                  ProductController.to.cartQuantity.value.toString(),
+                ),
+              const Divider(),
+              _summaryRow(
+                AppStaticStrings.totalLabel,
+                '\$${total.toStringAsFixed(2)}',
+                isTotal: true,
+              ),
             ],
-          ),
-
-        // ───── Delivery Fee ─────
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            CustomText(
-              text: AppStaticStrings.deliveryFee,
-              fontSize: getFontSizeSmall(),
-              color: AppColors.kExtraLightGreyTextColor,
-            ),
-            Obx(() => CustomText(
-                  text: shippingPrice == 0 ? 'Free' : '\$${shippingPrice.toStringAsFixed(2)}',
-                  fontSize: getFontSizeSmall(),
-                  color: AppColors.kExtraLightGreyTextColor,
-                )),
-          ],
-        ),
-
-        const Divider(),
-
-        // ───── Total ─────
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            CustomText(
-              text: AppStaticStrings.totalLabel,
-              fontSize: getFontSizeDefault(),
-              color: AppColors.kSplashBackgroundColor,
-            ),
-            Obx(() {
-              final subtotal = double.tryParse(
-                    isFromCart
-                        ? CartController.to.subTotal.value
-                        : ((ProductController.to.getSelectedVariantForCart()?.price ?? 0) *
-                                ProductController.to.cartQuantity.value)
-                            .toString(),
-                  ) ??
-                  0;
-              final total = subtotal + shippingPrice;
-              return CustomText(
-                text: '\$${total.toStringAsFixed(2)}',
-                fontSize: getFontSizeDefault(),
-                color: AppColors.kSplashBackgroundColor,
-              );
-            }),
-          ],
-        ),
+          );
+        }),
 
         space12H,
 
@@ -302,6 +265,26 @@ class _DeliverAddressPageState extends State<DeliverAddressPage> {
             ),
           ],
         ));
+  }
+
+  Widget _summaryRow(String title, String value, {bool isTotal = false}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        CustomText(
+          text: title,
+          fontSize: isTotal ? getFontSizeDefault() : getFontSizeSmall(),
+          color: isTotal ? AppColors.kSplashBackgroundColor : AppColors.kExtraLightGreyTextColor,
+          style: isTotal ? poppinsSemiBold : poppinsRegular,
+        ),
+        CustomText(
+          text: value,
+          fontSize: isTotal ? getFontSizeDefault() : getFontSizeSmall(),
+          color: isTotal ? AppColors.kSplashBackgroundColor : AppColors.kExtraLightGreyTextColor,
+          style: isTotal ? poppinsSemiBold : poppinsRegular,
+        ),
+      ],
+    );
   }
 
   Widget _buildProductItem({
