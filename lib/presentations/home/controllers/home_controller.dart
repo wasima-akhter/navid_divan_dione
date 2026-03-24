@@ -79,7 +79,7 @@ class HomeController extends GetxController {
 
     await getBannerRequest();
 
-    await getProductListRequest(pageKey: 1);
+    // await getProductListRequest(pageKey: 1);
     pageController.refresh();
   }
 

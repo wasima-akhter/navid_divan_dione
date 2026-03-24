@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:navid_e_commerce/core/constants/app_static_strings.dart';
 import 'package:navid_e_commerce/core/utils/hive_boxes.dart';
 import 'package:navid_e_commerce/presentations/cart/views/cart_page.dart';
@@ -78,10 +77,16 @@ class NavigationController extends GetxController {
           message: response['message'],
         );
         // CommonController.to.isLoggedIn.value = false;
-        if (Hive.isBoxOpen(userBoxName)) {
-          await Hive.box(userBoxName).close();
-        }
-        await Hive.deleteBoxFromDisk(userBoxName);
+        // if (Hive.isBoxOpen(userBoxName)) {
+        //   await Hive.box(userBoxName).close();
+        // }
+        // await Hive.deleteBoxFromDisk(userBoxName);
+
+        // newcode addition:
+        // ✅ Use CommonController.logout() — handles everything cleanly
+        CommonController.to.logout();
+
+        //
 
         Get.offAllNamed(LoginPage.routeName);
       } else {

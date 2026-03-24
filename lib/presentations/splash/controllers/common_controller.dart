@@ -6,6 +6,7 @@ import 'package:navid_e_commerce/presentations/navigation/views/navigation_page.
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../../core/api-client/api_service.dart';
+import '../../auth/views/login_page.dart';
 
 class CommonController extends GetxController {
   static CommonController get to => Get.find();
@@ -51,6 +52,7 @@ class CommonController extends GetxController {
     ApiService().setAuthToken("");
 
     isLoggedIn.value = false;
+    Get.offAllNamed(LoginPage.routeName);
   }
 
   ///

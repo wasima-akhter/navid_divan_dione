@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:navid_e_commerce/core/api-client/api_endpoints.dart';
 import 'package:navid_e_commerce/core/api-client/api_service.dart';
 import 'package:navid_e_commerce/core/helper/helper_function.dart';
@@ -13,6 +12,7 @@ import 'package:navid_e_commerce/presentations/auth/views/set_new_password_page.
 import 'package:navid_e_commerce/presentations/navigation/views/navigation_page.dart';
 
 import '../../../core/constants/color_constants.dart';
+import '../../splash/controllers/common_controller.dart';
 
 class AuthController extends GetxController {
   static AuthController get to => Get.find();
@@ -106,7 +106,7 @@ class AuthController extends GetxController {
       passSignUpController.text = '1234567A';
       confirmPassSignUpController.text = '1234567A';
       ageSignUpController.value.text = formattedDateOfBirth;
-      emailLoginController.text = 'nobaven129@claspira.com';
+      emailLoginController.text = 'abc@yopmail.com';
       emailForgetController.value.text = 'cayoj38393@evluence.com' /*'pihoner651@eligou.com'*/;
       passLoginController.text = '1234567A';
       passNewController.text = '1234567A';
@@ -232,12 +232,14 @@ class AuthController extends GetxController {
           message: response['message'],
         );
 
-        await Hive.openBox(userBoxName);
-        Boxes.getUserData().put(tokenKey, response['token']);
+        // await Hive.openBox(userBoxName);
+        // Boxes.getUserData().put(tokenKey, response['token']);
+        // ✅ Use CommonController.updateLogin — sets token, updates isLoggedIn, sets ApiService auth
+        CommonController.to.updateLogin(response['token']);
 
         //
         clearSignInController();
-        ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
+        // ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
         Get.offAllNamed(NavigationPage.routeName);
       } else {
         //   logger.e(response);
