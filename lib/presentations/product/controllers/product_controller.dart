@@ -107,7 +107,7 @@ class ProductController extends GetxController {
 
   Future<void> getProductDetailsRequest({required String productID}) async {
     // Dispose existing video before loading new product
-    disposePlayer();
+    // disposePlayer();
     try {
       isLoadingProductDetails.value = true;
 
@@ -183,8 +183,12 @@ class ProductController extends GetxController {
     final videoPath = productDetailsModel.value.video;
     if (videoPath == null || videoPath.isEmpty) return;
 
-    if (betterPlayerController.value != null) return;
+    // if (betterPlayerController.value != null) return;
+    betterPlayerController.value?.dispose(); // dispose old safely
 
+    betterPlayerController.value = null;
+
+    //
     final fullUrl = "${ApiService().baseUrl}$videoPath";
 
     debugPrint('fullUrl  : $fullUrl');
@@ -291,7 +295,7 @@ class ProductController extends GetxController {
     // ✅ Guard — controller may already be gone during navigation
     if (Get.isRegistered<ProductController>()) {
       if (ProductController.to.chewieController.value != null) {
-        ProductController.to.chewieController.value!.dispose();
+        // ProductController.to.chewieController.value!.dispose();
       }
     }
     super.dispose();

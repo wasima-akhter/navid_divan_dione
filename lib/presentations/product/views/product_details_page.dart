@@ -174,7 +174,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   @override
   void dispose() {
     if (ProductController.to.chewieController.value != null) {
-      ProductController.to.chewieController.value!.dispose();
+      // ProductController.to.chewieController.value!.dispose();
     }
     super.dispose();
   }
