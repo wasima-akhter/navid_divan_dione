@@ -52,6 +52,11 @@ class _PickupAddressPageState extends State<PickupAddressPage> {
     return DefaultScaffoldStructureWidget(
         spacing: 12.h,
         appBarTitle: AppStaticStrings.pickUpAddress,
+        onRefresh: () async {
+          final controller = Get.find<AddressOrderController>();
+          controller.getPickUpAddressRequest();
+          controller.getShippingAddressRequest();
+        },
         children: [
           _buildSectionTitle(AppStaticStrings.pickUpFromLabel),
           Obx(() {

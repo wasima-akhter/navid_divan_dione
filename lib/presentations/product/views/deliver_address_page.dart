@@ -63,6 +63,11 @@ class _DeliverAddressPageState extends State<DeliverAddressPage> {
     return DefaultScaffoldStructureWidget(
       spacing: 12.h,
       appBarTitle: AppStaticStrings.address,
+      onRefresh: () async {
+        final controller = Get.find<AddressOrderController>();
+        controller.getPickUpAddressRequest();
+        controller.getShippingAddressRequest();
+      },
       children: [
         // ───── Delivery Address Header ─────
         Row(
