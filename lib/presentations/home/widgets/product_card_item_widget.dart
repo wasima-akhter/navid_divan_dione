@@ -48,7 +48,11 @@ class ProductCardItemWidget extends StatelessWidget {
           Get.delete<ProductController>(force: true);
 
           debugPrint('productID: from product Card item Widget : ${product.id}');
-          Get.toNamed(ProductDetailsPage.routeName, arguments: product.id ?? '');
+          Get.toNamed(
+            ProductDetailsPage.routeName,
+            arguments: product.id ?? '',
+            preventDuplicates: false, // <--- important!
+          );
         },
         child: Container(
           // color: Colors.amber,

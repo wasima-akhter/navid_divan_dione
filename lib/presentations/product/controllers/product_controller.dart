@@ -189,7 +189,7 @@ class ProductController extends GetxController {
     betterPlayerController.value = null;
 
     //
-    final fullUrl = "${ApiService().baseUrl}$videoPath";
+    final fullUrl = videoPath.startsWith("http") ? videoPath : "${ApiService().baseUrl}$videoPath";
 
     debugPrint('fullUrl  : $fullUrl');
 
@@ -208,7 +208,7 @@ class ProductController extends GetxController {
     final dataSource = BetterPlayerDataSource(
       BetterPlayerDataSourceType.network,
 
-      "https://api.divandione.com/uploads/hls/c9f4312d-4add-4b61-9602-8f3ce13a32a9/index.m3u8",
+      fullUrl,
       headers: {
         "User-Agent": "Mozilla/5.0 (Mobile; Flutter)",
         "Accept": "*/*",

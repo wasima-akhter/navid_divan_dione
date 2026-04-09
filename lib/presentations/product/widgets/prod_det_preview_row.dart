@@ -1,15 +1,12 @@
 import '../../../core/export/ui_export.dart';
 import '../controllers/product_controller.dart';
-import '../model/product_details_model.dart';
 
 class ProdDetPreviewRow extends StatelessWidget {
   final ProductController controller;
-  final ProductVariantModel selectedVariant;
 
   const ProdDetPreviewRow({
     super.key,
     required this.controller,
-    required this.selectedVariant,
   });
 
   @override
@@ -37,18 +34,29 @@ class ProdDetPreviewRow extends StatelessWidget {
             ),
           8.horizontalSpace,
 
-          // IMAGE PREVIEWS
-          for (int i = 0; i < bannerImages.length; i++) ...[
-            _PreviewItem(
-              isSelected: currentPage == i + 1,
-              onTap: () => controller.pageController.value.jumpToPage(i + 1),
-              child: CustomNetworkImage(
-                imageUrl: "${ApiService().baseUrl}${bannerImages[i]}",
-                fit: BoxFit.cover,
+          if (bannerImages.isNotEmpty)
+
+            // IMAGE PREVIEWS
+            for (int i = 0; i < bannerImages.length; i++) ...[
+              _PreviewItem(
+                isSelected: currentPage == i + 1,
+                onTap: () => controller.pageController.value.jumpToPage(i + 1),
+                child: CustomNetworkImage(
+                  imageUrl: "${ApiService().baseUrl}${bannerImages[i]}",
+                  fit: BoxFit.cover,
+                ),
               ),
+              if (i != bannerImages.length - 1) 8.horizontalSpace,
+            ]
+          else
+            Row(
+              children: [
+                CustomText(
+                  text: "No banners available",
+                  style: TextStyle(color: Colors.black),
+                ),
+              ],
             ),
-            if (i != bannerImages.length - 1) 8.horizontalSpace,
-          ],
         ],
       );
     });

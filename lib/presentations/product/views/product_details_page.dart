@@ -9,6 +9,7 @@ import 'package:navid_e_commerce/presentations/product/widgets/prod_det_video_pl
 import '../../../core/constants/image_constants.dart';
 import '../../navigation/controllers/navigation_controller.dart';
 import '../../navigation/views/navigation_page.dart';
+import '../model/product_details_model.dart';
 import '../widgets/product_det_export.dart';
 
 class ProductDetailsPage extends StatefulWidget {
@@ -31,6 +32,19 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
         controller.getProductDetailsRequest(productID: controller.productId.value);
       },
       appBarTitle: AppStaticStrings.productDetails,
+      action: [
+        GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              // Get.offAllNamed destroys the stack and recreates controllers
+              Get.until((route) => route.settings.name == NavigationPage.routeName);
+              NavigationController.to.currentNavIndex.value = 0; // cart tab
+            },
+            child: Icon(Icons.home)),
+        SizedBox(
+          width: 20.w,
+        )
+      ],
       spacing: 12.h,
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       floatingActionButton: Obx(
@@ -58,7 +72,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       children: [
         Obx(() {
           final product = controller.productDetailsModel.value;
-          final variants = controller.productDetailsModel.value.variants;
+          final variants = <ProductVariantModel>[] ?? controller.productDetailsModel.value.variants;
 
           if (controller.isLoadingProductDetails.value) {
             return CustomLoadingWidget();
@@ -81,7 +95,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 debugPrint(
                     'currentBannerImages[index] :  ${controller.currentBannerImages.toString()} ');
                 if (controller.currentBannerImages.isEmpty) {
-                  return SizedBox.shrink();
+                  // Still show video even if no images
+                  return const AspectRatio(
+                    aspectRatio: 1,
+                    child: ProdDetVideoPlayerSec(),
+                  );
                 }
 
                 return AspectRatio(
@@ -119,44 +137,99 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             // Preview images
 
             Builder(builder: (context) {
-              if (variants == null || variants!.isEmpty) {
-                return const SizedBox.shrink();
-              }
+              // if (variants == null || variants!.isEmpty) {
+              //   return const SizedBox.shrink();
+              // }
 
               /// 🔥 Find selected variant based on selected color
-              final selectedVariant = variants!.firstWhere(
-                (v) => v.color == controller.selectedColor.value,
-                orElse: () => variants!.first,
-              );
+              final selectedVariant = variants != null && variants.isNotEmpty
+                  ? variants!.firstWhere(
+                      (v) => v.color == controller.selectedColor.value,
+                    )
+                  : ProductVariantModel();
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: 12.h,
                 children: [
-                  ProdDetPreviewRow(controller: controller, selectedVariant: selectedVariant),
-                  // select color:
-                  ProdDetSelectedClrSection(controller: controller, variants: variants),
-                  //   size  section
-                  ProdDetSizeRow(
+                  ProdDetPreviewRow(
                     controller: controller,
-                    selectedVariant: selectedVariant,
                   ),
+
+                  // select color:
+                  variants!.isNotEmpty
+                      ? ProdDetSelectedClrSection(controller: controller, variants: variants)
+                      : Row(
+                          children: [
+                            CustomText(
+                              text: "No color options",
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          ],
+                        ),
+
+                  //   size  section
+                  variants.isNotEmpty
+                      ? ProdDetSizeRow(controller: controller, selectedVariant: variants.first)
+                      : Row(
+                          children: [
+                            CustomText(
+                              text: "No size options",
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          ],
+                        ),
 
                   ///     Select Color row
-                  ProdDetPriceCartRow(
-                    controller: controller,
-                    selectedVariant: selectedVariant,
-                  ),
+
+                  // Price + Cart Row
+                  variants.isNotEmpty
+                      ? ProdDetPriceCartRow(controller: controller, selectedVariant: variants.first)
+                      : Row(
+                          children: [
+                            CustomText(
+                              text: "No Price options",
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          ],
+                        ),
+
+                  //  ProdDetPriceCartRow(
+                  //           controller: controller,
+                  //           selectedVariant: selectedVariant,
+                  //         ),
                   4.verticalSpace,
 
+                  variants.isNotEmpty
+                      ? ProdDetPriceCartRow(controller: controller, selectedVariant: variants.first)
+                      : Row(
+                          children: [
+                            CustomText(
+                              text: "No Price options",
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          ],
+                        ),
+
                   // Row of Product name = type + quantity
-                  ProdDetProdNameDesQuantity(
-                    productName: product.name ?? '',
-                    productDes: product.description ?? '',
-                    productQuantity: (selectedVariant.quantity ?? 0).toString(),
-                  ),
-                  Obx(() => CommonController.to.isLoggedIn.value
-                      ? ProdDetBuyCartBtnRow(productId: product.id ?? '')
-                      : const SizedBox.shrink()),
+
+                  variants.isNotEmpty
+                      ? ProdDetProdNameDesQuantity(
+                          productName: product.name ?? '',
+                          productDes: product.description ?? '',
+                          productQuantity: (selectedVariant.quantity ?? 0).toString(),
+                        )
+                      : Row(
+                          children: [
+                            CustomText(
+                              text: "No product quantity options",
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          ],
+                        ),
+
+                  // Obx(() => CommonController.to.isLoggedIn.value
+                  //     ? ProdDetBuyCartBtnRow(productId: product.id ?? '')
+                  //     : const SizedBox.shrink()),
 
                   4.verticalSpace,
 ////////////   Related Product section

@@ -8,7 +8,16 @@ class ProdDetVideoPlayerSec extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = ProductController.to;
+    // Initialize BetterPlayer safely after build
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.initializeBetterPlayerOnce();
+    });
     return Obx(() {
+      final playerController = controller.betterPlayerController.value;
+      if (playerController == null) {
+        return const Center(child: CircularProgressIndicator());
+      }
       final videoPath = ProductController.to.productDetailsModel.value.video;
 
       // Placeholder if no video
