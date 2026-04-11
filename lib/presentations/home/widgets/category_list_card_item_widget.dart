@@ -20,12 +20,14 @@ class CategoryListCardItemWidget extends StatelessWidget {
   final CategoryModel categoryModel;
   final void Function()? onTapItem;
   final Widget? arrowDownWidget;
+  final bool? isFromProductList;
 
   const CategoryListCardItemWidget({
     super.key,
     required this.categoryModel,
     this.onTapItem,
     this.arrowDownWidget,
+    this.isFromProductList,
   });
 
   @override
@@ -50,16 +52,22 @@ class CategoryListCardItemWidget extends StatelessWidget {
                   imageUrl: '${ApiService().baseUrl}${categoryModel.img}',
                   height: 47.w,
                   width: 52.w,
-                  borderRadius: BorderRadius.horizontal(left: Radius.circular(4.r)),
+                  borderRadius: BorderRadius.horizontal(
+                    left: Radius.circular(4.r),
+                  ),
                 ),
 
-                ///=====================dynamic cat name ===================///
+                8.horizontalSpace,
 
-                Padding(
-                  padding: padding8,
+                /// ✅ FIXED TEXT
+                Container(
+                  width: isFromProductList == true ? 1.sw * 0.6 : null,
+                  // color: Colors.amber,
                   child: CustomText(
                     text: categoryModel.name ?? 'n/a',
                     style: poppinsRegular,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                     fontSize: getFontSizeDefault(),
                     color: AppColors.kPrimaryTextDarkColor,
                   ),

@@ -149,6 +149,8 @@ class ProductController extends GetxController {
             'video url in Ctrl :  ${ApiService().baseUrl}${productDetailsModel.value.video ?? ''}');
         initializeBetterPlayerOnce(); // CALL THE VIDEO INIT
 
+        setInitialVariant(productDetailsModel.value.variants ?? []);
+
         isLoadingProductDetails.value = false;
       } /*else if (response['message'] == AppStaticStrings.noInternet) {
         showCustomSnackbar(
@@ -253,6 +255,16 @@ class ProductController extends GetxController {
     super.onClose();
   }
 
+  //
+  Rx<ProductVariantModel?> selectedVariant = Rx<ProductVariantModel?>(null);
+  void setInitialVariant(List<ProductVariantModel> variants) {
+    if (variants.isEmpty) return;
+
+    selectedVariant.value = variants.first;
+    selectedColor.value = variants.first.color;
+    selectedSize.value = variants.first.size;
+  }
+
   void initializeBannerImages() {
     final product = productDetailsModel.value;
 
@@ -265,20 +277,23 @@ class ProductController extends GetxController {
   }
 
 //
-  void onColorSelected(String color) {
+  void onColorSelected(String color, List<ProductVariantModel> variants) {
     final product = productDetailsModel.value;
 
     selectedColor.value = color;
 
     // Find selected variant
-    final selectedVariant = product.variants?.firstWhere(
+    final variant = variants.firstWhere(
       (v) => v.color == color,
-      orElse: () => product.variants!.first,
+      orElse: () => variants.first,
     );
 
+    selectedVariant.value = variant;
+    selectedSize.value = variant.size;
+
     // Use variant images if available
-    if (selectedVariant != null && selectedVariant.img != null && selectedVariant.img!.isNotEmpty) {
-      currentBannerImages.value = selectedVariant.img!; // ✅ update reactively
+    if (variant != null && variant.img != null && variant.img!.isNotEmpty) {
+      currentBannerImages.value = variant.img!; // ✅ update reactively
     } else {
       currentBannerImages.value = product.banners ?? [];
     }

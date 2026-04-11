@@ -12,8 +12,10 @@ class ProdDetSizeRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(
       () {
-        controller.selectedSize.value = selectedVariant.size;
+        debugPrint('  : ');
+        final variant = controller.selectedVariant.value;
 
+        if (variant == null) return const SizedBox.shrink();
         return SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(

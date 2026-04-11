@@ -98,7 +98,7 @@ class CartItemWidget extends StatelessWidget {
                     ),
                     IconButton(
                       onPressed: () {
-                        CartController.to.deleteCartItem(cartId: cartModel.product!.sId ?? "");
+                        CartController.to.deleteCartItem(cartId: cartModel.sId ?? "");
                       },
                       icon: Icon(
                         CupertinoIcons.delete,

@@ -273,8 +273,11 @@ class CartController extends GetxController {
       isLoadingDeleteCart[cartId] = true;
       final response = await ApiService().request(
         endpoint: "$deleteCartEndPoint$cartId",
+        useAuth: true,
         method: 'DELETE',
       );
+
+      debugPrint('delete response: $response ');
       isLoadingDeleteCart[cartId] = false;
       if (response['success'] == true) {
         //   logger.d(response);

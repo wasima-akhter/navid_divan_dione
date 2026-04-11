@@ -22,7 +22,10 @@ class ProdDetSelectedClrSection extends StatelessWidget {
 
                 return GestureDetector(
                     onTap: () {
-                      controller.onColorSelected(variant.color ?? '');
+                      controller.onColorSelected(
+                        variant.color ?? '',
+                        variants!,
+                      );
                     },
                     child: Container(
                       padding: EdgeInsets.all(2),

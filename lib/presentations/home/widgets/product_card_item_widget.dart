@@ -74,11 +74,13 @@ class ProductCardItemWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       ///================ dynamic product name ==================///
-                      CustomText(
-                        text: productName,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        color: AppColors.kPrimaryTextDarkColor,
+                      Container(
+                        child: CustomText(
+                          text: productName,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          color: AppColors.kPrimaryTextDarkColor,
+                        ),
                       ),
 
                       // Colors

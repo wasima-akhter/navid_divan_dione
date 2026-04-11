@@ -9,7 +9,6 @@ import 'package:navid_e_commerce/presentations/product/widgets/prod_det_video_pl
 import '../../../core/constants/image_constants.dart';
 import '../../navigation/controllers/navigation_controller.dart';
 import '../../navigation/views/navigation_page.dart';
-import '../model/product_details_model.dart';
 import '../widgets/product_det_export.dart';
 
 class ProductDetailsPage extends StatefulWidget {
@@ -72,7 +71,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       children: [
         Obx(() {
           final product = controller.productDetailsModel.value;
-          final variants = <ProductVariantModel>[] ?? controller.productDetailsModel.value.variants;
+          final variants = controller.productDetailsModel.value.variants;
 
           if (controller.isLoadingProductDetails.value) {
             return CustomLoadingWidget();
@@ -135,117 +134,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             ),
 
             // Preview images
-/*
-            Builder(builder: (context) {
-              // if (variants == null || variants!.isEmpty) {
-              //   return const SizedBox.shrink();
-              // }
 
-              final hasVariants = variants != null && variants.isNotEmpty;
-
-              final selectedVariant = hasVariants
-                  ? variants!.firstWhere(
-                      (v) => v.color == controller.selectedColor.value,
-                      orElse: () => variants!.first, // fallback
-                    )
-                  : null;
-
-              /// 🔥 Find selected variant based on selected color
-              // final selectedVariant = variants != null && variants.isNotEmpty
-              //     ? variants!.firstWhere(
-              //         (v) => v.color == controller.selectedColor.value,
-              //       )
-              //     : ProductVariantModel();
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 12.h,
-                children: [
-                  ProdDetPreviewRow(
-                    controller: controller,
-                  ),
-
-                  // select color:
-
-                  variants!.isNotEmpty
-                      ? ProdDetSelectedClrSection(controller: controller, variants: variants)
-                      : Row(
-                          children: [
-                            CustomText(
-                              text: "No color options",
-                              style: TextStyle(color: Colors.black),
-                            ),
-                          ],
-                        ),
-
-                  //   size  section
-                  variants.isNotEmpty
-                      ? ProdDetSizeRow(controller: controller, selectedVariant: variants.first)
-                      : Row(
-                          children: [
-                            CustomText(
-                              text: "No size options",
-                              style: TextStyle(color: Colors.black),
-                            ),
-                          ],
-                        ),
-
-                  ///     Select Color row
-
-                  // Price + Cart Row
-
-                  variants.isNotEmpty
-                      ? Column(
-                          children: [
-                            4.verticalSpace,
-                            ProdDetPriceCartRow(
-                                controller: controller, selectedVariant: variants.first),
-                          ],
-                        )
-                      : Row(
-                          children: [
-                            CustomText(
-                              text: "No Price options",
-                              style: TextStyle(color: Colors.black),
-                            ),
-                          ],
-                        ),
-
-                  // Row of Product name = type + quantity
-
-                  variants.isNotEmpty
-                      ? ProdDetProdNameDesQuantity(
-                          productName: product.name ?? '',
-                          productDes: product.description ?? '',
-                          productQuantity: (selectedVariant.quantity ?? 0).toString(),
-                        )
-                      : Row(
-                          children: [
-                            CustomText(
-                              text: "No Product Quantity options",
-                              style: TextStyle(color: Colors.black),
-                            ),
-                          ],
-                        ),
-                  if (variants.isNotEmpty)
-                    Obx(() => CommonController.to.isLoggedIn.value
-                        ? ProdDetBuyCartBtnRow(productId: product.id ?? '')
-                        : const SizedBox.shrink())
-                  else
-                    CustomText(
-                      text: "Can't Order as no Quantity & Price are available.",
-                      style: TextStyle(color: Colors.black),
-                    ),
-
-                  4.verticalSpace,
-////////////   Related Product section
-                  ///
-                  ProductDetRelatedProducts()
-                ],
-              );
-            }),
-  */
-
-            Builder(builder: (context) {
+            Obx(() {
               final hasVariants = variants != null && variants.isNotEmpty;
 
               final selectedVariant = hasVariants
@@ -300,6 +190,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                           productQuantity: (selectedVariant?.quantity ?? 0).toString(),
                         )
                       : _emptyPlaceholder("Stock unavailable"),
+
+                  8.verticalSpace,
 
                   /// Buy Button (IMPORTANT BUSINESS LOGIC)
                   if (hasVariants && (selectedVariant?.quantity ?? 0) > 0)

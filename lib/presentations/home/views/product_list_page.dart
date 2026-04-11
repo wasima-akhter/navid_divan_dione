@@ -118,6 +118,7 @@ class _ProductListPageState extends State<ProductListPage> {
                                                   ...List.generate(
                                                       controller.catList.length,
                                                       (index) => CategoryListCardItemWidget(
+                                                          isFromProductList: true,
                                                           categoryModel: controller.catList[index],
                                                           onTapItem: () {
                                                             Get.back();
