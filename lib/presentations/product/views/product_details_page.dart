@@ -135,18 +135,27 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             ),
 
             // Preview images
-
+/*
             Builder(builder: (context) {
               // if (variants == null || variants!.isEmpty) {
               //   return const SizedBox.shrink();
               // }
 
-              /// 🔥 Find selected variant based on selected color
-              final selectedVariant = variants != null && variants.isNotEmpty
+              final hasVariants = variants != null && variants.isNotEmpty;
+
+              final selectedVariant = hasVariants
                   ? variants!.firstWhere(
                       (v) => v.color == controller.selectedColor.value,
+                      orElse: () => variants!.first, // fallback
                     )
-                  : ProductVariantModel();
+                  : null;
+
+              /// 🔥 Find selected variant based on selected color
+              // final selectedVariant = variants != null && variants.isNotEmpty
+              //     ? variants!.firstWhere(
+              //         (v) => v.color == controller.selectedColor.value,
+              //       )
+              //     : ProductVariantModel();
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: 12.h,
@@ -156,6 +165,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   ),
 
                   // select color:
+
                   variants!.isNotEmpty
                       ? ProdDetSelectedClrSection(controller: controller, variants: variants)
                       : Row(
@@ -182,25 +192,15 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   ///     Select Color row
 
                   // Price + Cart Row
+
                   variants.isNotEmpty
-                      ? ProdDetPriceCartRow(controller: controller, selectedVariant: variants.first)
-                      : Row(
+                      ? Column(
                           children: [
-                            CustomText(
-                              text: "No Price options",
-                              style: TextStyle(color: Colors.black),
-                            ),
+                            4.verticalSpace,
+                            ProdDetPriceCartRow(
+                                controller: controller, selectedVariant: variants.first),
                           ],
-                        ),
-
-                  //  ProdDetPriceCartRow(
-                  //           controller: controller,
-                  //           selectedVariant: selectedVariant,
-                  //         ),
-                  4.verticalSpace,
-
-                  variants.isNotEmpty
-                      ? ProdDetPriceCartRow(controller: controller, selectedVariant: variants.first)
+                        )
                       : Row(
                           children: [
                             CustomText(
@@ -221,15 +221,20 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                       : Row(
                           children: [
                             CustomText(
-                              text: "No product quantity options",
+                              text: "No Product Quantity options",
                               style: TextStyle(color: Colors.black),
                             ),
                           ],
                         ),
-
-                  // Obx(() => CommonController.to.isLoggedIn.value
-                  //     ? ProdDetBuyCartBtnRow(productId: product.id ?? '')
-                  //     : const SizedBox.shrink()),
+                  if (variants.isNotEmpty)
+                    Obx(() => CommonController.to.isLoggedIn.value
+                        ? ProdDetBuyCartBtnRow(productId: product.id ?? '')
+                        : const SizedBox.shrink())
+                  else
+                    CustomText(
+                      text: "Can't Order as no Quantity & Price are available.",
+                      style: TextStyle(color: Colors.black),
+                    ),
 
                   4.verticalSpace,
 ////////////   Related Product section
@@ -238,6 +243,79 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 ],
               );
             }),
+  */
+
+            Builder(builder: (context) {
+              final hasVariants = variants != null && variants.isNotEmpty;
+
+              final selectedVariant = hasVariants
+                  ? variants!.firstWhere(
+                      (v) => v.color == controller.selectedColor.value,
+                      orElse: () => variants!.first,
+                    )
+                  : null;
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  /// Preview
+                  ProdDetPreviewRow(controller: controller),
+
+                  12.verticalSpace,
+
+                  /// Color
+                  hasVariants
+                      ? ProdDetSelectedClrSection(
+                          controller: controller,
+                          variants: variants,
+                        )
+                      : _emptyPlaceholder("No color options available"),
+
+                  /// Size
+                  hasVariants
+                      ? ProdDetSizeRow(
+                          controller: controller,
+                          selectedVariant: selectedVariant!,
+                        )
+                      : _emptyPlaceholder("No size options available"),
+
+                  /// Price + Cart
+                  hasVariants
+                      ? Column(
+                          children: [
+                            4.verticalSpace,
+                            ProdDetPriceCartRow(
+                              controller: controller,
+                              selectedVariant: selectedVariant!,
+                            ),
+                          ],
+                        )
+                      : _emptyPlaceholder("Price not available"),
+
+                  /// Product Info
+                  hasVariants
+                      ? ProdDetProdNameDesQuantity(
+                          productName: product.name ?? '',
+                          productDes: product.description ?? '',
+                          productQuantity: (selectedVariant?.quantity ?? 0).toString(),
+                        )
+                      : _emptyPlaceholder("Stock unavailable"),
+
+                  /// Buy Button (IMPORTANT BUSINESS LOGIC)
+                  if (hasVariants && (selectedVariant?.quantity ?? 0) > 0)
+                    Obx(() => CommonController.to.isLoggedIn.value
+                        ? ProdDetBuyCartBtnRow(productId: product.id ?? '')
+                        : const SizedBox.shrink())
+                  else
+                    _emptyPlaceholder("Out of stock — can't order"),
+
+                  4.verticalSpace,
+////////////   Related Product section
+                  ///
+                  ProductDetRelatedProducts()
+                ],
+              );
+            })
           ]);
         })
       ],
@@ -250,5 +328,25 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       // ProductController.to.chewieController.value!.dispose();
     }
     super.dispose();
+  }
+
+  //
+  Widget _emptyPlaceholder(String text) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 8.h),
+      child: Row(
+        children: [
+          Icon(Icons.info_outline, size: 16.sp, color: Colors.grey),
+          6.horizontalSpace,
+          CustomText(
+            text: text,
+            style: TextStyle(
+              color: Colors.grey.shade600,
+              fontSize: 13.sp,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
