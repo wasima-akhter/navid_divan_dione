@@ -52,7 +52,7 @@ class CartItemWidget extends StatelessWidget {
                   children: [
                     Expanded(
                       child: CustomText(
-                        text: cartModel.product?.name ?? "",
+                        text: (cartModel.product?.name ?? "").capitalize.toString(),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: poppinsRegular,

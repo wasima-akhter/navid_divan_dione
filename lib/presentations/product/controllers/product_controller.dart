@@ -7,6 +7,7 @@ import 'package:navid_e_commerce/core/api-client/api_endpoints.dart';
 import 'package:navid_e_commerce/presentations/product/model/product_model.dart';
 
 import '../../../core/api-client/api_service.dart';
+import '../../../core/constants/app_static_strings.dart';
 import '../../../core/helper/helper_function.dart';
 import '../../cart/controllers/cart_controller.dart';
 import '../../splash/controllers/common_controller.dart';
@@ -23,11 +24,13 @@ class ProductController extends GetxController {
 
   void incrementCartQuantity() {
     cartQuantity.value++;
+    refreshCartState();
   }
 
   void decrementCartQuantity() {
     if (cartQuantity.value <= 1) return;
     cartQuantity.value--;
+    refreshCartState();
   }
 
 // Call after product details load
@@ -143,6 +146,8 @@ class ProductController extends GetxController {
 
         ///
         syncQuantityFromCart();
+
+        refreshCartState();
 
         ///
         debugPrint(
@@ -298,9 +303,26 @@ class ProductController extends GetxController {
       currentBannerImages.value = product.banners ?? [];
     }
 
+    refreshCartState();
     // Reset page to 0 whenever color changes
     pageController.value.jumpToPage(0);
     currentPreviewPage.value = 0;
+  }
+
+  RxString cartButtonLabel = AppStaticStrings.addToCard.obs;
+  void refreshCartState() {
+    final variant = getSelectedVariantForCart();
+
+    if (variant == null) {
+      cartButtonLabel.value = AppStaticStrings.addToCard;
+      return;
+    }
+
+    final exists = CartController.to.cartList.any(
+      (item) => (item.variant?.sId ?? '') == variant.id,
+    );
+
+    cartButtonLabel.value = exists ? "Update Cart" : AppStaticStrings.addToCard;
   }
 
   ///

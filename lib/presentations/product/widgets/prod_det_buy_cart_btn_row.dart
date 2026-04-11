@@ -30,6 +30,8 @@ class ProdDetBuyCartBtnRow extends StatelessWidget {
             title: AppStaticStrings.buyNow,
           ),
         ),
+
+        /*
         Expanded(
           child: Obx(() {
             final isLoading = CartController.to.isLoadingAddCart[productId] ?? false;
@@ -55,7 +57,44 @@ class ProdDetBuyCartBtnRow extends StatelessWidget {
                 );
               },
               isLoading: isLoading,
-              title: AppStaticStrings.addToCard,
+              title:
+                  // ProductController.to.cartQuantity  if it's changed, then update text to " update cart"
+                  AppStaticStrings.addToCard,
+              fillColor: Colors.transparent,
+              textColor: AppColors.kPrimaryColor,
+            );
+          }),
+        )
+    
+    */
+
+        Expanded(
+          child: Obx(() {
+            final isLoading = CartController.to.isLoadingAddCart[productId] ?? false;
+
+            final label = ProductController.to.cartButtonLabel.value;
+
+            return CustomButton(
+              loadingColor: AppColors.kPrimaryColor,
+              isLoading: isLoading,
+              onTap: () {
+                final selectedVariant = ProductController.to.getSelectedVariantForCart();
+
+                if (selectedVariant == null) {
+                  showCustomSnackbar(
+                    title: "Warning",
+                    message: "No variant available for this product!",
+                  );
+                  return;
+                }
+
+                CartController.to.addToCart(
+                  variant: selectedVariant.id ?? '',
+                  productId: productId,
+                  quantity: ProductController.to.cartQuantity.value,
+                );
+              },
+              title: label, //
               fillColor: Colors.transparent,
               textColor: AppColors.kPrimaryColor,
             );

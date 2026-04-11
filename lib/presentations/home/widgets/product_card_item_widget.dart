@@ -28,7 +28,7 @@ class ProductCardItemWidget extends StatelessWidget {
 
     String productName = product.name ?? 'N/A';
 
-    String productPrice = (product.priceAfterDiscount ?? 0).toString();
+    String productPrice = (product.priceAfterDiscount ?? 0).toStringAsFixed(2);
     String productPreviousPrice = (product.price ?? 0).toString();
     String discount = (product.discount ?? 0).toString();
     String finalImageUrl = "${ApiService().baseUrl}${product.image ?? ''}";
@@ -37,7 +37,7 @@ class ProductCardItemWidget extends StatelessWidget {
 
     debugPrint('Product Price: ${product.priceAfterDiscount}');
     debugPrint('Product previousPrice: ${product.price}');
-    debugPrint('Product previousPrice: ${product.price}');
+    debugPrint('Product discount: ${product.discount}');
     debugPrint('Product finalImageUrl: ${finalImageUrl}');
 
     //
@@ -58,6 +58,7 @@ class ProductCardItemWidget extends StatelessWidget {
           // color: Colors.amber,
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ///===================dynamic img=================///
               Expanded(
