@@ -17,10 +17,7 @@ import 'package:navid_e_commerce/presentations/home/widgets/product_card_item_wi
 
 class CartItemWidget extends StatelessWidget {
   final CartModel cartModel;
-  const CartItemWidget({
-    super.key,
-    required this.cartModel,
-  });
+  const CartItemWidget({super.key, required this.cartModel});
 
   @override
   Widget build(BuildContext context) {
@@ -33,14 +30,17 @@ class CartItemWidget extends StatelessWidget {
         children: [
           Expanded(
             flex: 2,
-            child: Builder(builder: (context) {
-              debugPrint(
-                  ' cart item image :  "${ApiService().baseUrl}${cartModel.variant?.img?.first ?? ''}"');
-              return CustomNetworkImage(
-                imageUrl: "${ApiService().baseUrl}${cartModel.variant?.img?.first ?? ''}",
-                height: 100.w,
-              );
-            }),
+            child: Builder(
+              builder: (context) {
+                debugPrint(
+                  ' cart item image :  "${ApiService().baseUrl}${cartModel.variant?.img?.first ?? ''}"',
+                );
+                return CustomNetworkImage(
+                  imageUrl: "${ApiService().baseUrl}${cartModel.variant?.img?.first ?? ''}",
+                  height: 100.w,
+                );
+              },
+            ),
           ),
           Expanded(
             flex: 5,
@@ -100,11 +100,7 @@ class CartItemWidget extends StatelessWidget {
                       onPressed: () {
                         CartController.to.deleteCartItem(cartId: cartModel.sId ?? "");
                       },
-                      icon: Icon(
-                        CupertinoIcons.delete,
-                        color: Colors.red,
-                        size: 16.sp,
-                      ),
+                      icon: Icon(CupertinoIcons.delete, color: Colors.red, size: 16.sp),
                     ),
                   ],
                 ),
@@ -143,16 +139,19 @@ class CartCounterWidget extends StatelessWidget {
           onTap: onDecrement,
           isLoading: decreLoading?.value,
         ),
-        Obx(() => BlueContainerWithIcon(
-                // ✅ wrapped
-                child: Padding(
+        Obx(
+          () => BlueContainerWithIcon(
+            // ✅ wrapped
+            child: Padding(
               padding: paddingH16V6,
               child: CustomText(
                 text: count.value.toString(),
                 color: AppColors.kPrimaryTextDarkColor,
                 fontSize: getFontSizeSmall(),
               ),
-            ))),
+            ),
+          ),
+        ),
         BlueContainerWithIcon(
           icon: 'assets/icons/plus_icon.svg',
           onTap: onIncrement,
