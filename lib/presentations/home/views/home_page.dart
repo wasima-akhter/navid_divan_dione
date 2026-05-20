@@ -48,7 +48,7 @@ class HomePage extends StatelessWidget {
               ),
             ),
           ),
-          
+
           SliverPadding(
             padding: padding12H.copyWith(top: 12),
             sliver: SliverToBoxAdapter(
@@ -60,8 +60,9 @@ class HomePage extends StatelessWidget {
                         : SizedBox(
                             height: 150.h,
                             child: CarouselSlider.builder(
-                              itemCount:
-                                  hCtrl.bannerList.length > 10 ? 10 : hCtrl.bannerList.length,
+                              itemCount: hCtrl.bannerList.length > 10
+                                  ? 10
+                                  : hCtrl.bannerList.length,
                               itemBuilder: (context, index, realIndex) {
                                 final bannerItem = hCtrl.bannerList[index];
 
@@ -69,7 +70,8 @@ class HomePage extends StatelessWidget {
                                   padding: padding6H,
                                   child: CustomNetworkImage(
                                     borderRadius: BorderRadius.circular(10.r),
-                                    imageUrl: '${ApiService().baseUrl}${bannerItem.img ?? ''}',
+                                    imageUrl:
+                                        '${ApiService().baseUrl}${bannerItem.img ?? ''}',
                                     height: 150.h,
                                     width: double.maxFinite,
                                   ),
@@ -79,8 +81,10 @@ class HomePage extends StatelessWidget {
                                 height: 150.h,
                                 viewportFraction: 1, // full width
                                 autoPlay: true, // enable auto play
-                                autoPlayInterval: const Duration(seconds: 3), // time gap
-                                autoPlayAnimationDuration: const Duration(milliseconds: 800),
+                                autoPlayInterval:
+                                    const Duration(seconds: 3), // time gap
+                                autoPlayAnimationDuration:
+                                    const Duration(milliseconds: 800),
                                 autoPlayCurve: Curves.fastOutSlowIn,
                                 enlargeCenterPage: false,
                                 enableInfiniteScroll: true,
@@ -132,20 +136,24 @@ class HomePage extends StatelessWidget {
                 );
               } else if (hCtrl.catList.isEmpty) {
                 return SliverToBoxAdapter(
-                    child: CustomText(text: 'There is no Category available!!'));
+                    child:
+                        CustomText(text: 'There is no Category available!!'));
               } else {
                 final displayList = hCtrl.catList.take(8).toList();
                 return SliverGrid(
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 4,
-                    mainAxisSpacing: 12.h,
-                    crossAxisSpacing: 12.w,
-                    childAspectRatio: 0.76,
+                    mainAxisSpacing: 8.h,
+                    crossAxisSpacing: 8.w,
+                    childAspectRatio: 0.75,
                   ),
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
-                      return CategoryGridItemWidget(
-                        categoryModel: displayList[index],
+                      return Container(
+                        // color: Colors.amber,
+                        child: CategoryGridItemWidget(
+                          categoryModel: displayList[index],
+                        ),
                       );
                     },
                     childCount: displayList.length,
@@ -198,15 +206,20 @@ class HomePage extends StatelessWidget {
                 itemBuilder: (context, product, index) {
                   return ProductCardItemWidget(product: product);
                 },
-                firstPageProgressIndicatorBuilder: (context) => CustomLoadingWidget(height: 200.h),
-                newPageProgressIndicatorBuilder: (context) => PaginationLoadingWidget(),
+                firstPageProgressIndicatorBuilder: (context) =>
+                    CustomLoadingWidget(height: 200.h),
+                newPageProgressIndicatorBuilder: (context) =>
+                    PaginationLoadingWidget(),
                 noItemsFoundIndicatorBuilder: (_) => NoProductWidget(
                     searchController: hCtrl.searchController,
                     searchQuery: hCtrl.searchQuery,
                     selectedCategory: hCtrl.selectedCategory,
                     selectedSubCategory: hCtrl.selectedSubCategory,
-                    applyFilters: ({category, search, subCategory}) => hCtrl.applyFilters(
-                        category: category, search: search, subCategory: subCategory)),
+                    applyFilters: ({category, search, subCategory}) =>
+                        hCtrl.applyFilters(
+                            category: category,
+                            search: search,
+                            subCategory: subCategory)),
                 firstPageErrorIndicatorBuilder: (context) =>
                     CustomText(text: 'Something went wrong!'),
                 newPageErrorIndicatorBuilder: (context) =>

@@ -15,7 +15,8 @@ import '../model/product_details_model.dart';
 
 class ProductController extends GetxController {
   static ProductController get to => Get.find();
-  Rx<PageController> pageController = PageController(initialPage: 0, keepPage: true).obs;
+  Rx<PageController> pageController =
+      PageController(initialPage: 0, keepPage: true).obs;
   RxInt cartQuantity = 1.obs;
 /////////////////////
 // Loading states for product detail counter
@@ -131,15 +132,21 @@ class ProductController extends GetxController {
         //   logger.d(response);
         debugPrint('response[data]: from product Ctrl  : ${response['data']}');
 
-        productDetailsModel.value = ProductDetailsModel.fromJson(response['data']);
+        productDetailsModel.value =
+            ProductDetailsModel.fromJson(response['data']);
         debugPrint(
             'parsed data: Details : id: from product Ctrl  : ${productDetailsModel.value.id}');
 
-        relatedProductList.value =
-            (response['related_product'] as List).map((e) => ProductModel.fromJson(e)).toList();
+        // debugPrint(
+        //     '---> price after discount : ${productDetailsModel.value.variants?.first.priceAfterDiscount}');
+
+        relatedProductList.value = (response['related_product'] as List)
+            .map((e) => ProductModel.fromJson(e))
+            .toList();
         debugPrint(
             'parsed data: relatedProduct : id: from product Ctrl  : ${relatedProductList.value.first.id}');
-        debugPrint('  relatedProductList.value : ${relatedProductList.value.toString()}');
+        debugPrint(
+            '  relatedProductList.value : ${relatedProductList.value.toString()}');
 
         ///
         initializeBannerImages();
@@ -171,7 +178,9 @@ class ProductController extends GetxController {
       else {
         //   logger.e(response);
         showCustomSnackbar(
-            title: 'Failed', message: response['message'], type: SnackBarType.failed);
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed);
         isLoadingProductDetails.value = false;
       }
     } catch (e) {
@@ -182,7 +191,8 @@ class ProductController extends GetxController {
 
 //--------------------------   init video player ------------------------///
 // Rx controller for BetterPlayer
-  Rxn<BetterPlayerController> betterPlayerController = Rxn<BetterPlayerController>();
+  Rxn<BetterPlayerController> betterPlayerController =
+      Rxn<BetterPlayerController>();
 
   // Initialize BetterPlayer with HLS link
 
@@ -196,7 +206,9 @@ class ProductController extends GetxController {
     betterPlayerController.value = null;
 
     //
-    final fullUrl = videoPath.startsWith("http") ? videoPath : "${ApiService().baseUrl}$videoPath";
+    final fullUrl = videoPath.startsWith("http")
+        ? videoPath
+        : "${ApiService().baseUrl}$videoPath";
 
     debugPrint('fullUrl  : $fullUrl');
 
@@ -297,7 +309,7 @@ class ProductController extends GetxController {
     selectedSize.value = variant.size;
 
     // Use variant images if available
-    if (variant != null && variant.img != null && variant.img!.isNotEmpty) {
+    if (variant.img != null && variant.img!.isNotEmpty) {
       currentBannerImages.value = variant.img!; // ✅ update reactively
     } else {
       currentBannerImages.value = product.banners ?? [];

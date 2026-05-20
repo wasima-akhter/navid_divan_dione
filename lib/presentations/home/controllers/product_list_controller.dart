@@ -5,12 +5,14 @@ import '../../../core/export/ui_export.dart';
 import '../../../core/utils/hive_boxes.dart';
 import '../../../core/utils/variable.dart';
 import '../../product/model/product_model.dart';
+import '../../splash/controllers/common_controller.dart';
 import '../model/category_model.dart';
 
 class ProductListController extends GetxController {
   static ProductListController get to => Get.find();
   //
-  final PagingController<int, ProductModel> pagingController = PagingController(firstPageKey: 1);
+  final PagingController<int, ProductModel> pagingController =
+      PagingController(firstPageKey: 1);
 
   /// ✅ search + filter
   String searchQuery = "";
@@ -82,8 +84,8 @@ class ProductListController extends GetxController {
       }
       ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
 
-      final response =
-          await ApiService().request(endpoint: catGetAllEndPoint, method: 'GET', queryParams: {
+      final response = await ApiService()
+          .request(endpoint: catGetAllEndPoint, method: 'GET', queryParams: {
         'page': currentPage.value.toString(),
         'limit': itemsPerPage.value.toString(),
         'sort': 'updatedAt',
@@ -95,12 +97,14 @@ class ProductListController extends GetxController {
       if (response['success'] == true) {
         if (response['pagination'] != null) {
           currentPage.value = response['pagination']['currentPage'] ?? 1;
-          totalCategoryPages.value = response['pagination']['totalPages'] ?? 1; // Add this line
+          totalCategoryPages.value =
+              response['pagination']['totalPages'] ?? 1; // Add this line
 
           itemsPerPage.value = response['pagination']['itemsPerPage'] ?? 10;
         }
-        final newCategories =
-            (response['data'] as List).map((e) => CategoryModel.fromJson(e)).toList();
+        final newCategories = (response['data'] as List)
+            .map((e) => CategoryModel.fromJson(e))
+            .toList();
 
         if (loadMore) {
           catList.addAll(newCategories); // Append for load more
@@ -121,7 +125,9 @@ class ProductListController extends GetxController {
       } else {
         //   logger.e(response);
         showCustomSnackbar(
-            title: 'Failed', message: response['message'], type: SnackBarType.failed);
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed);
       }
     } catch (e) {
       //   logger.e(e.toString());
@@ -140,11 +146,14 @@ class ProductListController extends GetxController {
       );
 
       if (response['success'] == true) {
-        subCategoryList.value =
-            (response["data"] as List).map((e) => SubCategoryModel.fromJson(e)).toList();
+        subCategoryList.value = (response["data"] as List)
+            .map((e) => SubCategoryModel.fromJson(e))
+            .toList();
       } else {
         showCustomSnackbar(
-            title: 'Failed', message: response['message'], type: SnackBarType.failed);
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed);
       }
     } catch (e) {
       // handle error if needed
@@ -153,11 +162,15 @@ class ProductListController extends GetxController {
     }
   }
 
+  final selectedType = RxBool(false);
   Future<void> getProductListRequest(int pageKey) async {
     final response = await ApiService().request(
       endpoint: productGetAllEndPoint,
       method: 'GET',
+      useAuth: CommonController.to.isLoggedIn.value,
       queryParams: {
+        if (CommonController.to.isLoggedIn.value)
+          "whole_sale": selectedType.value.toString(),
         'page': pageKey.toString(),
         'limit': '10',
         if (searchQuery.isNotEmpty) 'search': searchQuery,
@@ -166,18 +179,45 @@ class ProductListController extends GetxController {
       },
     );
 
-    if (response['success']) {
-      final newItems = (response['data'] as List).map((e) => ProductModel.fromJson(e)).toList();
+    /// 🔴 NULL RESPONSE
+    if (response == null) {
+      pagingController.error = 'No result found. Please try again.';
+      return;
+    }
 
-      final isLastPage = pageKey >= (response['pagination']?['totalPages'] ?? 1);
+    final success = response['success'] == true || response['status'] == true;
 
-      if (isLastPage) {
-        pagingController.appendLastPage(newItems);
-      } else {
-        pagingController.appendPage(newItems, pageKey + 1);
-      }
+    /// 🔴 API FAILED
+    if (!success) {
+      pagingController.error =
+          response['message'] ?? 'Something went wrong. Try again.';
+      return;
+    }
+    final data = response['data'];
+
+    /// 🔴 DATA IS NULL
+    if (data == null) {
+      pagingController.error = 'No result found. Please try again.';
+      return;
+    }
+
+    /// 🟡 EMPTY LIST
+    if (data is List && data.isEmpty) {
+      pagingController.appendLastPage([]);
+      return;
+    }
+
+    /// 🟢 VALID DATA
+    final newItems =
+        (data as List).map((e) => ProductModel.fromJson(e)).toList();
+
+    final isLastPage =
+        pageKey >= ((response['pagination']?['totalPages'] ?? 1) as int);
+
+    if (isLastPage) {
+      pagingController.appendLastPage(newItems);
     } else {
-      pagingController.error = response['message'];
+      pagingController.appendPage(newItems, pageKey + 1);
     }
   }
 }

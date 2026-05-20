@@ -58,91 +58,9 @@ class _ProductListPageState extends State<ProductListPage> {
                 Row(
                   children: [
                     // fitlter icon
-                    IconButton(
-                        onPressed: () {
-                          controller.searchController.text = '';
-                          controller.searchFocusNode.unfocus();
-                          showModalBottomSheet(
-                            context: context,
-                            builder: (context) {
-                              return Container(
-                                  width: double.maxFinite,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(8.r),
-                                          topRight: Radius.circular(8.r))),
-                                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 20.h),
-                                  child: Obx(() {
-                                    if (controller.isLoadingCategory.value) {
-                                      return CustomLoadingWidget(height: 40.h);
-                                    } else if (controller.catList.isEmpty) {
-                                      return CustomText(text: 'There is no Category available!!');
-                                    } else {
-                                      return Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        spacing: 12.w,
-                                        children: [
-                                          Builder(builder: (context) {
-                                            final hasFilter =
-                                                controller.searchController.text.isNotEmpty ||
-                                                    controller.selectedCategory != null ||
-                                                    controller.selectedSubCategory != null;
-
-                                            if (!hasFilter) return const SizedBox.shrink();
-
-                                            return Align(
-                                              alignment: Alignment.centerRight,
-                                              child: CustomButton(
-                                                onTap: () {
-                                                  Get.back();
-                                                  controller.searchController.clear();
-                                                  controller
-                                                      .clearFilters(); // ✅ better to use your method
-                                                },
-                                                title: 'Reset Filters',
-                                                fillColor: AppColors.kPrimaryColor,
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 24.w, vertical: 10.h),
-                                                // marginHorizontal: 1.sw * 0.3,
-                                              ),
-                                            );
-                                          }),
-                                          SingleChildScrollView(
-                                            scrollDirection: Axis.vertical,
-                                            child: Column(
-                                                mainAxisSize: MainAxisSize.min,
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                spacing: 12.w,
-                                                children: [
-                                                  ...List.generate(
-                                                      controller.catList.length,
-                                                      (index) => CategoryListCardItemWidget(
-                                                          isFromProductList: true,
-                                                          categoryModel: controller.catList[index],
-                                                          onTapItem: () {
-                                                            Get.back();
-                                                            controller.applyFilters(
-                                                                category:
-                                                                    controller.catList[index].sId);
-                                                          },
-                                                          arrowDownWidget: ProductFilterWidget(
-                                                            controller: controller,
-                                                            index: index,
-                                                          ))),
-                                                ]),
-                                          ),
-                                        ],
-                                      );
-                                    }
-                                  }));
-                            },
-                          );
-                        },
-                        icon: Icon(
-                          Icons.filter_list,
-                          size: 26.h,
-                        )),
+                    FilterIcon(
+                      controller: controller,
+                    ),
                     12.horizontalSpace,
                     Flexible(
                       child: SearchTextFieldWidget(
@@ -154,7 +72,19 @@ class _ProductListPageState extends State<ProductListPage> {
                       ),
                     ),
                   ],
-                )
+                ),
+                //
+                //  radio button for whole sale and only user
+
+                Obx(
+                  () => UserTypeRadioGroup(
+                    selectedValue: controller.selectedType.value,
+                    onChanged: (value) {
+                      controller.selectedType.value = value;
+                      controller.pagingController.refresh();
+                    },
+                  ),
+                ),
               ],
             ),
             space12H,
@@ -167,10 +97,69 @@ class _ProductListPageState extends State<ProductListPage> {
   }
 }
 
+class UserTypeRadioGroup extends StatelessWidget {
+  final bool selectedValue;
+  final void Function(bool value) onChanged;
+
+  const UserTypeRadioGroup({
+    super.key,
+    required this.selectedValue,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: RadioListTile<bool>(
+            value: false,
+            groupValue: selectedValue,
+            activeColor: AppColors.kPrimaryColor,
+            contentPadding: EdgeInsets.zero,
+            dense: true,
+            title: Text(
+              "Only User",
+              style: TextStyle(fontSize: 14.sp),
+            ),
+            onChanged: (value) {
+              if (value != null) {
+                onChanged(value);
+              }
+            },
+          ),
+        ),
+        const SizedBox(
+          height: 8,
+        ),
+        Expanded(
+          child: RadioListTile<bool>(
+            value: true,
+            groupValue: selectedValue,
+            activeColor: AppColors.kPrimaryColor,
+            contentPadding: EdgeInsets.zero,
+            dense: true,
+            title: Text(
+              "Whole Sale",
+              style: TextStyle(fontSize: 14.sp),
+            ),
+            onChanged: (value) {
+              if (value != null) {
+                onChanged(value);
+              }
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class ProductFilterWidget extends StatelessWidget {
   final ProductListController controller;
   final int index;
-  const ProductFilterWidget({Key? key, required this.controller, required this.index})
+  const ProductFilterWidget(
+      {Key? key, required this.controller, required this.index})
       : super(key: key);
 
   @override
@@ -178,7 +167,8 @@ class ProductFilterWidget extends StatelessWidget {
     return Obx(
       () => ButtonTapWidget(
           onTap: () async {
-            await controller.getSubCategoryRequest(category: controller.catList[index]);
+            await controller.getSubCategoryRequest(
+                category: controller.catList[index]);
 
             if (controller.subCategoryList.isNotEmpty) {
               showModalBottomSheet(
@@ -195,24 +185,28 @@ class ProductFilterWidget extends StatelessWidget {
                       separatorBuilder: (_, __) => Divider(),
                       itemBuilder: (context, index) {
                         final subCat = controller.subCategoryList[index];
-                        return Container(
-                          margin: EdgeInsets.only(top: 10.h),
-                          child: ListTile(
-                            leading: CustomNetworkImage(
-                              imageUrl: "${ApiService().baseUrl}${subCat.img}",
-                              height: 40.sp,
-                              width: 40.sp,
+                        return SafeArea(
+                          child: Container(
+                            margin: EdgeInsets.only(top: 10.h),
+                            child: ListTile(
+                              leading: CustomNetworkImage(
+                                imageUrl:
+                                    "${ApiService().baseUrl}${subCat.img}",
+                                height: 40.sp,
+                                width: 40.sp,
+                              ),
+                              title: CustomText(
+                                text: subCat.name ?? 'Unnamed',
+                                style: poppinsMedium,
+                              ),
+                              onTap: () {
+                                // handle subcategory tap
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                                controller.applyFilters(
+                                    subCategory: subCat.sId);
+                              },
                             ),
-                            title: CustomText(
-                              text: subCat.name ?? 'Unnamed',
-                              style: poppinsMedium,
-                            ),
-                            onTap: () {
-                              // handle subcategory tap
-                              Navigator.pop(context);
-                              Navigator.pop(context);
-                              controller.applyFilters(subCategory: subCat.sId);
-                            },
                           ),
                         );
                       },
@@ -238,5 +232,108 @@ class ProductFilterWidget extends StatelessWidget {
                 : SvgPicture.asset(arrowDownIcon),
           )),
     );
+  }
+}
+
+class FilterIcon extends StatelessWidget {
+  final ProductListController controller;
+  const FilterIcon({super.key, required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+        onPressed: () {
+          controller.searchController.text = '';
+          controller.searchFocusNode.unfocus();
+          showModalBottomSheet(
+            context: context,
+            builder: (context) {
+              return Container(
+                  width: double.maxFinite,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(8.r),
+                          topRight: Radius.circular(8.r))),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 12.w, vertical: 20.h),
+                  child: SafeArea(
+                    child: Obx(() {
+                      if (controller.isLoadingCategory.value) {
+                        return CustomLoadingWidget(height: 40.h);
+                      } else if (controller.catList.isEmpty) {
+                        return CustomText(
+                            text: 'There is no Category available!!');
+                      } else {
+                        return SingleChildScrollView(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            spacing: 12.w,
+                            children: [
+                              Builder(builder: (context) {
+                                final hasFilter = controller
+                                        .searchController.text.isNotEmpty ||
+                                    controller.selectedCategory != null ||
+                                    controller.selectedSubCategory != null;
+
+                                if (!hasFilter) return const SizedBox.shrink();
+
+                                return Align(
+                                  alignment: Alignment.centerRight,
+                                  child: CustomButton(
+                                    onTap: () {
+                                      Get.back();
+                                      controller.searchController.clear();
+                                      controller
+                                          .clearFilters(); // ✅ better to use your method
+                                    },
+                                    title: 'Reset Filters',
+                                    fillColor: AppColors.kPrimaryColor,
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 24.w, vertical: 10.h),
+                                    // marginHorizontal: 1.sw * 0.3,
+                                  ),
+                                );
+                              }),
+                              SingleChildScrollView(
+                                scrollDirection: Axis.vertical,
+                                child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    spacing: 12.w,
+                                    children: [
+                                      ...List.generate(
+                                          controller.catList.length,
+                                          (index) => CategoryListCardItemWidget(
+                                              isFromProductList: true,
+                                              categoryModel:
+                                                  controller.catList[index],
+                                              onTapItem: () {
+                                                Get.back();
+                                                controller.applyFilters(
+                                                    category: controller
+                                                        .catList[index].sId);
+                                              },
+                                              arrowDownWidget:
+                                                  ProductFilterWidget(
+                                                controller: controller,
+                                                index: index,
+                                              ))),
+                                    ]),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                    }),
+                  ));
+            },
+          );
+        },
+        icon: Icon(
+          Icons.filter_list,
+          size: 26.h,
+        ));
   }
 }

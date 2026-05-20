@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:navid_e_commerce/core/api-client/api_service.dart';
 import 'package:navid_e_commerce/core/components/custom_network_image.dart';
 import 'package:navid_e_commerce/core/constants/color_constants.dart';
 import 'package:navid_e_commerce/core/constants/custom_text.dart';
 import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
-import 'package:navid_e_commerce/core/constants/image_constants.dart';
-import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
 import 'package:navid_e_commerce/core/helper/helper_function.dart';
 import 'package:navid_e_commerce/presentations/home/controllers/home_controller.dart';
 import 'package:navid_e_commerce/presentations/home/model/category_model.dart';
-import 'package:navid_e_commerce/presentations/home/widgets/pagination_loading_widget.dart';
 
 class CategoryGridItemWidget extends StatelessWidget {
   final CategoryModel categoryModel;
@@ -41,22 +37,24 @@ class CategoryGridItemWidget extends StatelessWidget {
               separatorBuilder: (_, __) => Divider(),
               itemBuilder: (context, index) {
                 final subCat = HomeController.to.subCategoryList[index];
-                return Container(
-                  margin: EdgeInsets.only(top: 10.h),
-                  child: ListTile(
-                    leading: CustomNetworkImage(
-                      imageUrl: "${ApiService().baseUrl}${subCat.img}",
-                      height: 40.sp,
-                      width: 40.sp,
+                return SafeArea(
+                  child: Container(
+                    margin: EdgeInsets.only(top: 10.h),
+                    child: ListTile(
+                      leading: CustomNetworkImage(
+                        imageUrl: "${ApiService().baseUrl}${subCat.img}",
+                        height: 40.sp,
+                        width: 40.sp,
+                      ),
+                      title: CustomText(
+                        text: subCat.name ?? 'Unnamed',
+                        style: poppinsMedium,
+                      ),
+                      onTap: () {
+                        Navigator.pop(context);
+                        HomeController.to.applyFilters(subCategory: subCat.sId);
+                      },
                     ),
-                    title: CustomText(
-                      text: subCat.name ?? 'Unnamed',
-                      style: poppinsMedium,
-                    ),
-                    onTap: () {
-                      Navigator.pop(context);
-                      HomeController.to.applyFilters(subCategory: subCat.sId);
-                    },
                   ),
                 );
               },
@@ -75,7 +73,8 @@ class CategoryGridItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool hasSubCategories = categoryModel.isService == true || (categoryModel.subTotal != null && categoryModel.subTotal! > 0);
+    final bool hasSubCategories = categoryModel.isService == true ||
+        (categoryModel.subTotal != null && categoryModel.subTotal! > 0);
 
     return GestureDetector(
       onTap: () async {
@@ -162,7 +161,7 @@ class CategoryGridItemWidget extends StatelessWidget {
             text: categoryModel.name ?? 'n/a',
             style: poppinsRegular,
             overflow: TextOverflow.ellipsis,
-            maxLines: 1,
+            maxLines: 2,
             fontSize: getFontSizeSmall(),
             color: AppColors.kPrimaryTextDarkColor,
             textAlign: TextAlign.center,
