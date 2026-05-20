@@ -21,7 +21,7 @@ import 'package:navid_e_commerce/presentations/home/widgets/search_text_field_wi
 import 'package:navid_e_commerce/presentations/product/model/product_model.dart';
 import 'package:navid_e_commerce/presentations/profile/widgets/custom_loading_widget.dart';
 
-import '../widgets/category_list_card_item_widget.dart';
+import '../widgets/category_grid_item_widget.dart';
 import '../widgets/no_product_widget.dart';
 import '../widgets/pagination_loading_widget.dart';
 
@@ -122,7 +122,7 @@ class HomePage extends StatelessWidget {
             }),
           ),
 
-          /// ============ Category Horizontal List =============
+          /// ============ Category Grid List (2 rows, 4 columns) =============
           SliverPadding(
             padding: padding12H4V,
             sliver: Obx(() {
@@ -134,18 +134,21 @@ class HomePage extends StatelessWidget {
                 return SliverToBoxAdapter(
                     child: CustomText(text: 'There is no Category available!!'));
               } else {
-                return SliverToBoxAdapter(
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      spacing: 12.w,
-                      children: List.generate(
-                        hCtrl.catList.length,
-                        (index) => CategoryListCardItemWidget(
-                          categoryModel: hCtrl.catList[index],
-                        ),
-                      ),
-                    ),
+                final displayList = hCtrl.catList.take(8).toList();
+                return SliverGrid(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 4,
+                    mainAxisSpacing: 12.h,
+                    crossAxisSpacing: 12.w,
+                    childAspectRatio: 0.76,
+                  ),
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      return CategoryGridItemWidget(
+                        categoryModel: displayList[index],
+                      );
+                    },
+                    childCount: displayList.length,
                   ),
                 );
               }
