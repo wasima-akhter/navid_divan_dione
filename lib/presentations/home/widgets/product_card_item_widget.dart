@@ -91,8 +91,8 @@ class ProductCardItemWidget extends StatelessWidget {
                           runSpacing: 4,
                           children: productColors.map((colorHex) {
                             return Container(
-                              width: 12.w,
-                              height: 12.w,
+                              width: 12,
+                              height: 12,
                               decoration: BoxDecoration(
                                 color: hexToColor(colorHex),
                                 shape: BoxShape.circle,
