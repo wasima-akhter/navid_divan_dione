@@ -95,6 +95,7 @@ class AppStaticStrings {
   // Account Related
   static const String alreadyHaveAccount = 'already have an account?';
   static const String dontHaveAccount = 'Don’t have an account?';
+  static const String gotToHome = 'Go To Home';
 
   // Actions
   static const String send = 'Send';

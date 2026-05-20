@@ -18,6 +18,7 @@ import 'package:navid_e_commerce/presentations/auth/controllers/auth_controller.
 import 'package:navid_e_commerce/presentations/auth/views/forget_pass_page.dart';
 import 'package:navid_e_commerce/presentations/auth/views/signup_page.dart';
 import 'package:navid_e_commerce/presentations/auth/widgets/auth_scaffold_structure_widget.dart';
+import 'package:navid_e_commerce/presentations/navigation/views/navigation_page.dart';
 
 class LoginPage extends StatelessWidget {
   static const String routeName = '/login';
@@ -141,6 +142,17 @@ showCustomSnackbar(title: 'Failed', message: 'Age must be more then 21',type: Sn
               title: AppStaticStrings.signUp,
               onPressed: () {
                 Get.toNamed(SignupPage.routeName);
+              },
+            )
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CustomTextButton(
+              title: AppStaticStrings.gotToHome,
+              onPressed: () {
+              Get.offAllNamed(NavigationPage.routeName);
               },
             )
           ],
