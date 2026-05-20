@@ -47,7 +47,7 @@ class ProductCardItemWidget extends StatelessWidget {
           // ✅ Delete existing instance so onInit runs again with new arguments
           Get.delete<ProductController>(force: true);
 
-          debugPrint('productID: from product Card item Widget : ${product.id}');
+          // debugPrint('productID: from product Card item Widget : ${product.id}');
           Get.toNamed(
             ProductDetailsPage.routeName,
             arguments: product.id ?? '',
@@ -91,8 +91,8 @@ class ProductCardItemWidget extends StatelessWidget {
                           runSpacing: 4,
                           children: productColors.map((colorHex) {
                             return Container(
-                              width: 20,
-                              height: 20,
+                              width: 12.w,
+                              height: 12.w,
                               decoration: BoxDecoration(
                                 color: hexToColor(colorHex),
                                 shape: BoxShape.circle,

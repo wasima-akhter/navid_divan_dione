@@ -139,9 +139,7 @@ class _PickupAddressPageState extends State<PickupAddressPage> {
             // final shipping = isFromCart
             //     ? (double.tryParse(CartController.to.shippingCharge.value) ?? 0)
             //     : (subtotal > 100 ? 0.0 : 15.0);
-            final total = isFromCart
-                ? (double.tryParse(CartController.to.totalPrice.value) ?? 0)
-                : subtotal + tax;
+            final total = subtotal + tax;
 
             return Column(
               children: [
@@ -237,15 +235,14 @@ class _PickupAddressPageState extends State<PickupAddressPage> {
                           .user ??
                       "";
 
-                  // ✅ Use calculated total (includes tax + shipping)
-                  final subtotal =
-                      double.tryParse(CartController.to.subTotal.value) ?? 0;
-                  final tax =
-                      double.tryParse(CartController.to.salesTax.value) ?? 0;
-                  // final shipping =
-                  //     double.tryParse(CartController.to.shippingCharge.value) ??
-                  //         0;
-                  // final totalAmount = subtotal + tax + shipping;
+                  final subtotal = isFromCart
+                      ? (double.tryParse(CartController.to.subTotal.value) ?? 0)
+                      : ((ProductController.to.getSelectedVariantForCart()?.price ?? 0) *
+                              ProductController.to.cartQuantity.value)
+                          .toDouble();
+                  final tax = isFromCart
+                      ? (double.tryParse(CartController.to.salesTax.value) ?? 0)
+                      : subtotal * 0.06625;
                   final totalAmount = subtotal + tax;
 
                   AddressOrderController.to.orderRequest(

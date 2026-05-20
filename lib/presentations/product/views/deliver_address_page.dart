@@ -208,18 +208,22 @@ class _DeliverAddressPageState extends State<DeliverAddressPage> {
                           ?.user ??
                       '';
 
-                  final subtotal = double.tryParse(
-                        isFromCart
-                            ? CartController.to.subTotal.value
-                            : ((ProductController.to.getSelectedVariantForCart()?.price ?? 0) *
-                                    ProductController.to.cartQuantity.value)
-                                .toString(),
-                      ) ??
-                      0;
+                  final subtotal = isFromCart
+                      ? (double.tryParse(CartController.to.subTotal.value) ?? 0)
+                      : ((ProductController.to.getSelectedVariantForCart()?.price ?? 0) *
+                              ProductController.to.cartQuantity.value)
+                          .toDouble();
+                  final tax = isFromCart
+                      ? (double.tryParse(CartController.to.salesTax.value) ?? 0)
+                      : subtotal * 0.06625;
+                  final shipping = isFromCart
+                      ? (double.tryParse(CartController.to.shippingCharge.value) ?? 0)
+                      : shippingPrice;
+                  final totalAmount = subtotal + tax + shipping;
 
                   AddressOrderController.to.orderRequest(
                     userId: userId,
-                    totalAmount: subtotal + shippingPrice,
+                    totalAmount: totalAmount,
                     deliveryAddress: AddressOrderController.to.selectedShippingAddress.value,
                     items: items,
                   );
