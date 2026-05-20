@@ -19,6 +19,8 @@ class ProductListController extends GetxController {
   String? selectedCategory;
   String? selectedSubCategory;
 
+  final RxBool hasFilter = false.obs;
+
   /// ✅ controller
   final TextEditingController searchController = TextEditingController();
   final FocusNode searchFocusNode = FocusNode();
@@ -48,7 +50,11 @@ class ProductListController extends GetxController {
     selectedCategory = category;
     selectedSubCategory = subCategory;
 
-    pagingController.refresh(); // 🔥 reload API
+    hasFilter.value = searchQuery.isNotEmpty ||
+        selectedCategory != null ||
+        selectedSubCategory != null;
+
+    pagingController.refresh();
   }
 
   void clearFilters() {
@@ -56,7 +62,9 @@ class ProductListController extends GetxController {
     selectedCategory = null;
     selectedSubCategory = null;
 
-    pagingController.refresh(); // 🔥 reload API
+    hasFilter.value = false;
+
+    pagingController.refresh();
   }
 
   RxList<CategoryModel> catList = <CategoryModel>[].obs;

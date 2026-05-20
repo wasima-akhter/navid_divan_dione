@@ -241,99 +241,137 @@ class FilterIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-        onPressed: () {
-          controller.searchController.text = '';
-          controller.searchFocusNode.unfocus();
-          showModalBottomSheet(
-            context: context,
-            builder: (context) {
-              return Container(
-                  width: double.maxFinite,
-                  decoration: BoxDecoration(
+    return Obx(() {
+      final showDot = controller.hasFilter.value;
+
+      return Stack(
+        clipBehavior: Clip.none,
+        children: [
+          IconButton(
+            onPressed: () {
+              controller.searchController.text = '';
+              controller.searchFocusNode.unfocus();
+
+              showModalBottomSheet(
+                context: context,
+                builder: (context) {
+                  return Container(
+                    width: double.maxFinite,
+                    decoration: BoxDecoration(
                       borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(8.r),
-                          topRight: Radius.circular(8.r))),
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 12.w, vertical: 20.h),
-                  child: SafeArea(
-                    child: Obx(() {
-                      if (controller.isLoadingCategory.value) {
-                        return CustomLoadingWidget(height: 40.h);
-                      } else if (controller.catList.isEmpty) {
-                        return CustomText(
-                            text: 'There is no Category available!!');
-                      } else {
-                        return SingleChildScrollView(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            spacing: 12.w,
-                            children: [
-                              Builder(builder: (context) {
-                                final hasFilter = controller
-                                        .searchController.text.isNotEmpty ||
-                                    controller.selectedCategory != null ||
-                                    controller.selectedSubCategory != null;
+                        topLeft: Radius.circular(8.r),
+                        topRight: Radius.circular(8.r),
+                      ),
+                    ),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 12.w, vertical: 20.h),
+                    child: SafeArea(
+                      child: Obx(() {
+                        if (controller.isLoadingCategory.value) {
+                          return CustomLoadingWidget(height: 40.h);
+                        } else if (controller.catList.isEmpty) {
+                          return CustomText(
+                            text: 'There is no Category available!!',
+                          );
+                        } else {
+                          return SingleChildScrollView(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              spacing: 12.w,
+                              children: [
+                                Builder(
+                                  builder: (context) {
+                                    final hasFilter = controller
+                                            .searchController.text.isNotEmpty ||
+                                        controller.selectedCategory != null ||
+                                        controller.selectedSubCategory != null;
 
-                                if (!hasFilter) return const SizedBox.shrink();
+                                    if (!hasFilter) {
+                                      return const SizedBox.shrink();
+                                    }
 
-                                return Align(
-                                  alignment: Alignment.centerRight,
-                                  child: CustomButton(
-                                    onTap: () {
-                                      Get.back();
-                                      controller.searchController.clear();
-                                      controller
-                                          .clearFilters(); // ✅ better to use your method
-                                    },
-                                    title: 'Reset Filters',
-                                    fillColor: AppColors.kPrimaryColor,
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 24.w, vertical: 10.h),
-                                    // marginHorizontal: 1.sw * 0.3,
-                                  ),
-                                );
-                              }),
-                              SingleChildScrollView(
-                                scrollDirection: Axis.vertical,
-                                child: Column(
+                                    return Align(
+                                      alignment: Alignment.centerRight,
+                                      child: CustomButton(
+                                        onTap: () {
+                                          Get.back();
+                                          controller.searchController.clear();
+                                          controller.clearFilters();
+                                        },
+                                        title: 'Reset Filters',
+                                        fillColor: AppColors.kPrimaryColor,
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 24.w,
+                                          vertical: 10.h,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.vertical,
+                                  child: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     spacing: 12.w,
                                     children: [
                                       ...List.generate(
-                                          controller.catList.length,
-                                          (index) => CategoryListCardItemWidget(
-                                              isFromProductList: true,
-                                              categoryModel:
-                                                  controller.catList[index],
-                                              onTapItem: () {
-                                                Get.back();
-                                                controller.applyFilters(
-                                                    category: controller
-                                                        .catList[index].sId);
-                                              },
-                                              arrowDownWidget:
-                                                  ProductFilterWidget(
-                                                controller: controller,
-                                                index: index,
-                                              ))),
-                                    ]),
-                              ),
-                            ],
-                          ),
-                        );
-                      }
-                    }),
-                  ));
+                                        controller.catList.length,
+                                        (index) => CategoryListCardItemWidget(
+                                          isFromProductList: true,
+                                          categoryModel:
+                                              controller.catList[index],
+                                          onTapItem: () {
+                                            Get.back();
+
+                                            controller.applyFilters(
+                                              category:
+                                                  controller.catList[index].sId,
+                                            );
+                                          },
+                                          arrowDownWidget: ProductFilterWidget(
+                                            controller: controller,
+                                            index: index,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                      }),
+                    ),
+                  );
+                },
+              );
             },
-          );
-        },
-        icon: Icon(
-          Icons.filter_list,
-          size: 26.h,
-        ));
+            icon: Icon(
+              Icons.filter_list,
+              size: 26.h,
+            ),
+          ),
+
+          /// 🔴 ACTIVE FILTER DOT
+          if (showDot)
+            Positioned(
+              right: 10,
+              top: 10,
+              child: Container(
+                width: 10.w,
+                height: 10.w,
+                decoration: BoxDecoration(
+                  color: AppColors.kPrimaryColor,
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
+        ],
+      );
+    });
   }
 }
