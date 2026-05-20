@@ -46,14 +46,16 @@ class CustomHomeAppbar extends StatelessWidget {
                     children: [
                       Obx(() {
                         return CustomText(
-                          text: ProfileController.to.userModel.value.name ?? 'user name',
+                          text: ProfileController.to.userModel.value.name ??
+                              'user name',
                           color: AppColors.kWhiteColor,
                           maxLines: 1,
                         );
                       }),
                       Obx(() {
                         return CustomText(
-                          text: ProfileController.to.userModel.value.email ?? 'user@gmail.com',
+                          text: ProfileController.to.userModel.value.email ??
+                              'user@gmail.com',
                           color: AppColors.kWhiteColor,
                           style: poppinsRegular,
                           fontSize: getFontSizeSmall(),
@@ -71,7 +73,9 @@ class CustomHomeAppbar extends StatelessWidget {
               style: poppinsMedium,
               fontSize: getFontSizeDefault(),
             ),
-      actions: [IconButton(onPressed: onActionTap, icon: SvgPicture.asset(drawerIcon))],
+      actions: [
+        IconButton(onPressed: onActionTap, icon: SvgPicture.asset(drawerIcon))
+      ],
     );
   }
 }

@@ -61,7 +61,8 @@ class CartController extends GetxController {
     final itemsToUpdate = Set<String>.from(changedItems);
 
     for (var productId in itemsToUpdate) {
-      final item = cartList.firstWhereOrNull((e) => e.product?.sId == productId);
+      final item =
+          cartList.firstWhereOrNull((e) => e.product?.sId == productId);
       if (item == null) continue;
 
       await addToCart(
@@ -122,7 +123,8 @@ class CartController extends GetxController {
     isDecreLoading[productId] ??= false.obs;
     isDecreLoading[productId]!.value = true;
 
-    await addToCart(productId: productId, quantity: currentQty - 1, variant: variantId);
+    await addToCart(
+        productId: productId, quantity: currentQty - 1, variant: variantId);
 
     isDecreLoading[productId]!.value = false;
   }
@@ -134,14 +136,17 @@ class CartController extends GetxController {
       isCartLoading.value = true;
       ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
 
-      final response = await ApiService().request(endpoint: getAllCartEndPoint, method: 'GET');
+      final response = await ApiService()
+          .request(endpoint: getAllCartEndPoint, method: 'GET');
       isCartLoading.value = false;
 
       debugPrint('response in get cart all : $response ');
 
       if (response['success'] == true) {
         // Map response to cartList
-        cartList.value = (response['data'] as List).map((e) => CartModel.fromJson(e)).toList();
+        cartList.value = (response['data'] as List)
+            .map((e) => CartModel.fromJson(e))
+            .toList();
 
         // Initialize increment/decrement loading states for each item
         for (var item in cartList) {
@@ -164,7 +169,9 @@ class CartController extends GetxController {
         ///
       } else {
         showCustomSnackbar(
-            title: 'Failed', message: response['message'], type: SnackBarType.failed);
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed);
       }
     } catch (e) {
       isCartLoading.value = false;
@@ -190,7 +197,8 @@ class CartController extends GetxController {
       final id = item.product?.sId ?? "";
       final price = double.tryParse(item.variant?.price.toString() ?? "0") ?? 0;
       // ✅ explicitly read from localQty map so Obx tracks this dependency
-      final qty = localQty.containsKey(id) ? localQty[id]! : (item.quantity ?? 0);
+      final qty =
+          localQty.containsKey(id) ? localQty[id]! : (item.quantity ?? 0);
       subtotal += price * qty;
     }
 
@@ -234,15 +242,13 @@ class CartController extends GetxController {
 
       final userId = ProfileController.to.userId.value;
 
-      final response = await ApiService().request(
-          endpoint: addToCartEndPoint,
-          method: 'POST',
-          body: {
-            "user": userId,
-            "product_id": productId,
-            "variant": variant,
-            "quantity": quantity
-          });
+      final response = await ApiService()
+          .request(endpoint: addToCartEndPoint, method: 'POST', body: {
+        "user": userId,
+        "product_id": productId,
+        "variant": variant,
+        "quantity": quantity
+      });
 
       await getCartListRequest(); // fetch full cart
       calculateTotalPrice(); // recalc total
@@ -258,7 +264,9 @@ class CartController extends GetxController {
       } else {
         //   logger.e(response);
         showCustomSnackbar(
-            title: 'Failed', message: response['message'], type: SnackBarType.failed);
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed);
       }
     } catch (e) {
       isLoadingAddCart[productId] = false;
@@ -290,7 +298,9 @@ class CartController extends GetxController {
       } else {
         //   logger.e(response);
         showCustomSnackbar(
-            title: 'Failed', message: response['message'], type: SnackBarType.failed);
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed);
       }
     } catch (e) {
       isLoadingDeleteCart[cartId] = false;

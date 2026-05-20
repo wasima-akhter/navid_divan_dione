@@ -73,8 +73,8 @@ class _PickupAddressPageState extends State<PickupAddressPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: List.generate(
                           AddressOrderController.to.pickAddressList.length,
-                          (index) =>
-                              _buildInfoText(AddressOrderController.to.pickAddressList[index]),
+                          (index) => _buildInfoText(
+                              AddressOrderController.to.pickAddressList[index]),
                         ),
                       );
           }),
@@ -110,12 +110,18 @@ class _PickupAddressPageState extends State<PickupAddressPage> {
                     ),
                   ])
                 : _buildProductItem(
-                    name: ProductController.to.productDetailsModel.value.name.toString(),
-                    price:
-                        ProductController.to.getSelectedVariantForCart()?.price.toString() ?? "0",
-                    description:
-                        ProductController.to.productDetailsModel.value.description.toString(),
-                    quantity: ProductController.to.cartQuantity.value.toString(),
+                    name: ProductController.to.productDetailsModel.value.name
+                        .toString(),
+                    price: ProductController.to
+                            .getSelectedVariantForCart()
+                            ?.price
+                            .toString() ??
+                        "0",
+                    description: ProductController
+                        .to.productDetailsModel.value.description
+                        .toString(),
+                    quantity:
+                        ProductController.to.cartQuantity.value.toString(),
                     color: selectColor,
                     size: selectSize);
           }),
@@ -123,18 +129,19 @@ class _PickupAddressPageState extends State<PickupAddressPage> {
           Obx(() {
             final subtotal = isFromCart
                 ? (double.tryParse(CartController.to.subTotal.value) ?? 0)
-                : ((ProductController.to.getSelectedVariantForCart()?.price ?? 0) *
+                : ((ProductController.to.getSelectedVariantForCart()?.price ??
+                            0) *
                         ProductController.to.cartQuantity.value)
                     .toDouble();
             final tax = isFromCart
                 ? (double.tryParse(CartController.to.salesTax.value) ?? 0)
                 : subtotal * 0.06625;
-            final shipping = isFromCart
-                ? (double.tryParse(CartController.to.shippingCharge.value) ?? 0)
-                : (subtotal > 100 ? 0.0 : 15.0);
+            // final shipping = isFromCart
+            //     ? (double.tryParse(CartController.to.shippingCharge.value) ?? 0)
+            //     : (subtotal > 100 ? 0.0 : 15.0);
             final total = isFromCart
                 ? (double.tryParse(CartController.to.totalPrice.value) ?? 0)
-                : subtotal + tax + shipping;
+                : subtotal + tax;
 
             return Column(
               children: [
@@ -161,7 +168,8 @@ class _PickupAddressPageState extends State<PickupAddressPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     CustomText(
-                      text: AppStaticStrings.salesTax + "\n${AppStaticStrings.includedTax}",
+                      text: AppStaticStrings.salesTax +
+                          "\n${AppStaticStrings.includedTax}",
                       fontSize: getFontSizeSmall(),
                       color: AppColors.kExtraLightGreyTextColor,
                     ),
@@ -174,22 +182,24 @@ class _PickupAddressPageState extends State<PickupAddressPage> {
                 ),
                 SizedBox(height: 6.h),
                 // Shipping
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CustomText(
-                      text: AppStaticStrings.shippingCharge,
-                      fontSize: getFontSizeSmall(),
-                      color: AppColors.kExtraLightGreyTextColor,
-                    ),
-                    CustomText(
-                      text: shipping == 0 ? 'Free' : '\$${shipping.toStringAsFixed(2)}',
-                      fontSize: getFontSizeSmall(),
-                      color: AppColors.kExtraLightGreyTextColor,
-                    ),
-                  ],
-                ),
-                const Divider(),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //   children: [
+                //     CustomText(
+                //       text: AppStaticStrings.shippingCharge,
+                //       fontSize: getFontSizeSmall(),
+                //       color: AppColors.kExtraLightGreyTextColor,
+                //     ),
+                //     CustomText(
+                //       text: shipping == 0
+                //           ? 'Free'
+                //           : '\$${shipping.toStringAsFixed(2)}',
+                //       fontSize: getFontSizeSmall(),
+                //       color: AppColors.kExtraLightGreyTextColor,
+                //     ),
+                //   ],
+                // ),
+                // const Divider(),
                 // Total
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -220,21 +230,29 @@ class _PickupAddressPageState extends State<PickupAddressPage> {
                   final items = CartController.to.buildOrderItems();
 
                   final userId = AddressOrderController.to.pickAddressList
-                          .firstWhere(
-                              (e) => e.sId == AddressOrderController.to.selectedPickAddress.value)
+                          .firstWhere((e) =>
+                              e.sId ==
+                              AddressOrderController
+                                  .to.selectedPickAddress.value)
                           .user ??
                       "";
 
                   // ✅ Use calculated total (includes tax + shipping)
-                  final subtotal = double.tryParse(CartController.to.subTotal.value) ?? 0;
-                  final tax = double.tryParse(CartController.to.salesTax.value) ?? 0;
-                  final shipping = double.tryParse(CartController.to.shippingCharge.value) ?? 0;
-                  final totalAmount = subtotal + tax + shipping;
+                  final subtotal =
+                      double.tryParse(CartController.to.subTotal.value) ?? 0;
+                  final tax =
+                      double.tryParse(CartController.to.salesTax.value) ?? 0;
+                  // final shipping =
+                  //     double.tryParse(CartController.to.shippingCharge.value) ??
+                  //         0;
+                  // final totalAmount = subtotal + tax + shipping;
+                  final totalAmount = subtotal + tax;
 
                   AddressOrderController.to.orderRequest(
                     userId: userId,
                     totalAmount: totalAmount,
-                    pickupAddress: AddressOrderController.to.selectedPickAddress.value,
+                    pickupAddress:
+                        AddressOrderController.to.selectedPickAddress.value,
                     items: items,
                   );
                 } else {
@@ -263,12 +281,13 @@ class _PickupAddressPageState extends State<PickupAddressPage> {
     return Row(
       children: [
         Checkbox(
-          value:
-              AddressOrderController.to.selectedPickAddress.value == pickAddressModel.sId.toString()
-                  ? true
-                  : false,
+          value: AddressOrderController.to.selectedPickAddress.value ==
+                  pickAddressModel.sId.toString()
+              ? true
+              : false,
           onChanged: (value) {
-            AddressOrderController.to.selectedPickAddress.value = pickAddressModel.sId ?? "";
+            AddressOrderController.to.selectedPickAddress.value =
+                pickAddressModel.sId ?? "";
             AddressOrderController.to.fetchPickUpAddress();
           },
         ),

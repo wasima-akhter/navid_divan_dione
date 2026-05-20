@@ -48,6 +48,7 @@ class HomePage extends StatelessWidget {
               ),
             ),
           ),
+          
           SliverPadding(
             padding: padding12H.copyWith(top: 12),
             sliver: SliverToBoxAdapter(
