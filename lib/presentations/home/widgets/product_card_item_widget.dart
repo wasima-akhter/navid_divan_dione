@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:navid_e_commerce/core/api-client/api_service.dart';
 import 'package:navid_e_commerce/core/components/custom_button_tap.dart';
 import 'package:navid_e_commerce/core/components/custom_network_image.dart';
 import 'package:navid_e_commerce/core/constants/color_constants.dart';
@@ -13,7 +12,24 @@ import 'package:navid_e_commerce/presentations/product/controllers/product_contr
 import 'package:navid_e_commerce/presentations/product/model/product_model.dart';
 import 'package:navid_e_commerce/presentations/product/views/product_details_page.dart';
 
+import '../../../core/api-client/api_service.dart';
 import '../../../core/helper/helper_function.dart';
+
+String getFullImageUrl(String? path) {
+  if (path == null || path.isEmpty) return '';
+
+  if (path.startsWith('http://') || path.startsWith('https://')) {
+    return path;
+  }
+
+  final base = ApiService().baseUrl;
+
+  if (path.startsWith('/')) {
+    return "$base$path";
+  } else {
+    return "$base/$path";
+  }
+}
 
 class ProductCardItemWidget extends StatelessWidget {
   final ProductModel product;
@@ -31,7 +47,7 @@ class ProductCardItemWidget extends StatelessWidget {
     String productPrice = (product.priceAfterDiscount ?? 0).toStringAsFixed(2);
     String productPreviousPrice = (product.price ?? 0).toString();
     String discount = (product.discount ?? 0).toString();
-    String finalImageUrl = "${ApiService().baseUrl}${product.image ?? ''}";
+    String finalImageUrl = getFullImageUrl(product.image);
 
     var productColors = product.colors ?? [];
 
@@ -195,6 +211,7 @@ class PriceTextWidget extends StatelessWidget {
   final String? price;
   final String? previousPrice;
   final String? discount;
+
   const PriceTextWidget({
     super.key,
     this.fontSize,
@@ -204,24 +221,42 @@ class PriceTextWidget extends StatelessWidget {
     this.discount,
   });
 
+  String _safe(String? value) {
+    final parsed = double.tryParse(value ?? '') ?? 0.0;
+    return parsed.toStringAsFixed(2);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final safePrice = _safe(price);
+    final safePreviousPrice = _safe(previousPrice);
+    final safeDiscount = _safe(discount);
+
+    final showDiscount = (double.tryParse(discount ?? "0") ?? 0) > 0;
+
     return RichText(
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        text: TextSpan(children: [
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      text: TextSpan(
+        children: [
           TextSpan(
-              text: 'price: \$$price  ',
-              style: poppinsMedium.copyWith(
-                  color: AppColors.kPrimaryTextDarkColor,
-                  fontSize: fontSize ?? getFontSizeSemiSmall())),
-          if (discount != '0.0')
+            text: 'Price: \$$safePrice  ',
+            style: poppinsMedium.copyWith(
+              color: AppColors.kPrimaryTextDarkColor,
+              fontSize: fontSize ?? getFontSizeSemiSmall(),
+            ),
+          ),
+          if (showDiscount)
             TextSpan(
-                text: '\$$previousPrice',
-                style: poppinsRegular.copyWith(
-                    color: Colors.red,
-                    fontSize: previousPriceFontSize ?? getFontSizeSmall(),
-                    decoration: TextDecoration.lineThrough)),
-        ]));
+              text: '\$$safePreviousPrice',
+              style: poppinsRegular.copyWith(
+                color: Colors.red,
+                fontSize: previousPriceFontSize ?? getFontSizeSmall(),
+                decoration: TextDecoration.lineThrough,
+              ),
+            ),
+        ],
+      ),
+    );
   }
 }

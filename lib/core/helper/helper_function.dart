@@ -105,7 +105,8 @@ Future<dynamic> defaultAlertDialog(BuildContext context,
                       padding: padding12H,
                       child: CustomText(
                         text: title,
-                        style: poppinsMedium.copyWith(fontSize: getFontSizeLarge()),
+                        style: poppinsMedium.copyWith(
+                            fontSize: getFontSizeLarge()),
                       ),
                     ),
                   )
@@ -129,7 +130,8 @@ Future<dynamic> defaultAlertDialog(BuildContext context,
   );
 }
 
-void removeImage({required RxList<String> uploadImages, required String imagePath}) {
+void removeImage(
+    {required RxList<String> uploadImages, required String imagePath}) {
   if (uploadImages.contains(imagePath)) {
     uploadImages.remove(imagePath);
   } else {
@@ -183,28 +185,33 @@ Future<String?> selectAndFormatTime({
   try {
     final ThemeData customTimePickerTheme = Theme.of(context).copyWith(
       textButtonTheme: TextButtonThemeData(
-          style: ButtonStyle(foregroundColor: WidgetStatePropertyAll(AppColors.kPrimaryColor))),
+          style: ButtonStyle(
+              foregroundColor:
+                  WidgetStatePropertyAll(AppColors.kPrimaryColor))),
       timePickerTheme: TimePickerThemeData(
-        backgroundColor: AppColors.kWhiteColor, // Background color of the dialog
+        backgroundColor:
+            AppColors.kWhiteColor, // Background color of the dialog
         hourMinuteShape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8.0),
         ),
         dayPeriodColor: AppColors.kPrimaryExtraLightColor,
         dialHandColor: AppColors.kPrimaryColor,
-        hourMinuteTextColor:
-            WidgetStateColor.resolveWith((states) => states.contains(WidgetState.selected)
+        hourMinuteTextColor: WidgetStateColor.resolveWith(
+            (states) => states.contains(WidgetState.selected)
                 ? Colors.white // Text color when selected
                 : AppColors.kPrimaryTextDarkColor),
-        hourMinuteColor:
-            WidgetStateColor.resolveWith((states) => states.contains(WidgetState.selected)
+        hourMinuteColor: WidgetStateColor.resolveWith(
+            (states) => states.contains(WidgetState.selected)
                 ? AppColors.kPrimaryColor // Background color when selected
                 : AppColors.kPrimaryExtraLightColor),
-        dialBackgroundColor: AppColors.kPrimaryExtraLightColor, // Dial's background color
-        dialTextColor:
-            WidgetStateColor.resolveWith((states) => states.contains(WidgetState.selected)
+        dialBackgroundColor:
+            AppColors.kPrimaryExtraLightColor, // Dial's background color
+        dialTextColor: WidgetStateColor.resolveWith(
+            (states) => states.contains(WidgetState.selected)
                 ? Colors.white // Dial text color when selected
                 : AppColors.kPrimaryTextDarkColor),
-        entryModeIconColor: AppColors.kPrimaryColor, // Color of the entry mode icon
+        entryModeIconColor:
+            AppColors.kPrimaryColor, // Color of the entry mode icon
       ),
     );
     // Show time picker dialog
@@ -224,7 +231,8 @@ Future<String?> selectAndFormatTime({
       final now = DateTime.now();
       final formattedTime = DateFormat.jm()
           .format(
-            DateTime(now.year, now.month, now.day, pickedTime.hour, pickedTime.minute),
+            DateTime(now.year, now.month, now.day, pickedTime.hour,
+                pickedTime.minute),
           )
           .replaceAll('\u202F', ' ');
       return formattedTime; // Return the formatted time
@@ -299,43 +307,51 @@ Future<String> selectDate(
             onSurface: AppColors.kPrimaryColor, // body text color
           ),
           datePickerTheme: DatePickerThemeData(
-            dayOverlayColor: const WidgetStatePropertyAll<Color>(AppColors.kPrimaryTextDarkColor),
+            dayOverlayColor: const WidgetStatePropertyAll<Color>(
+                AppColors.kPrimaryTextDarkColor),
 
             headerHelpStyle: TextStyle(
               color: AppColors.kPrimaryTextDarkColor,
               fontSize: 16.sp,
             ),
-            yearOverlayColor: const WidgetStatePropertyAll<Color>(AppColors.kPrimaryTextDarkColor),
+            yearOverlayColor: const WidgetStatePropertyAll<Color>(
+                AppColors.kPrimaryTextDarkColor),
             headerForegroundColor: AppColors.kPrimaryTextDarkColor,
             rangePickerHeaderForegroundColor: AppColors.kPrimaryTextDarkColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10.r),
             ),
-            dayBackgroundColor: WidgetStateProperty.resolveWith<Color?>((states) {
+            dayBackgroundColor:
+                WidgetStateProperty.resolveWith<Color?>((states) {
               if (states.contains(WidgetState.selected)) {
                 return AppColors.kPrimaryTextDarkColor; // Change this color
               }
               return null; // Default background
             }),
             rangeSelectionBackgroundColor: AppColors.kPrimaryTextDarkColor,
-            todayBackgroundColor:
-                const WidgetStatePropertyAll<Color>(AppColors.kPrimaryTextDarkColor),
-            yearForegroundColor:
-                const WidgetStatePropertyAll<Color>(AppColors.kPrimaryTextDarkColor),
-            dayForegroundColor: WidgetStateProperty.resolveWith<Color?>((states) {
+            todayBackgroundColor: const WidgetStatePropertyAll<Color>(
+                AppColors.kPrimaryTextDarkColor),
+            yearForegroundColor: const WidgetStatePropertyAll<Color>(
+                AppColors.kPrimaryTextDarkColor),
+            dayForegroundColor:
+                WidgetStateProperty.resolveWith<Color?>((states) {
               if (states.contains(WidgetState.selected)) {
                 return AppColors.kWhiteColor; // Change this color
               }
               return AppColors.kPrimaryTextDarkColor; // Default background
             }),
-            todayForegroundColor: const WidgetStatePropertyAll<Color>(AppColors.kWhiteColor),
+            todayForegroundColor:
+                const WidgetStatePropertyAll<Color>(AppColors.kWhiteColor),
             confirmButtonStyle: const ButtonStyle(
-              foregroundColor: WidgetStatePropertyAll<Color>(AppColors.kPrimaryTextDarkColor),
+              foregroundColor: WidgetStatePropertyAll<Color>(
+                  AppColors.kPrimaryTextDarkColor),
             ),
-            rangePickerHeaderHeadlineStyle: const TextStyle(color: AppColors.kPrimaryTextDarkColor),
+            rangePickerHeaderHeadlineStyle:
+                const TextStyle(color: AppColors.kPrimaryTextDarkColor),
             rangePickerSurfaceTintColor: AppColors.kPrimaryTextDarkColor,
             cancelButtonStyle: const ButtonStyle(
-              foregroundColor: WidgetStatePropertyAll<Color>(AppColors.kPrimaryTextDarkColor),
+              foregroundColor: WidgetStatePropertyAll<Color>(
+                  AppColors.kPrimaryTextDarkColor),
             ),
             backgroundColor: AppColors.kWhiteColor,
             dividerColor: Colors.transparent,
@@ -344,8 +360,8 @@ Future<String> selectDate(
               color: AppColors.kPrimaryTextDarkColor,
               fontSize: 16.sp,
             ),
-            inputDecorationTheme:
-                const InputDecorationTheme(fillColor: AppColors.kPrimaryTextDarkColor),
+            inputDecorationTheme: const InputDecorationTheme(
+                fillColor: AppColors.kPrimaryTextDarkColor),
             weekdayStyle: TextStyle(
               color: AppColors.kPrimaryTextDarkColor, // Color for week names
               fontSize: 14.sp,
@@ -353,7 +369,8 @@ Future<String> selectDate(
             ),
             // rangeSelectionBackgroundColor: AppColors.kPrimaryTextDarkColor,
             headerHeadlineStyle: TextStyle(
-              color: AppColors.kPrimaryTextDarkColor, // Color for month/year in header
+              color: AppColors
+                  .kPrimaryTextDarkColor, // Color for month/year in header
               fontSize: 16.sp,
               fontWeight: FontWeight.bold,
             ),

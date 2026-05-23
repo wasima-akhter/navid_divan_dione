@@ -28,7 +28,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     return DefaultScaffoldStructureWidget(
       onRefresh: () async {
         // ✅ use controller.productId.value, not the snapshotted local variable
-        controller.getProductDetailsRequest(productID: controller.productId.value);
+        controller.getProductDetailsRequest(
+            productID: controller.productId.value);
       },
       appBarTitle: AppStaticStrings.productDetails,
       action: [
@@ -36,7 +37,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             behavior: HitTestBehavior.opaque,
             onTap: () {
               // Get.offAllNamed destroys the stack and recreates controllers
-              Get.until((route) => route.settings.name == NavigationPage.routeName);
+              Get.until(
+                  (route) => route.settings.name == NavigationPage.routeName);
               NavigationController.to.currentNavIndex.value = 0; // cart tab
             },
             child: Icon(Icons.home)),
@@ -53,7 +55,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 onTap: () {
                   // ✅ Go back to NavigationPage (already in stack), then switch tab
                   // Get.offAllNamed destroys the stack and recreates controllers
-                  Get.until((route) => route.settings.name == NavigationPage.routeName);
+                  Get.until((route) =>
+                      route.settings.name == NavigationPage.routeName);
                   NavigationController.to.currentNavIndex.value = 1; // cart tab
                 },
                 child: CircleAvatar(
@@ -85,130 +88,136 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               ),
             );
           }
-          return Column(spacing: 12.h, crossAxisAlignment: CrossAxisAlignment.start, children: [
-            /////////     video play section
+          return Column(
+              spacing: 12.h,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                /////////     video play section
 
-            ////////////////////////////////
-            Obx(
-              () {
-                debugPrint(
-                    'currentBannerImages[index] :  ${controller.currentBannerImages.toString()} ');
-                if (controller.currentBannerImages.isEmpty) {
-                  // Still show video even if no images
-                  return const AspectRatio(
-                    aspectRatio: 1,
-                    child: ProdDetVideoPlayerSec(),
-                  );
-                }
-
-                return AspectRatio(
-                  aspectRatio: 1,
-                  child: PageView.builder(
-                    controller: controller.pageController.value,
-                    itemCount: controller.currentBannerImages.length + 1,
-                    itemBuilder: (context, index) {
-                      // VIDEO PAGE
-                      if (index == 0) {
-                        return const ProdDetVideoPlayerSec();
-                      }
-
-                      // IMAGE PAGE
-                      final imageIndex = index - 1;
-
-                      return InteractiveViewer(
-                        panEnabled: false,
-                        boundaryMargin: const EdgeInsets.all(100),
-                        minScale: 0.5,
-                        maxScale: 2,
-                        child: CustomNetworkImage(
-                          isPreview: true,
-                          imageUrl:
-                              '${ApiService().baseUrl}${controller.currentBannerImages[imageIndex]}',
-                          width: double.infinity,
-                        ),
+                ////////////////////////////////
+                Obx(
+                  () {
+                    debugPrint(
+                        'currentBannerImages[index] :  ${controller.currentBannerImages.toString()} ');
+                    if (controller.currentBannerImages.isEmpty) {
+                      // Still show video even if no images
+                      return const AspectRatio(
+                        aspectRatio: 1,
+                        child: ProdDetVideoPlayerSec(),
                       );
-                    },
-                  ),
-                );
-              },
-            ),
+                    }
 
-            // Preview images
+                    return AspectRatio(
+                      aspectRatio: 1,
+                      child: PageView.builder(
+                        controller: controller.pageController.value,
+                        itemCount: controller.currentBannerImages.length + 1,
+                        itemBuilder: (context, index) {
+                          // VIDEO PAGE
+                          if (index == 0) {
+                            return const ProdDetVideoPlayerSec();
+                          }
 
-            Obx(() {
-              final hasVariants = variants != null && variants.isNotEmpty;
+                          // IMAGE PAGE
+                          final imageIndex = index - 1;
 
-              final selectedVariant = hasVariants
-                  ? variants!.firstWhere(
-                      (v) => v.color == controller.selectedColor.value,
-                      orElse: () => variants!.first,
-                    )
-                  : null;
+                          return InteractiveViewer(
+                            panEnabled: false,
+                            boundaryMargin: const EdgeInsets.all(100),
+                            minScale: 0.5,
+                            maxScale: 2,
+                            child: CustomNetworkImage(
+                              isPreview: true,
+                              imageUrl:
+                                  '${ApiService().baseUrl}${controller.currentBannerImages[imageIndex]}',
+                              width: double.infinity,
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  },
+                ),
 
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  /// Preview
-                  ProdDetPreviewRow(controller: controller),
+                // Preview images
 
-                  12.verticalSpace,
+                Obx(() {
+                  final hasVariants = variants != null && variants.isNotEmpty;
 
-                  /// Color
-                  hasVariants
-                      ? ProdDetSelectedClrSection(
-                          controller: controller,
-                          variants: variants,
+                  final selectedVariant = hasVariants
+                      ? variants.firstWhere(
+                          (v) => v.color == controller.selectedColor.value,
+                          orElse: () => variants.first,
                         )
-                      : _emptyPlaceholder("No color options available"),
+                      : null;
 
-                  /// Size
-                  hasVariants
-                      ? ProdDetSizeRow(
-                          controller: controller,
-                          selectedVariant: selectedVariant!,
-                        )
-                      : _emptyPlaceholder("No size options available"),
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      /// Preview
+                      ProdDetPreviewRow(controller: controller),
 
-                  /// Price + Cart
-                  hasVariants
-                      ? Column(
-                          children: [
-                            4.verticalSpace,
-                            ProdDetPriceCartRow(
+                      12.verticalSpace,
+
+                      /// Color
+                      hasVariants
+                          ? ProdDetSelectedClrSection(
+                              controller: controller,
+                              variants: variants,
+                            )
+                          : _emptyPlaceholder("No color options available"),
+
+                      /// Size
+                      hasVariants
+                          ? ProdDetSizeRow(
                               controller: controller,
                               selectedVariant: selectedVariant!,
-                            ),
-                          ],
-                        )
-                      : _emptyPlaceholder("Price not available"),
+                            )
+                          : _emptyPlaceholder("No size options available"),
 
-                  /// Product Info
-                  hasVariants
-                      ? ProdDetProdNameDesQuantity(
-                          productName: product.name ?? '',
-                          productDes: product.description ?? '',
-                          productQuantity: (selectedVariant?.quantity ?? 0).toString(),
-                        )
-                      : _emptyPlaceholder("Stock unavailable"),
+                      /// Price + Cart
+                      hasVariants
+                          ? Column(
+                              children: [
+                                4.verticalSpace,
+                                ProdDetPriceCartRow(
+                                  controller: controller,
+                                  selectedVariant: selectedVariant!,
+                                ),
+                              ],
+                            )
+                          : _emptyPlaceholder("Price not available"),
 
-                  8.verticalSpace,
+                      /// Product Info
+                      hasVariants
+                          ? ProdDetProdNameDesQuantity(
+                              productName: product.name ?? '',
+                              productDes: product.description ?? '',
+                              productQuantity:
+                                  (selectedVariant?.quantity ?? 0).toString(),
+                            )
+                          : _emptyPlaceholder("Stock unavailable"),
 
-                  /// Buy Button (IMPORTANT BUSINESS LOGIC)
-                  if (hasVariants && (selectedVariant?.quantity ?? 0) > 0)
-                    Obx(() => CommonController.to.isLoggedIn.value
-                        ? ProdDetBuyCartBtnRow(productId: product.id ?? '')
-                        : const SizedBox.shrink())
-                  else
-                    _emptyPlaceholder("Out of stock — can't order"),
+                      8.verticalSpace,
 
-                  4.verticalSpace,
+                      /// Buy Button (IMPORTANT BUSINESS LOGIC)
+                      if (hasVariants && (selectedVariant?.quantity ?? 0) > 0)
+                        // Obx(() => CommonController.to.isLoggedIn.value
+                        //     ? ProdDetBuyCartBtnRow(productId: product.id ?? '')
+                        //     : const SizedBox.shrink())
+
+                        ProdDetBuyCartBtnRow(productId: product.id ?? '')
+                      else
+                        _emptyPlaceholder("Out of stock — can't order"),
+
+                      4.verticalSpace,
 ////////////   Related Product section
-                  ///
-                  ProductDetRelatedProducts()
-                ],
-              );
-            })
-          ]);
+                      ///
+                      ProductDetRelatedProducts()
+                    ],
+                  );
+                })
+              ]);
         })
       ],
     );

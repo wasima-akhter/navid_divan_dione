@@ -6,12 +6,15 @@ import '../../../core/components/custom_button.dart';
 import '../../../core/constants/app_static_strings.dart';
 import '../../../core/constants/color_constants.dart';
 import '../../../core/helper/helper_function.dart';
+import '../../auth/views/login_page.dart';
 import '../../cart/controllers/cart_controller.dart';
+import '../../splash/controllers/common_controller.dart';
 import '../controllers/product_controller.dart';
 
 class ProdDetBuyCartBtnRow extends StatelessWidget {
   final String productId;
-  const ProdDetBuyCartBtnRow({Key? key, required this.productId}) : super(key: key);
+  const ProdDetBuyCartBtnRow({Key? key, required this.productId})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -65,20 +68,32 @@ class ProdDetBuyCartBtnRow extends StatelessWidget {
             );
           }),
         )
-    
+
     */
 
         Expanded(
           child: Obx(() {
-            final isLoading = CartController.to.isLoadingAddCart[productId] ?? false;
+            final isLoading =
+                CartController.to.isLoadingAddCart[productId] ?? false;
 
-            final label = ProductController.to.cartButtonLabel.value;
+            final isLoggedIn = CommonController.to.isLoggedIn.value;
+            final label = isLoggedIn
+                ? ProductController.to.cartButtonLabel.value
+                : "Login to Buy";
 
             return CustomButton(
               loadingColor: AppColors.kPrimaryColor,
               isLoading: isLoading,
               onTap: () {
-                final selectedVariant = ProductController.to.getSelectedVariantForCart();
+                final isLoggedIn = CommonController.to.isLoggedIn.value;
+
+                if (!isLoggedIn) {
+                  Get.toNamed(LoginPage.routeName);
+                  return;
+                }
+
+                final selectedVariant =
+                    ProductController.to.getSelectedVariantForCart();
 
                 if (selectedVariant == null) {
                   showCustomSnackbar(
@@ -88,15 +103,31 @@ class ProdDetBuyCartBtnRow extends StatelessWidget {
                   return;
                 }
 
+                // 🔥 STOCK VALIDATION (important)
+                final stock = selectedVariant.quantity ?? 0;
+                final qty = ProductController.to.cartQuantity.value;
+
+                if (qty > stock) {
+                  showCustomSnackbar(
+                    title: "Stock Limit",
+                    message: "Only $stock item(s) available",
+                  );
+                  return;
+                }
+
                 CartController.to.addToCart(
                   variant: selectedVariant.id ?? '',
                   productId: productId,
-                  quantity: ProductController.to.cartQuantity.value,
+                  quantity: qty,
                 );
               },
               title: label, //
-              fillColor: Colors.transparent,
-              textColor: AppColors.kPrimaryColor,
+              fillColor: CommonController.to.isLoggedIn.value
+                  ? Colors.transparent
+                  : Colors.grey.shade200,
+              textColor: CommonController.to.isLoggedIn.value
+                  ? AppColors.kPrimaryColor
+                  : Colors.grey,
             );
           }),
         )

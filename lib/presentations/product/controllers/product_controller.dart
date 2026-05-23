@@ -24,22 +24,41 @@ class ProductController extends GetxController {
   RxBool isCartDecreLoading = false.obs;
 
   void incrementCartQuantity() {
+    final variant = getSelectedVariantForCart();
+    if (variant == null) return;
+
+    final stock = variant.quantity ?? 0;
+
+    if (cartQuantity.value >= stock) {
+      showCustomSnackbar(
+        title: "Stock Limit",
+        message: "Only $stock item(s) available",
+      );
+      return;
+    }
+
     cartQuantity.value++;
     refreshCartState();
   }
 
   void decrementCartQuantity() {
-    if (cartQuantity.value <= 1) return;
-    cartQuantity.value--;
-    refreshCartState();
+    if (cartQuantity.value > 1) {
+      cartQuantity.value--;
+      refreshCartState();
+    }
   }
 
 // Call after product details load
   void syncQuantityFromCart() {
     if (!CommonController.to.isLoggedIn.value) return;
+
+    final variant = getSelectedVariantForCart();
+    if (variant == null) return;
+
     final item = CartController.to.cartList.firstWhereOrNull(
-      (e) => e.product?.sId == productId.value,
+      (e) => e.variant?.sId == variant.id,
     );
+
     cartQuantity.value = item?.quantity ?? 1;
   }
 
@@ -76,19 +95,36 @@ class ProductController extends GetxController {
 
   final productId = ''.obs;
 
+  // @override
+  // void onInit() async {
+  //   super.onInit(); // call super first
+
+  //   // Arguments / productId setup
+  //   final arguments = Get.arguments;
+  //   if (arguments != null && arguments is String) {
+  //     productId.value = arguments;
+  //     print("arguments aka productId : ${productId.value}");
+  //   }
+
+  //   // Setup page listener BEFORE fetching product details
+  //   setupPageListener(); // ✅ Add this here
+
+  //   await getProductDetailsRequest(productID: productId.value);
+  // }
+
   @override
   void onInit() async {
-    super.onInit(); // call super first
+    super.onInit();
 
-    // Arguments / productId setup
     final arguments = Get.arguments;
-    if (arguments != null && arguments is String) {
+
+    if (arguments is String && arguments.isNotEmpty) {
       productId.value = arguments;
-      print("arguments aka productId : ${productId.value}");
+    } else {
+      return; // 🚨 STOP if no productId
     }
 
-    // Setup page listener BEFORE fetching product details
-    setupPageListener(); // ✅ Add this here
+    setupPageListener();
 
     await getProductDetailsRequest(productID: productId.value);
   }
@@ -108,8 +144,10 @@ class ProductController extends GetxController {
   }
 
   ///------------------------------ get Product Details method -------------------------///
-
+  bool _isFetching = false;
   Future<void> getProductDetailsRequest({required String productID}) async {
+    if (_isFetching) return;
+    _isFetching = true;
     // Dispose existing video before loading new product
     // disposePlayer();
     try {
@@ -186,6 +224,8 @@ class ProductController extends GetxController {
     } catch (e) {
       //   logger.e(e.toString());
       isLoadingProductDetails.value = false;
+    } finally {
+      _isFetching = false;
     }
   }
 
@@ -322,7 +362,24 @@ class ProductController extends GetxController {
   }
 
   RxString cartButtonLabel = AppStaticStrings.addToCard.obs;
+  // void refreshCartState() {
+  //   final variant = getSelectedVariantForCart();
+
+  //   if (variant == null) {
+  //     cartButtonLabel.value = AppStaticStrings.addToCard;
+  //     return;
+  //   }
+
+  //   final exists = CartController.to.cartList.any(
+  //     (item) => (item.variant?.sId ?? '') == variant.id,
+  //   );
+
+  //   cartButtonLabel.value = exists ? "Update Cart" : AppStaticStrings.addToCard;
+  // }
+
   void refreshCartState() {
+    if (!Get.isRegistered<CartController>()) return;
+
     final variant = getSelectedVariantForCart();
 
     if (variant == null) {
@@ -330,7 +387,9 @@ class ProductController extends GetxController {
       return;
     }
 
-    final exists = CartController.to.cartList.any(
+    final cartController = CartController.to;
+
+    final exists = cartController.cartList.any(
       (item) => (item.variant?.sId ?? '') == variant.id,
     );
 

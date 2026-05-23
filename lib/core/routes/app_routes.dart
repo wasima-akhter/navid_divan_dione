@@ -22,12 +22,26 @@ import 'package:navid_e_commerce/presentations/splash/views/splash_page.dart';
 
 class AppRoutes {
   static route() => [
-        GetPage(name: SplashPage.routeName, page: () => SplashPage(), binding: SplashBinding()),
-        GetPage(name: LoginPage.routeName, page: () => LoginPage(), binding: AuthBinding()),
-        GetPage(name: SignupPage.routeName, page: () => SignupPage(), binding: AuthBinding()),
         GetPage(
-            name: ForgetPassPage.routeName, page: () => ForgetPassPage(), binding: AuthBinding()),
-        GetPage(name: OtpPage.routeName, page: () => OtpPage(), binding: AuthBinding()),
+            name: SplashPage.routeName,
+            page: () => SplashPage(),
+            binding: SplashBinding()),
+        GetPage(
+            name: LoginPage.routeName,
+            page: () => LoginPage(),
+            binding: AuthBinding()),
+        GetPage(
+            name: SignupPage.routeName,
+            page: () => SignupPage(),
+            binding: AuthBinding()),
+        GetPage(
+            name: ForgetPassPage.routeName,
+            page: () => ForgetPassPage(),
+            binding: AuthBinding()),
+        GetPage(
+            name: OtpPage.routeName,
+            page: () => OtpPage(),
+            binding: AuthBinding()),
         GetPage(
             name: SetNewPasswordPage.routeName,
             page: () => SetNewPasswordPage(),
@@ -36,10 +50,18 @@ class AppRoutes {
             name: NavigationPage.routeName,
             page: () => NavigationPage(),
             binding: NavigationBinding()),
-        GetPage(name: ProfilePage.routeName, page: () => ProfilePage(), binding: ProfileBinding()),
-        GetPage(name: SettingPage.routeName, page: () => SettingPage(), binding: SettingsBinding()),
         GetPage(
-            name: FeedbackPage.routeName, page: () => FeedbackPage(), binding: SettingsBinding()),
+            name: ProfilePage.routeName,
+            page: () => ProfilePage(),
+            binding: ProfileBinding()),
+        GetPage(
+            name: SettingPage.routeName,
+            page: () => SettingPage(),
+            binding: SettingsBinding()),
+        GetPage(
+            name: FeedbackPage.routeName,
+            page: () => FeedbackPage(),
+            binding: SettingsBinding()),
         GetPage(
             name: ChangePassPage.routeName,
             page: () => ChangePassPage(),

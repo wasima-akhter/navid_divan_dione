@@ -107,7 +107,8 @@ class AuthController extends GetxController {
       confirmPassSignUpController.text = '1234567A';
       ageSignUpController.value.text = formattedDateOfBirth;
       emailLoginController.text = 'abc@yopmail.com';
-      emailForgetController.value.text = 'cayoj38393@evluence.com' /*'pihoner651@eligou.com'*/;
+      emailForgetController.value.text =
+          'cayoj38393@evluence.com' /*'pihoner651@eligou.com'*/;
       passLoginController.text = '1234567A';
       passNewController.text = '1234567A';
       confirmPassNewController.text = '1234567A';
@@ -121,7 +122,8 @@ class AuthController extends GetxController {
         focusNodes[index + 1].requestFocus(); // Move to next field
       }
     } else if (index > 0) {
-      focusNodes[index - 1].requestFocus(); // Move to previous field on backspace
+      focusNodes[index - 1]
+          .requestFocus(); // Move to previous field on backspace
     }
   }
 
@@ -168,7 +170,9 @@ class AuthController extends GetxController {
       } else {
         //   logger.e(response);
         showCustomSnackbar(
-            title: 'Failed', message: response['message'], type: SnackBarType.failed);
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed);
       }
     } catch (e) {
       isLoadingSignUp.value = false;
@@ -179,14 +183,18 @@ class AuthController extends GetxController {
 
   ///------------------------------ verify email method -------------------------///
 
-  Future<void> verifyEmailRequest({required String email, required bool isAccVerify}) async {
+  Future<void> verifyEmailRequest(
+      {required String email, required bool isAccVerify}) async {
     try {
       isLoadingActiveAcc.value = true;
       final response = await ApiService().request(
           endpoint: verifyEmailEndPoint,
           useAuth: false,
           method: 'POST',
-          body: {"email": email, "code": otpControllers.map((e) => e.value.text).join()});
+          body: {
+            "email": email,
+            "code": otpControllers.map((e) => e.value.text).join()
+          });
       isLoadingActiveAcc.value = false;
       if (response['success'] == true) {
         //   logger.d(response);
@@ -198,14 +206,17 @@ class AuthController extends GetxController {
         if (isAccVerify) {
           Get.offAllNamed(LoginPage.routeName);
         } else {
-          Boxes.getUserData().put(verifyTokenKey, response['data']['resetToken']);
+          Boxes.getUserData()
+              .put(verifyTokenKey, response['data']['resetToken']);
 
           Get.toNamed(SetNewPasswordPage.routeName);
         }
       } else {
         //   logger.e(response);
         showCustomSnackbar(
-            title: 'Failed', message: response['message'], type: SnackBarType.failed);
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed);
       }
     } catch (e) {
       isLoadingActiveAcc.value = false;
@@ -216,14 +227,17 @@ class AuthController extends GetxController {
 
   ///------------------------------ sign in method -------------------------///
 
-  Future<void> signInRequest() async {
+  Future<void> signInRequest({bool showError = true}) async {
     try {
       isLoadingLogin.value = true;
-      final response = await ApiService()
-          .request(endpoint: signInEndPoint, method: 'POST', useAuth: false, body: {
-        "email": AuthController.to.emailLoginController.text,
-        "password": AuthController.to.passLoginController.text
-      });
+      final response = await ApiService().request(
+          endpoint: signInEndPoint,
+          method: 'POST',
+          useAuth: false,
+          body: {
+            "email": AuthController.to.emailLoginController.text,
+            "password": AuthController.to.passLoginController.text
+          });
       isLoadingLogin.value = false;
       if (response['success'] == true) {
         //   logger.d(response);
@@ -243,8 +257,15 @@ class AuthController extends GetxController {
         Get.offAllNamed(NavigationPage.routeName);
       } else {
         //   logger.e(response);
-        showCustomSnackbar(
-            title: 'Failed', message: response['message'], type: SnackBarType.failed);
+
+        // 🚨 only show if allowed
+        if (showError) {
+          showCustomSnackbar(
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed,
+          );
+        }
       }
     } catch (e) {
       isLoadingLogin.value = false;
@@ -258,8 +279,8 @@ class AuthController extends GetxController {
   Future<void> forgetPasswordRequest({required String email}) async {
     try {
       isLoadingForgetPass.value = true;
-      final response =
-          await ApiService().request(endpoint: forgetPassEndPoint, method: 'POST', body: {
+      final response = await ApiService()
+          .request(endpoint: forgetPassEndPoint, method: 'POST', body: {
         "email": email,
       });
       isLoadingForgetPass.value = false;
@@ -274,7 +295,9 @@ class AuthController extends GetxController {
       } else {
         //   logger.e(response);
         showCustomSnackbar(
-            title: 'Failed', message: response['message'], type: SnackBarType.failed);
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed);
       }
     } catch (e) {
       isLoadingForgetPass.value = false;
@@ -288,7 +311,8 @@ class AuthController extends GetxController {
   Future<void> resetPasswordRequest() async {
     try {
       isLoadingResetPass.value = true;
-      ApiService().setAuthToken(Boxes.getUserData().get(verifyTokenKey).toString());
+      ApiService()
+          .setAuthToken(Boxes.getUserData().get(verifyTokenKey).toString());
 
       final response = await ApiService().request(
         endpoint: resetPasswordEndPoint,
@@ -310,7 +334,9 @@ class AuthController extends GetxController {
       } else {
         //   logger.e(response);
         showCustomSnackbar(
-            title: 'Failed', message: response['message'], type: SnackBarType.failed);
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed);
       }
     } catch (e) {
       isLoadingResetPass.value = false;

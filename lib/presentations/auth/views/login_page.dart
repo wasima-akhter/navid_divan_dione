@@ -114,21 +114,23 @@ class LoginPage extends StatelessWidget {
         ),
         Padding(
           padding: padding12V,
-          child: Obx(
-           () {
-              return CustomButton(
-                isLoading: AuthController.to.isLoadingLogin.value,
-                onTap: () {
-                  if (formKey.currentState!.validate()&&AuthController.to.isAgeChecked.value) {
-                    AuthController.to.signInRequest();
-                  }else if(!AuthController.to.isAgeChecked.value){
-showCustomSnackbar(title: 'Failed', message: 'Age must be more then 21',type: SnackBarType.failed);
-                  }
-                },
-                title: AppStaticStrings.signIn,
-              );
-            }
-          ),
+          child: Obx(() {
+            return CustomButton(
+              isLoading: AuthController.to.isLoadingLogin.value,
+              onTap: () {
+                if (formKey.currentState!.validate() &&
+                    AuthController.to.isAgeChecked.value) {
+                  AuthController.to.signInRequest();
+                } else if (!AuthController.to.isAgeChecked.value) {
+                  showCustomSnackbar(
+                      title: 'Failed',
+                      message: 'Age must be more then 21',
+                      type: SnackBarType.failed);
+                }
+              },
+              title: AppStaticStrings.signIn,
+            );
+          }),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -152,7 +154,7 @@ showCustomSnackbar(title: 'Failed', message: 'Age must be more then 21',type: Sn
             CustomTextButton(
               title: AppStaticStrings.gotToHome,
               onPressed: () {
-              Get.offAllNamed(NavigationPage.routeName);
+                Get.offAllNamed(NavigationPage.routeName);
               },
             )
           ],

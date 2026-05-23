@@ -92,7 +92,9 @@ class NavigationController extends GetxController {
       } else {
         //   logger.e(response);
         showCustomSnackbar(
-            title: 'Failed', message: response['message'], type: SnackBarType.failed);
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed);
       }
     } catch (e) {
       //   logger.e(e.toString());

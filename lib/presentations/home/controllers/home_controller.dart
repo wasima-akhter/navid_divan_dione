@@ -23,7 +23,8 @@ class HomeController extends GetxController {
   String? selectedCategory;
   String? selectedSubCategory;
   String searchQuery = "";
-  final PagingController<int, ProductModel> pagingController = PagingController(firstPageKey: 1);
+  final PagingController<int, ProductModel> pagingController =
+      PagingController(firstPageKey: 1);
 
   ///=======================dynamic list==========================///
 
@@ -103,8 +104,8 @@ class HomeController extends GetxController {
       }
       ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
 
-      final response =
-          await ApiService().request(endpoint: catGetAllEndPoint, method: 'GET', queryParams: {
+      final response = await ApiService()
+          .request(endpoint: catGetAllEndPoint, method: 'GET', queryParams: {
         'page': currentPage.value.toString(),
         'limit': itemsPerPage.value.toString(),
         'sort': 'updatedAt',
@@ -116,12 +117,14 @@ class HomeController extends GetxController {
       if (response['success'] == true) {
         if (response['pagination'] != null) {
           currentPage.value = response['pagination']['currentPage'] ?? 1;
-          totalCategoryPages.value = response['pagination']['totalPages'] ?? 1; // Add this line
+          totalCategoryPages.value =
+              response['pagination']['totalPages'] ?? 1; // Add this line
 
           itemsPerPage.value = response['pagination']['itemsPerPage'] ?? 10;
         }
-        final newCategories =
-            (response['data'] as List).map((e) => CategoryModel.fromJson(e)).toList();
+        final newCategories = (response['data'] as List)
+            .map((e) => CategoryModel.fromJson(e))
+            .toList();
 
         if (loadMore) {
           catList.addAll(newCategories); // Append for load more
@@ -142,7 +145,9 @@ class HomeController extends GetxController {
       } else {
         //   logger.e(response);
         showCustomSnackbar(
-            title: 'Failed', message: response['message'], type: SnackBarType.failed);
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed);
       }
     } catch (e) {
       //   logger.e(e.toString());
@@ -198,11 +203,14 @@ class HomeController extends GetxController {
       );
 
       if (response['success'] == true) {
-        subCategoryList.value =
-            (response["data"] as List).map((e) => SubCategoryModel.fromJson(e)).toList();
+        subCategoryList.value = (response["data"] as List)
+            .map((e) => SubCategoryModel.fromJson(e))
+            .toList();
       } else {
         showCustomSnackbar(
-            title: 'Failed', message: response['message'], type: SnackBarType.failed);
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed);
       }
     } catch (e) {
       // handle error if needed
@@ -217,7 +225,8 @@ class HomeController extends GetxController {
     try {
       isLoadingBanner.value = true;
 
-      final response = await ApiService().request(endpoint: bannerGetAllEndPoint, method: 'GET');
+      final response = await ApiService()
+          .request(endpoint: bannerGetAllEndPoint, method: 'GET');
 
       debugPrint("Banner Response: ${response}");
 
@@ -233,7 +242,9 @@ class HomeController extends GetxController {
       } else {
         //   logger.e(response);
         showCustomSnackbar(
-            title: 'Failed', message: response['message'], type: SnackBarType.failed);
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed);
       }
     } catch (e) {
       //   logger.e(e.toString());
@@ -258,21 +269,24 @@ class HomeController extends GetxController {
         method: 'GET',
         useAuth: CommonController.to.isLoggedIn.value,
         queryParams: {
-          if (CommonController.to.isLoggedIn.value) "whole_sale": false.toString(),
+          if (CommonController.to.isLoggedIn.value)
+            "whole_sale": false.toString(),
           //  hasTax.toString(),
           'page': pageKey.toString(),
           'limit': itemsProductPerPage.value.toString(),
           if (searchQuery.isNotEmpty) 'search': searchQuery,
           if (selectedCategory != null) 'category': selectedCategory ?? "",
-          if (selectedSubCategory != null) 'sub_category': selectedSubCategory ?? "",
+          if (selectedSubCategory != null)
+            'sub_category': selectedSubCategory ?? "",
         },
       );
 
       debugPrint(' response in home Contr product list : $response');
 
       if (response['success'] == true) {
-        final newProducts =
-            (response['data'] as List).map((e) => ProductModel.fromJson(e)).toList();
+        final newProducts = (response['data'] as List)
+            .map((e) => ProductModel.fromJson(e))
+            .toList();
 
 // // 👇 duplicate for testing
 //         final expandedList = List.generate(
@@ -280,7 +294,8 @@ class HomeController extends GetxController {
 //           (_) => newProducts,
 //         ).expand((e) => e).toList();
 
-        final isLastPage = pageKey >= (response['pagination']?['totalPages'] ?? 1);
+        final isLastPage =
+            pageKey >= (response['pagination']?['totalPages'] ?? 1);
 
         if (isLastPage) {
           pagingController.appendLastPage(newProducts);

@@ -50,6 +50,10 @@ class ProdDetPriceCartRow extends StatelessWidget {
     required this.selectedVariant,
   }) : super(key: key);
 
+  String _format(double? value) {
+    return (value ?? 0.0).toStringAsFixed(2);
+  }
+
   @override
   Widget build(BuildContext context) {
     final price = selectedVariant.price ?? 0.0;
@@ -64,11 +68,11 @@ class ProdDetPriceCartRow extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           PriceTextWidget(
-            previousPrice: price.toString(),
-            price: finalPrice.toString(),
+            previousPrice: _format(price),
+            price: _format(finalPrice),
             fontSize: getFontSizeExtraLarge(),
             previousPriceFontSize: getFontSizeDefault(),
-            discount: discount.toString(),
+            discount: _format(discount),
           ),
           CartCounterWidget(
             count: controller.cartQuantity,

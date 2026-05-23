@@ -340,6 +340,7 @@ import '../../../core/export/ui_export.dart';
 import '../../../core/utils/hive_boxes.dart';
 import '../../product/controllers/product_controller.dart';
 import '../../profile/controllers/profile_controller.dart';
+import '../../splash/controllers/common_controller.dart';
 
 class CartController extends GetxController {
   static CartController get to => Get.find();
@@ -466,6 +467,11 @@ class CartController extends GetxController {
   ///------------------------------ get cart list-------------------------///
 
   Future<void> getCartListRequest() async {
+    if (!CommonController.to.isLoggedIn.value) {
+      cartList.clear();
+      return;
+    }
+
     try {
       isCartLoading.value = true;
       ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
@@ -568,47 +574,91 @@ class CartController extends GetxController {
     required num quantity,
     required String variant,
   }) async {
-    //
     try {
       isLoadingAddCart[productId] = true;
 
-      // first retrieve the user Id
-
       await ProfileController.to.getUserProfileRequest();
-
       final userId = ProfileController.to.userId.value;
 
-      final response = await ApiService()
-          .request(endpoint: addToCartEndPoint, method: 'POST', body: {
-        "user": userId,
-        "product_id": productId,
-        "variant": variant,
-        "quantity": quantity
-      });
-
-      await getCartListRequest(); // fetch full cart
-      calculateTotalPrice(); // recalc total
+      final response = await ApiService().request(
+        endpoint: addToCartEndPoint,
+        method: 'POST',
+        body: {
+          "user": userId,
+          "product_id": productId,
+          "variant": variant,
+          "quantity": quantity,
+        },
+      );
 
       isLoadingAddCart[productId] = false;
+
       if (response['success'] == true) {
-        //   logger.d(response);
-        getCartListRequest();
+        await getCartListRequest(); // ✅ ONLY ONCE
+
+        calculateTotalPrice();
+
         showCustomSnackbar(
           title: 'Success',
           message: response['message'],
         );
       } else {
-        //   logger.e(response);
         showCustomSnackbar(
-            title: 'Failed',
-            message: response['message'],
-            type: SnackBarType.failed);
+          title: 'Failed',
+          message: response['message'],
+          type: SnackBarType.failed,
+        );
       }
     } catch (e) {
       isLoadingAddCart[productId] = false;
-      //   logger.e(e.toString());
     }
   }
+  // Future<void> addToCart({
+  //   required String productId,
+  //   required num quantity,
+  //   required String variant,
+  // }) async {
+  //   //
+  //   try {
+  //     isLoadingAddCart[productId] = true;
+
+  //     // first retrieve the user Id
+
+  //     await ProfileController.to.getUserProfileRequest();
+
+  //     final userId = ProfileController.to.userId.value;
+
+  //     final response = await ApiService()
+  //         .request(endpoint: addToCartEndPoint, method: 'POST', body: {
+  //       "user": userId,
+  //       "product_id": productId,
+  //       "variant": variant,
+  //       "quantity": quantity
+  //     });
+
+  //     await getCartListRequest(); // fetch full cart
+  //     calculateTotalPrice(); // recalc total
+
+  //     isLoadingAddCart[productId] = false;
+  //     if (response['success'] == true) {
+  //       //   logger.d(response);
+  //       getCartListRequest();
+  //       showCustomSnackbar(
+  //         title: 'Success',
+  //         message: response['message'],
+  //       );
+  //     } else {
+  //       //   logger.e(response);
+  //       showCustomSnackbar(
+  //           title: 'Failed',
+  //           message: response['message'],
+  //           type: SnackBarType.failed);
+  //     }
+  //   } catch (e) {
+  //     isLoadingAddCart[productId] = false;
+  //     //   logger.e(e.toString());
+  //   }
+  // }
 
   ///----------------------- Delete Cart item ----------------------///
 
