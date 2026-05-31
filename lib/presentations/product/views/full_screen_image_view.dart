@@ -1,17 +1,16 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class FullScreenImageViewer extends StatelessWidget {
   final String imageUrl;
 
   const FullScreenImageViewer({
-    Key? key,
+    super.key,
     required this.imageUrl,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -25,11 +24,25 @@ class FullScreenImageViewer extends StatelessWidget {
         child: InteractiveViewer(
           minScale: 0.5,
           maxScale: 5,
-          child: Image.network(
-            imageUrl,
-            fit: BoxFit.contain,     // ✅ keeps aspect ratio
-            width: size.width,       // ✅ expands to screen width
-            height: size.height,     // ✅ also allows height expansion
+          child: CachedNetworkImage(
+            imageUrl: imageUrl,
+            fit: BoxFit.contain,
+            placeholder: (context, url) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            },
+            errorWidget: (context, url, error) {
+              debugPrint("PREVIEW ERROR: $error");
+
+              return const Center(
+                child: Icon(
+                  Icons.broken_image_rounded,
+                  color: Colors.white,
+                  size: 60,
+                ),
+              );
+            },
           ),
         ),
       ),

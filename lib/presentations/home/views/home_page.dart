@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:navid_e_commerce/core/api-client/api_service.dart';
 import 'package:navid_e_commerce/core/components/custom_network_image.dart';
 import 'package:navid_e_commerce/core/components/custom_refresh_indicator.dart';
 import 'package:navid_e_commerce/core/components/custom_text_button.dart';
@@ -70,8 +69,7 @@ class HomePage extends StatelessWidget {
                                   padding: padding6H,
                                   child: CustomNetworkImage(
                                     borderRadius: BorderRadius.circular(10.r),
-                                    imageUrl:
-                                        '${ApiService().baseUrl}${bannerItem.img ?? ''}',
+                                    imageUrl: '${bannerItem.img ?? ''}',
                                     height: 150.h,
                                     width: double.maxFinite,
                                   ),
@@ -103,26 +101,67 @@ class HomePage extends StatelessWidget {
                   ? SliverToBoxAdapter(child: SizedBox.shrink())
                   : SliverToBoxAdapter(
                       child: Row(
-                        children: [
-                          Expanded(
-                            child: CustomText(
-                              text: AppStaticStrings.category,
-                              style: poppinsMedium,
-                              fontSize: getFontSizeDefault(),
-                              color: AppColors.kPrimaryTextDarkColor,
-                            ),
+                      children: [
+                        Expanded(
+                          child: CustomText(
+                            text: AppStaticStrings.category,
+                            style: poppinsMedium,
+                            fontSize: getFontSizeDefault(),
+                            color: AppColors.kPrimaryTextDarkColor,
                           ),
-                          CustomTextButton(
-                            onPressed: () {
-                              Get.toNamed(CategoryListPage.routeName);
+                        ),
+
+                        /// RESET
+                        Obx(() {
+                          final hasFilter =
+                              hCtrl.selectedCategory.value != null ||
+                                  hCtrl.selectedSubCategory.value != null ||
+                                  hCtrl.searchQuery.value.isNotEmpty;
+
+                          if (!hasFilter) return const SizedBox.shrink();
+
+                          return GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () {
+                              hCtrl.applyFilters(
+                                category: null,
+                                subCategory: null,
+                                search: '',
+                              );
                             },
-                            title: AppStaticStrings.viewAll,
-                            fontSize: getFontSizeSemiSmall(),
-                            textColor: AppColors.kPrimaryTextDarkColor,
-                          )
-                        ],
-                      ),
-                    );
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 3, horizontal: 12),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: AppColors.kPrimaryColor
+                                      .withValues(alpha: 0.2)),
+                              child: Row(
+                                children: [
+                                  CustomText(
+                                    text: "Clear filters",
+                                    fontSize: 12,
+                                  ),
+                                  const Icon(
+                                    Icons.close_rounded,
+                                    size: 16,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }),
+
+                        CustomTextButton(
+                          onPressed: () {
+                            Get.toNamed(CategoryListPage.routeName);
+                          },
+                          title: AppStaticStrings.viewAll,
+                          fontSize: getFontSizeSemiSmall(),
+                          textColor: AppColors.kPrimaryTextDarkColor,
+                        ),
+                      ],
+                    ));
             }),
           ),
 
@@ -212,9 +251,9 @@ class HomePage extends StatelessWidget {
                     PaginationLoadingWidget(),
                 noItemsFoundIndicatorBuilder: (_) => NoProductWidget(
                     searchController: hCtrl.searchController,
-                    searchQuery: hCtrl.searchQuery,
-                    selectedCategory: hCtrl.selectedCategory,
-                    selectedSubCategory: hCtrl.selectedSubCategory,
+                    searchQuery: hCtrl.searchQuery.value,
+                    selectedCategory: hCtrl.selectedCategory.value,
+                    selectedSubCategory: hCtrl.selectedSubCategory.value,
                     applyFilters: ({category, search, subCategory}) =>
                         hCtrl.applyFilters(
                             category: category,

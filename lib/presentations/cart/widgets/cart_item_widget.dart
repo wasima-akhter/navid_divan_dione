@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:navid_e_commerce/core/api-client/api_service.dart';
 import 'package:navid_e_commerce/core/components/custom_network_image.dart';
 import 'package:navid_e_commerce/core/constants/color_constants.dart';
 import 'package:navid_e_commerce/core/constants/custom_space.dart';
@@ -33,10 +32,10 @@ class CartItemWidget extends StatelessWidget {
             child: Builder(
               builder: (context) {
                 debugPrint(
-                  ' cart item image :  "${ApiService().baseUrl}${cartModel.variant?.img?.first ?? ''}"',
+                  ' cart item image :  "${cartModel.variant?.img?.first ?? ''}"',
                 );
                 return CustomNetworkImage(
-                  imageUrl: "${ApiService().baseUrl}${cartModel.variant?.img?.first ?? ''}",
+                  imageUrl: "${cartModel.variant?.img?.first ?? ''}",
                   height: 100.w,
                 );
               },
@@ -52,7 +51,9 @@ class CartItemWidget extends StatelessWidget {
                   children: [
                     Expanded(
                       child: CustomText(
-                        text: (cartModel.product?.name ?? "").capitalize.toString(),
+                        text: (cartModel.product?.name ?? "")
+                            .capitalize
+                            .toString(),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: poppinsRegular,
@@ -64,8 +65,10 @@ class CartItemWidget extends StatelessWidget {
                     Obx(() {
                       final controller = CartController.to;
                       // ✅ localQty returns int, wrap in RxInt for CartCounterWidget
-                      final RxInt qty =
-                          (controller.localQty[productId] ?? cartModel.quantity ?? 1).obs;
+                      final RxInt qty = (controller.localQty[productId] ??
+                              cartModel.quantity ??
+                              1)
+                          .obs;
 
                       return CartCounterWidget(
                         count: qty,
@@ -89,7 +92,8 @@ class CartItemWidget extends StatelessWidget {
                   children: [
                     Expanded(
                       child: CustomText(
-                        text: 'price: \$${(cartModel.variant?.price ?? 0.0).toString()}  ',
+                        text:
+                            'price: \$${(cartModel.variant?.price ?? 0.0).toString()}  ',
                         style: poppinsMedium.copyWith(
                           color: AppColors.kPrimaryTextDarkColor,
                           fontSize: getFontSizeSemiSmall(),
@@ -98,9 +102,11 @@ class CartItemWidget extends StatelessWidget {
                     ),
                     IconButton(
                       onPressed: () {
-                        CartController.to.deleteCartItem(cartId: cartModel.sId ?? "");
+                        CartController.to
+                            .deleteCartItem(cartId: cartModel.sId ?? "");
                       },
-                      icon: Icon(CupertinoIcons.delete, color: Colors.red, size: 16.sp),
+                      icon: Icon(CupertinoIcons.delete,
+                          color: Colors.red, size: 16.sp),
                     ),
                   ],
                 ),

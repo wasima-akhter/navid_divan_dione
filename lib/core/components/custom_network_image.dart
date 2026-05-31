@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:navid_e_commerce/presentations/product/views/full_screen_image_view.dart';
 import 'package:navid_e_commerce/presentations/profile/widgets/custom_loading_widget.dart';
 
+import '../api-client/api_service.dart';
 import '../constants/image_constants.dart';
 
 class CustomNetworkImage extends StatefulWidget {
@@ -47,7 +50,11 @@ class CustomNetworkImage extends StatefulWidget {
 class _CustomNetworkImageState extends State<CustomNetworkImage> {
   @override
   Widget build(BuildContext context) {
-    // final cleanedUrl = widget.imageUrl.replaceAll(RegExp(r'/+'), '/');
+    // final cleanedUrl = finalImageUrl.replaceAll(RegExp(r'/+'), '/');
+
+    log("imageUrl: ${widget.imageUrl}");
+
+    final finalImageUrl = getImageUrl(widget.imageUrl);
 
     bool isSvgUrl(String url) {
       final uri = Uri.tryParse(url);
@@ -57,13 +64,13 @@ class _CustomNetworkImageState extends State<CustomNetworkImage> {
       return path.endsWith('.svg');
     }
 
-    return isSvgUrl(widget.imageUrl)
+    return isSvgUrl(finalImageUrl)
         ? GestureDetector(
             onTap: widget.isPreview == true
                 ? () {
-                    if (widget.imageUrl.isNotEmpty && widget.isPreview == true) {
+                    if (finalImageUrl.isNotEmpty && widget.isPreview == true) {
                       Get.to(FullScreenImageViewer(
-                        imageUrl: widget.imageUrl,
+                        imageUrl: finalImageUrl,
                       ));
                     }
                   }
@@ -75,12 +82,13 @@ class _CustomNetworkImageState extends State<CustomNetworkImage> {
                 border: widget.border,
                 borderRadius: widget.boxShape == BoxShape.circle
                     ? null
-                    : widget.borderRadius ?? BorderRadius.circular(widget.radius ?? 8.r),
+                    : widget.borderRadius ??
+                        BorderRadius.circular(widget.radius ?? 8.r),
                 shape: widget.boxShape,
                 color: widget.backgroundColor,
               ),
               child: SvgPicture.network(
-                widget.imageUrl,
+                finalImageUrl,
                 fit: widget.fit ?? BoxFit.cover,
                 placeholderBuilder: (context) => CustomLoadingWidget(
                   height: widget.height,
@@ -119,15 +127,15 @@ class _CustomNetworkImageState extends State<CustomNetworkImage> {
         : GestureDetector(
             onTap: widget.isPreview == true
                 ? () {
-                    if (widget.imageUrl.isNotEmpty && widget.isPreview == true) {
+                    if (finalImageUrl.isNotEmpty && widget.isPreview == true) {
                       Get.to(FullScreenImageViewer(
-                        imageUrl: widget.imageUrl,
+                        imageUrl: finalImageUrl,
                       ));
                     }
                   }
                 : null,
             child: CachedNetworkImage(
-              imageUrl: widget.imageUrl,
+              imageUrl: finalImageUrl,
               imageBuilder: (context, imageProvider) {
                 return Container(
                   height: widget.height,
@@ -136,7 +144,8 @@ class _CustomNetworkImageState extends State<CustomNetworkImage> {
                     border: widget.border,
                     borderRadius: widget.boxShape == BoxShape.circle
                         ? null
-                        : widget.borderRadius ?? BorderRadius.circular(widget.radius ?? 8.r),
+                        : widget.borderRadius ??
+                            BorderRadius.circular(widget.radius ?? 8.r),
                     shape: widget.boxShape,
                     color: widget.backgroundColor,
                     image: DecorationImage(
@@ -183,4 +192,18 @@ class _CustomNetworkImageState extends State<CustomNetworkImage> {
             ),
           );
   }
+}
+
+String getImageUrl(String? imageUrl) {
+  if (imageUrl == null || imageUrl.trim().isEmpty) return '';
+
+  final url = imageUrl.trim();
+
+  /// already full URL → return as is
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+
+  /// otherwise prepend base url
+  return '${ApiService().baseUrl}$url';
 }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:navid_e_commerce/core/api-client/api_service.dart';
 import 'package:navid_e_commerce/core/components/custom_button_tap.dart';
 import 'package:navid_e_commerce/core/components/custom_network_image.dart';
 import 'package:navid_e_commerce/core/constants/color_constants.dart';
@@ -52,7 +51,7 @@ class CategoryListCardItemWidget extends StatelessWidget {
                   margin: EdgeInsets.only(top: 10.h),
                   child: ListTile(
                     leading: CustomNetworkImage(
-                      imageUrl: "${ApiService().baseUrl}${subCat.img}",
+                      imageUrl: "${subCat.img}",
                       height: 40.sp,
                       width: 40.sp,
                     ),
@@ -82,7 +81,8 @@ class CategoryListCardItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool hasSubCategories = categoryModel.isService == true || (categoryModel.subTotal != null && categoryModel.subTotal! > 0);
+    final bool hasSubCategories = categoryModel.isService == true ||
+        (categoryModel.subTotal != null && categoryModel.subTotal! > 0);
 
     return GestureDetector(
       onTap: onTapItem ??
@@ -105,7 +105,7 @@ class CategoryListCardItemWidget extends StatelessWidget {
             Row(
               children: [
                 CustomNetworkImage(
-                  imageUrl: '${ApiService().baseUrl}${categoryModel.img}',
+                  imageUrl: '${categoryModel.img}',
                   height: 47.w,
                   width: 52.w,
                   borderRadius: BorderRadius.horizontal(

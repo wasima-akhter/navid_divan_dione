@@ -42,7 +42,7 @@ class ProdDetPreviewRow extends StatelessWidget {
                 isSelected: currentPage == i + 1,
                 onTap: () => controller.pageController.value.jumpToPage(i + 1),
                 child: CustomNetworkImage(
-                  imageUrl: "${ApiService().baseUrl}${bannerImages[i]}",
+                  imageUrl: "${bannerImages[i]}",
                   fit: BoxFit.cover,
                 ),
               ),

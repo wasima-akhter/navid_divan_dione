@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:navid_e_commerce/core/api-client/api_service.dart';
 import 'package:navid_e_commerce/core/components/custom_button_tap.dart';
 import 'package:navid_e_commerce/core/components/custom_network_image.dart';
 import 'package:navid_e_commerce/core/constants/color_constants.dart';
@@ -66,7 +65,7 @@ class CategoryCardItemWidget extends StatelessWidget {
                     final subCat = HomeController.to.subCategoryList[index];
                     return ListTile(
                       leading: CustomNetworkImage(
-                        imageUrl: "${ApiService().baseUrl}${subCat.img}",
+                        imageUrl: "${subCat.img}",
                         height: 40.sp,
                         width: 40.sp,
                       ),
@@ -96,7 +95,8 @@ class CategoryCardItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool hasSubCategories = categoryModel.isService == true || (categoryModel.subTotal != null && categoryModel.subTotal! > 0);
+    final bool hasSubCategories = categoryModel.isService == true ||
+        (categoryModel.subTotal != null && categoryModel.subTotal! > 0);
 
     return Container(
       decoration: BoxDecoration(
@@ -122,7 +122,7 @@ class CategoryCardItemWidget extends StatelessWidget {
                   children: [
                     CustomNetworkImage(
                       width: double.infinity,
-                      imageUrl: '${ApiService().baseUrl}${categoryModel.img}',
+                      imageUrl: '${categoryModel.img}',
                     ),
                     Obx(() {
                       if (categoryModel.isLoadingSub.value) {

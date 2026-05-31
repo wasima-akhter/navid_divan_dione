@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:navid_e_commerce/core/api-client/api_service.dart';
 import 'package:navid_e_commerce/core/components/custom_network_image.dart';
 import 'package:navid_e_commerce/core/constants/color_constants.dart';
 import 'package:navid_e_commerce/core/constants/custom_text.dart';
 import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
 import 'package:navid_e_commerce/core/constants/image_constants.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
+import 'package:navid_e_commerce/presentations/auth/views/login_page.dart';
 import 'package:navid_e_commerce/presentations/profile/controllers/profile_controller.dart';
 import 'package:navid_e_commerce/presentations/splash/controllers/common_controller.dart';
-import 'package:navid_e_commerce/presentations/auth/views/login_page.dart';
 
 class CustomHomeAppbar extends StatelessWidget {
   final Function()? onActionTap;
@@ -33,10 +32,10 @@ class CustomHomeAppbar extends StatelessWidget {
                 children: [
                   Obx(() {
                     debugPrint(
-                        'user image:  ${ApiService().baseUrl}${ProfileController.to.userModel.value.img ?? ''}   ');
+                        'user image:   ${ProfileController.to.userModel.value.img ?? ''}   ');
                     return CustomNetworkImage(
                       imageUrl:
-                          '${ApiService().baseUrl}${ProfileController.to.userModel.value.img ?? ''}',
+                          '${ProfileController.to.userModel.value.img ?? ''}',
                       boxShape: BoxShape.circle,
                       height: kToolbarHeight - 6,
                       width: kToolbarHeight - 6,

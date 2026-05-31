@@ -20,9 +20,13 @@ class HomeController extends GetxController {
   RxBool isLoadingBanner = false.obs;
   RxBool isLoadingProduct = false.obs;
   final int pageSize = 10; // items per page
-  String? selectedCategory;
-  String? selectedSubCategory;
-  String searchQuery = "";
+  // String? selectedCategory;
+  // String? selectedSubCategory;
+  // String searchQuery = "";
+
+  final RxnString selectedCategory = RxnString();
+  final RxnString selectedSubCategory = RxnString();
+  final RxString searchQuery = "".obs;
   final PagingController<int, ProductModel> pagingController =
       PagingController(firstPageKey: 1);
 
@@ -78,12 +82,14 @@ class HomeController extends GetxController {
 
   Future<void> refreshCall() async {
     searchController.value.clear();
-    await getCategoryListRequest();
 
+    selectedCategory.value = null;
+    selectedSubCategory.value = null;
+    searchQuery.value = "";
+
+    await getCategoryListRequest();
     await getBannerRequest();
 
-    // await getProductListRequest(pageKey: 1);
-    // ✅ Correct — this resets and refetches the product grid
     pagingController.refresh();
   }
 
@@ -157,11 +163,23 @@ class HomeController extends GetxController {
 
   //------------------------------ apply filters method -------------------------///
 
-  void applyFilters({String? category, String? subCategory, String? search}) {
-    selectedCategory = category;
-    selectedSubCategory = subCategory;
-    searchQuery = search ?? "";
-    pagingController.refresh(); // reload data with filters
+  // void applyFilters({String? category, String? subCategory, String? search}) {
+  //   selectedCategory = category;
+  //   selectedSubCategory = subCategory;
+  //   searchQuery = search ?? "";
+  //   pagingController.refresh(); // reload data with filters
+  // }
+
+  void applyFilters({
+    String? category,
+    String? subCategory,
+    String? search,
+  }) {
+    selectedCategory.value = category;
+    selectedSubCategory.value = subCategory;
+    searchQuery.value = search ?? "";
+
+    pagingController.refresh();
   }
 
   ///-------------------- get sub category list method ---------------------///
@@ -274,10 +292,9 @@ class HomeController extends GetxController {
           //  hasTax.toString(),
           'page': pageKey.toString(),
           'limit': itemsProductPerPage.value.toString(),
-          if (searchQuery.isNotEmpty) 'search': searchQuery,
-          if (selectedCategory != null) 'category': selectedCategory ?? "",
-          if (selectedSubCategory != null)
-            'sub_category': selectedSubCategory ?? "",
+          if (searchQuery.value.isNotEmpty) 'search': searchQuery.value,
+          'category': selectedCategory.value ?? "",
+          'sub_category': selectedSubCategory.value ?? "",
         },
       );
 

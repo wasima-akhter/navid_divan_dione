@@ -129,7 +129,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                             child: CustomNetworkImage(
                               isPreview: true,
                               imageUrl:
-                                  '${ApiService().baseUrl}${controller.currentBannerImages[imageIndex]}',
+                                  '${controller.currentBannerImages[imageIndex]}',
                               width: double.infinity,
                             ),
                           );

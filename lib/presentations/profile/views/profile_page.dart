@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:navid_e_commerce/core/api-client/api_service.dart';
 import 'package:navid_e_commerce/core/components/custom_button.dart';
 import 'package:navid_e_commerce/core/components/custom_network_image.dart';
 import 'package:navid_e_commerce/core/components/custom_textfield.dart';
@@ -70,7 +69,7 @@ class ProfilePage extends StatelessWidget {
                                   )
                                 : CustomNetworkImage(
                                     imageUrl:
-                                        '${ApiService().baseUrl}${ProfileController.to.userModel.value.img ?? ''}',
+                                        '${ProfileController.to.userModel.value.img ?? ''}',
                                     boxShape: BoxShape.circle,
                                     height: 100.w,
                                     imageErrorUrl: placeholderImage,
@@ -208,7 +207,7 @@ class ProfilePage extends StatelessWidget {
                                           ProfileController.to.userModel.value.documents!.length,
                                           (index) => CustomNetworkImage(
                                             imageUrl:
-                                                '${ApiService().baseUrl}/${ProfileController.to.userModel.value.documents![index]}',
+                                                '/${ProfileController.to.userModel.value.documents![index]}',
                                             height: 100.w,
                                             width: 100.w,
                                           ),

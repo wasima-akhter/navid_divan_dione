@@ -24,6 +24,16 @@ class ProdDetBuyCartBtnRow extends StatelessWidget {
         Expanded(
           child: CustomButton(
             onTap: () {
+// check if logged in.
+// not--> login Page// yes, --> go ahead
+
+              final isLoggedIn = CommonController.to.isLoggedIn.value;
+
+              if (!isLoggedIn) {
+                Get.toNamed(LoginPage.routeName);
+                return;
+              }
+
               buyProductDialog(
                 context,
                 selectedColor: ProductController.to.selectedColor.value,

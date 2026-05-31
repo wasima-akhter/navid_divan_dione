@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:navid_e_commerce/core/api-client/api_service.dart';
 import 'package:navid_e_commerce/core/components/custom_button.dart';
 import 'package:navid_e_commerce/core/components/custom_network_image.dart';
 import 'package:navid_e_commerce/core/constants/app_static_strings.dart';
@@ -63,12 +62,13 @@ class OrderCardItemWidget extends StatelessWidget {
 
     // ✅ image from variant.img list, not variant.color
     final String imageUrl = itemModel.variant?.img?.isNotEmpty == true
-        ? "${ApiService().baseUrl}${itemModel.variant!.img!.first}"
+        ? "${itemModel.variant!.img!.first}"
         : "";
 
     // ✅ address fallback
-    final String address =
-        orderModel.deliveryAddress?.address ?? orderModel.pickUpAddress?.address ?? "N/A";
+    final String address = orderModel.deliveryAddress?.address ??
+        orderModel.pickUpAddress?.address ??
+        "N/A";
 
     return itemModel.product == null
         ? const SizedBox.shrink()
@@ -115,7 +115,8 @@ class OrderCardItemWidget extends StatelessWidget {
                       CustomText(
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        text: '${AppStaticStrings.price}: \$${totalItemPrice.toStringAsFixed(2)}',
+                        text:
+                            '${AppStaticStrings.price}: \$${totalItemPrice.toStringAsFixed(2)}',
                         fontSize: getFontSizeSmall(),
                         style: poppinsRegular,
                       ),
@@ -165,8 +166,9 @@ class OderTabItemWidget extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12.r),
-          border:
-              Border.all(width: 0.6, color: AppColors.kExtraLightGreyTextColor.withOpacity(0.6))),
+          border: Border.all(
+              width: 0.6,
+              color: AppColors.kExtraLightGreyTextColor.withOpacity(0.6))),
       padding: EdgeInsets.all(12.h),
       margin: EdgeInsets.only(bottom: 12.h),
       child: Column(
@@ -181,15 +183,16 @@ class OderTabItemWidget extends StatelessWidget {
           // ✅ Wrap the whole payment row in Obx so it reacts to list updates
           Obx(() {
             // find the fresh order from the list (in case it was updated)
-            final fresh =
-                OrderController.to.orderList.firstWhereOrNull((o) => o.sId == orderModel.sId) ??
-                    orderModel;
+            final fresh = OrderController.to.orderList
+                    .firstWhereOrNull((o) => o.sId == orderModel.sId) ??
+                orderModel;
 
             return Row(
               children: [
                 Expanded(
                   child: CustomText(
-                    text: 'Total amount: \$${(fresh.totalAmount ?? 0.0).toStringAsFixed(2)}',
+                    text:
+                        'Total amount: \$${(fresh.totalAmount ?? 0.0).toStringAsFixed(2)}',
                     color: AppColors.kPrimaryTextDarkColor,
                     style: poppinsSemiBold,
                   ),
@@ -199,15 +202,17 @@ class OderTabItemWidget extends StatelessWidget {
                   Expanded(
                     child: Obx(() {
                       // ✅ isLoading must be inside Obx, not Builder
-                      final isLoading =
-                          OrderController.to.isPaymentLoadingMap[fresh.sId ?? ""] == true;
+                      final isLoading = OrderController
+                              .to.isPaymentLoadingMap[fresh.sId ?? ""] ==
+                          true;
                       return CustomButton(
                         isLoading: isLoading,
                         padding: const EdgeInsets.symmetric(vertical: 6),
                         onTap: () {
                           isLoading //
                               ? null
-                              : OrderController.to.payForOrder(orderModel: fresh);
+                              : OrderController.to
+                                  .payForOrder(orderModel: fresh);
                         },
                         title: "Pay",
                       );
@@ -219,12 +224,14 @@ class OderTabItemWidget extends StatelessWidget {
 
 // ✅ payment status text also reactive
           Obx(() {
-            final fresh =
-                OrderController.to.orderList.firstWhereOrNull((o) => o.sId == orderModel.sId) ??
-                    orderModel;
-            if (fresh.paymentStatus == "pending") return const SizedBox.shrink();
+            final fresh = OrderController.to.orderList
+                    .firstWhereOrNull((o) => o.sId == orderModel.sId) ??
+                orderModel;
+            if (fresh.paymentStatus == "pending")
+              return const SizedBox.shrink();
             return CustomText(
-              text: 'Payment Status: ${(fresh.paymentStatus ?? "N/A").toUpperCase()}',
+              text:
+                  'Payment Status: ${(fresh.paymentStatus ?? "N/A").toUpperCase()}',
               color: AppColors.kPrimaryColor,
               style: poppinsSemiBold,
             );

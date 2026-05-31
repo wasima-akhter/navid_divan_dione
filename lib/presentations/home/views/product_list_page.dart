@@ -190,8 +190,7 @@ class ProductFilterWidget extends StatelessWidget {
                             margin: EdgeInsets.only(top: 10.h),
                             child: ListTile(
                               leading: CustomNetworkImage(
-                                imageUrl:
-                                    "${ApiService().baseUrl}${subCat.img}",
+                                imageUrl: "${subCat.img}",
                                 height: 40.sp,
                                 width: 40.sp,
                               ),

@@ -237,7 +237,10 @@ class _PickupAddressPageState extends State<PickupAddressPage> {
 
                   final subtotal = isFromCart
                       ? (double.tryParse(CartController.to.subTotal.value) ?? 0)
-                      : ((ProductController.to.getSelectedVariantForCart()?.price ?? 0) *
+                      : ((ProductController.to
+                                      .getSelectedVariantForCart()
+                                      ?.price ??
+                                  0) *
                               ProductController.to.cartQuantity.value)
                           .toDouble();
                   final tax = isFromCart

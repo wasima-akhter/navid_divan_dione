@@ -153,8 +153,7 @@ class ProductController extends GetxController {
     try {
       isLoadingProductDetails.value = true;
 
-      debugPrint(
-          ' product details url : ${ApiService().baseUrl}/$productDetailsEndPoint$productID ');
+      debugPrint(' product details url : $productDetailsEndPoint$productID ');
       debugPrint(
           'postman product details url : https://api.divandione.com/product/get-details/699eac4b4503db9654af30dd');
 
