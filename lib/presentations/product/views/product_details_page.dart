@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:navid_e_commerce/presentations/cart/controllers/cart_controller.dart';
 import 'package:navid_e_commerce/presentations/product/widgets/prod_det_preview_row.dart';
@@ -213,7 +214,31 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                       4.verticalSpace,
 ////////////   Related Product section
                       ///
-                      ProductDetRelatedProducts()
+                      ProductDetRelatedProducts(),
+
+                      // Temporary debug widget — remove before release
+                      if (kDebugMode)
+                        ElevatedButton(
+                          onPressed: () {
+                            final val = ProductController
+                                .to
+                                .betterPlayerController
+                                .value
+                                ?.videoPlayerController
+                                ?.value;
+
+                            debugPrint("=== VIDEO DEBUG ===");
+                            debugPrint("initialized: ${val?.initialized}");
+                            debugPrint("size: ${val?.size}");
+                            debugPrint("duration: ${val?.duration}");
+                            debugPrint("hasError: ${val?.hasError}");
+                            debugPrint(
+                                "errorDescription: ${val?.errorDescription}");
+                            debugPrint("isBuffering: ${val?.isBuffering}");
+                            debugPrint("isPlaying: ${val?.isPlaying}");
+                          },
+                          child: const Text("DEBUG VIDEO"),
+                        ),
                     ],
                   );
                 })
