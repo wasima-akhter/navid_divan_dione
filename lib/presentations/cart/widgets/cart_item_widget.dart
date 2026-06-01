@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:navid_e_commerce/core/components/custom_network_image.dart';
+import 'package:navid_e_commerce/core/components/loading.dart';
 import 'package:navid_e_commerce/core/constants/color_constants.dart';
 import 'package:navid_e_commerce/core/constants/custom_space.dart';
 import 'package:navid_e_commerce/core/constants/custom_text.dart';
@@ -100,14 +101,22 @@ class CartItemWidget extends StatelessWidget {
                         ),
                       ),
                     ),
-                    IconButton(
-                      onPressed: () {
-                        CartController.to
-                            .deleteCartItem(cartId: cartModel.sId ?? "");
-                      },
-                      icon: Icon(CupertinoIcons.delete,
-                          color: Colors.red, size: 16.sp),
-                    ),
+                    Obx(() => (CartController
+                                .to.isLoadingDeleteCart[cartModel.sId ?? ""] ??
+                            false)
+                        ? SizedBox(
+                            width: 16.w,
+                            height: 16.w,
+                            child: const Loading(),
+                          )
+                        : IconButton(
+                            onPressed: () {
+                              CartController.to
+                                  .deleteCartItem(cartId: cartModel.sId ?? "");
+                            },
+                            icon: Icon(CupertinoIcons.delete,
+                                color: Colors.red, size: 16.sp),
+                          )),
                   ],
                 ),
               ],

@@ -28,6 +28,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
 
     return DefaultScaffoldStructureWidget(
       onRefresh: () async {
+        controller.disposePlayer();
         // ✅ use controller.productId.value, not the snapshotted local variable
         controller.getProductDetailsRequest(
             productID: controller.productId.value);
