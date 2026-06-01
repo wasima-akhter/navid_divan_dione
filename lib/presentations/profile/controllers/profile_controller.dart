@@ -5,12 +5,12 @@ import 'package:get/get.dart';
 import 'package:navid_e_commerce/core/api-client/api_endpoints.dart';
 import 'package:navid_e_commerce/core/constants/app_static_strings.dart';
 import 'package:navid_e_commerce/core/utils/variable.dart';
-import 'package:navid_e_commerce/presentations/navigation/views/navigation_page.dart';
 import 'package:navid_e_commerce/presentations/profile/model/user_profile_model.dart';
 
 import '../../../core/api-client/api_service.dart';
 import '../../../core/helper/helper_function.dart';
 import '../../../core/utils/hive_boxes.dart';
+import '../../home/controllers/product_list_controller.dart';
 
 class ProfileController extends GetxController {
   static ProfileController get to => Get.find();
@@ -19,13 +19,16 @@ class ProfileController extends GetxController {
 
   RxString uploadProfileImg = ''.obs;
 
+  String? previousTaxId;
+
   ///=====================add dynmic name ====================///
   Rx<TextEditingController> nameController =
       TextEditingController(/*text: kDebugMode ? 'Khushi akter' : ''*/).obs;
 
   ///=====================add dynmic email ====================///
   Rx<TextEditingController> emailController =
-      TextEditingController(/*text: kDebugMode ? 'youremail@gmail.com' : ''*/).obs;
+      TextEditingController(/*text: kDebugMode ? 'youremail@gmail.com' : ''*/)
+          .obs;
 
   ///=====================add dynmic contactNumber ====================///
   Rx<TextEditingController> contactNumberController =
@@ -73,11 +76,15 @@ class ProfileController extends GetxController {
       isLoadingProfile.value = true;
       ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
 
-      final response = await ApiService().request(endpoint: getProfileEndPoint, method: 'GET');
+      final response = await ApiService()
+          .request(endpoint: getProfileEndPoint, method: 'GET');
       isLoadingProfile.value = false;
       if (response['success'] == true) {
         //   logger.d(response);
         userModel.value = UserProfileModel.fromJson(response['data']);
+
+        //
+        previousTaxId = userModel.value.taxId;
 
         // store UserId
         userId.value = userModel.value.sId ?? '';
@@ -102,7 +109,9 @@ class ProfileController extends GetxController {
       } else {
         //   logger.e(response);
         showCustomSnackbar(
-            title: 'Failed', message: response['message'], type: SnackBarType.failed);
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed);
       }
     } catch (e) {
       //   logger.e(e.toString());
@@ -111,11 +120,12 @@ class ProfileController extends GetxController {
   }
 
   ///------------------------------ update profile method -------------------------///
-
+  RxInt taxIdUpdateTrigger = 0.obs;
   Future<void> updateProfileRequest() async {
     try {
       isLoadingUpdateProfile.value = true;
       ApiService().setAuthToken(Boxes.getUserData().get(tokenKey).toString());
+
       Map<String, String> fields = {
         'name': nameController.value.text,
         'phone': contactNumberController.value.text,
@@ -144,17 +154,31 @@ class ProfileController extends GetxController {
         }
       }
       final response = await ApiService().multipartRequest(
-          endpoint: updateProfileEndPoint, method: 'PATCH', fields: fields, files: files);
+          endpoint: updateProfileEndPoint,
+          method: 'PATCH',
+          fields: fields,
+          files: files);
       isLoadingUpdateProfile.value = false;
       if (response['success'] == true) {
         //   logger.d(response);
-        getUserProfileRequest();
 
-        Get.offAllNamed(NavigationPage.routeName);
+        final bool taxIdChanged =
+            userModel.value.taxId != taxIdController.value.text;
+
+        await getUserProfileRequest();
+        if (taxIdChanged) {
+          taxIdUpdateTrigger.value++; // just increment, no reset needed
+        }
+
+        ProductListController.to.onTaxIdUpdated();
+        // Get.offAllNamed(NavigationPage.routeName);
+        Get.back();
       } else {
         //   logger.e(response);
         showCustomSnackbar(
-            title: 'Failed', message: response['message'], type: SnackBarType.failed);
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed);
       }
     } catch (e) {
       //   logger.e(e.toString());

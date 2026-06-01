@@ -1,14 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:navid_e_commerce/core/components/custom_button.dart';
-import 'package:navid_e_commerce/core/components/custom_textfield.dart';
 import 'package:navid_e_commerce/core/constants/app_static_strings.dart';
-import 'package:navid_e_commerce/core/constants/color_constants.dart';
-import 'package:navid_e_commerce/core/constants/custom_space.dart';
 import 'package:navid_e_commerce/core/constants/image_constants.dart';
-import 'package:navid_e_commerce/core/helper/helper_function.dart';
-import 'package:navid_e_commerce/presentations/auth/views/login_page.dart';
 import 'package:navid_e_commerce/presentations/home/widgets/default_scaffold_structure_widget.dart';
 import 'package:navid_e_commerce/presentations/settings/views/change_pass_page.dart';
 import 'package:navid_e_commerce/presentations/settings/widgets/setting_card_item_widget.dart';
@@ -29,6 +22,8 @@ class SettingPage extends StatelessWidget {
             title: AppStaticStrings.changePass,
             icon: changePassIcon,
           ),
+
+          /*
           SettingCardItemWidget(
             onTap: () {
               defaultAlertDialog(context,
@@ -78,6 +73,8 @@ class SettingPage extends StatelessWidget {
             title: AppStaticStrings.deleteAcc,
             icon: deleteIcon,
           ),
+
+     */
         ]);
   }
 }

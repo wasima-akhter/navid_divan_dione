@@ -25,9 +25,14 @@ class ProductListPage extends StatefulWidget {
 
 class _ProductListPageState extends State<ProductListPage> {
   final ScrollController scrollController = ScrollController();
+  final controller = ProductListController.to;
+
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.resetAndReload();
+    });
   }
 
   @override

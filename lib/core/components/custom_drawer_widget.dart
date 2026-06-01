@@ -14,7 +14,6 @@ import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/presentations/auth/views/login_page.dart';
 import 'package:navid_e_commerce/presentations/navigation/controllers/navigation_controller.dart';
 import 'package:navid_e_commerce/presentations/profile/views/profile_page.dart';
-import 'package:navid_e_commerce/presentations/settings/views/feedback_page.dart';
 import 'package:navid_e_commerce/presentations/settings/views/privacy_terms_page.dart';
 import 'package:navid_e_commerce/presentations/settings/views/settings_page.dart';
 import 'package:navid_e_commerce/presentations/splash/controllers/common_controller.dart';
@@ -48,9 +47,9 @@ class CustomDrawerWidget extends StatelessWidget {
                       text: AppStaticStrings.myProfile,
                       onTap: () {
                         Navigator.pop(context);
-                        if(CommonController.to.isLoggedIn.value){
+                        if (CommonController.to.isLoggedIn.value) {
                           Get.toNamed(ProfilePage.routeName);
-                        }else{
+                        } else {
                           Get.toNamed(LoginPage.routeName);
                         }
                       },
@@ -58,27 +57,27 @@ class CustomDrawerWidget extends StatelessWidget {
                     DrawerContentWidget(
                       onTap: () {
                         Navigator.pop(context);
-                        if(CommonController.to.isLoggedIn.value){
+                        if (CommonController.to.isLoggedIn.value) {
                           Get.toNamed(SettingPage.routeName);
-                        }else{
+                        } else {
                           Get.toNamed(LoginPage.routeName);
                         }
                       },
                       icon: settingsIcon,
                       text: AppStaticStrings.settings,
                     ),
-                    DrawerContentWidget(
-                      onTap: () {
-                        Navigator.pop(context);
-                        if(CommonController.to.isLoggedIn.value){
-                          Get.toNamed(FeedbackPage.routeName);
-                        }else{
-                          Get.toNamed(LoginPage.routeName);
-                        }
-                      },
-                      icon: feedbackIcon,
-                      text: AppStaticStrings.feedback,
-                    ),
+                    // DrawerContentWidget(
+                    //   onTap: () {
+                    //     Navigator.pop(context);
+                    //     if(CommonController.to.isLoggedIn.value){
+                    //       Get.toNamed(FeedbackPage.routeName);
+                    //     }else{
+                    //       Get.toNamed(LoginPage.routeName);
+                    //     }
+                    //   },
+                    //   icon: feedbackIcon,
+                    //   text: AppStaticStrings.feedback,
+                    // ),
                     DrawerContentWidget(
                       onTap: () {
                         Navigator.pop(context);
@@ -101,32 +100,38 @@ class CustomDrawerWidget extends StatelessWidget {
                 ),
               ),
             ),
-        CommonController.to.isLoggedIn.value?   Obx(() =>  NavigationController.to.isLoadingLogout.value?
-           DefaultProgressIndicator(color: AppColors.kPrimaryColor,)
-               :   ButtonTapWidget(
-             onTap: () {
-               NavigationController.to.logoutRequest();
-             },
-             child: Padding(
-               padding: padding12,
-               child: Row(
-                 mainAxisAlignment: MainAxisAlignment.center,
-                 children: [
-                   SvgPicture.asset(
-                     logoutIcon,
-                     height: 14.w,
-                     width: 14.w,
-                   ),
-                   space8W,
-                   CustomText(
-                     textAlign: TextAlign.center,
-                     text: AppStaticStrings.logOut,
-                     fontSize: getFontSizeSmall(),
-                   )
-                 ],
-               ),
-             ),
-           ),):SizedBox.shrink()
+            CommonController.to.isLoggedIn.value
+                ? Obx(
+                    () => NavigationController.to.isLoadingLogout.value
+                        ? DefaultProgressIndicator(
+                            color: AppColors.kPrimaryColor,
+                          )
+                        : ButtonTapWidget(
+                            onTap: () {
+                              NavigationController.to.logoutRequest();
+                            },
+                            child: Padding(
+                              padding: padding12,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SvgPicture.asset(
+                                    logoutIcon,
+                                    height: 14.w,
+                                    width: 14.w,
+                                  ),
+                                  space8W,
+                                  CustomText(
+                                    textAlign: TextAlign.center,
+                                    text: AppStaticStrings.logOut,
+                                    fontSize: getFontSizeSmall(),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                  )
+                : SizedBox.shrink()
           ],
         ),
       ),

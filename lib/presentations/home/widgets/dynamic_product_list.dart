@@ -1,4 +1,5 @@
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:navid_e_commerce/presentations/profile/views/profile_page.dart';
 
 import '../../../core/export/ui_export.dart';
 import '../../product/model/product_model.dart';
@@ -31,9 +32,7 @@ class DynamicProductList extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(
-                height: 1.sh * 0.1,
-              ),
+              SizedBox(height: 1.sh * 0.1),
               Text(
                 controller.pagingController.error?.toString().capitalize ??
                     'Something went wrong',
@@ -41,16 +40,44 @@ class DynamicProductList extends StatelessWidget {
                     fontSize: 14.sp, color: AppColors.kLightTextColor),
               ),
               SizedBox(height: 12.h),
-              ElevatedButton(
-                onPressed: () => controller.pagingController.refresh(),
-                child: Text(
-                  'Try Again',
-                  style:
-                      TextStyle(fontSize: 14.sp, color: AppColors.kWhiteColor),
-                ),
-                style: ButtonStyle(
-                    backgroundColor:
-                        WidgetStatePropertyAll(AppColors.kPrimaryColor)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Obx(() {
+                    final isUpdatedTaxId = controller.taxIDUpdated.value;
+
+                    if (!isUpdatedTaxId) {
+                      return const SizedBox.shrink();
+                    }
+                    return Column(
+                      children: [
+                        ElevatedButton(
+                          onPressed: () =>
+                              controller.pagingController.refresh(),
+                          style: ButtonStyle(
+                            backgroundColor:
+                                WidgetStatePropertyAll(AppColors.kPrimaryColor),
+                          ),
+                          child: Text('Try Again',
+                              style: TextStyle(
+                                  fontSize: 14.sp,
+                                  color: AppColors.kWhiteColor)),
+                        ),
+                        SizedBox(width: 8.w),
+                      ],
+                    );
+                  }),
+                  ElevatedButton(
+                    onPressed: () => Get.toNamed(ProfilePage.routeName),
+                    style: ButtonStyle(
+                      backgroundColor:
+                          WidgetStatePropertyAll(AppColors.kPrimaryColor),
+                    ),
+                    child: Text('Update Tax ID',
+                        style: TextStyle(
+                            fontSize: 14.sp, color: AppColors.kWhiteColor)),
+                  ),
+                ],
               ),
             ],
           ),

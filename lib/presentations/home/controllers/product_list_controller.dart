@@ -5,6 +5,7 @@ import '../../../core/export/ui_export.dart';
 import '../../../core/utils/hive_boxes.dart';
 import '../../../core/utils/variable.dart';
 import '../../product/model/product_model.dart';
+import '../../profile/controllers/profile_controller.dart';
 import '../../splash/controllers/common_controller.dart';
 import '../model/category_model.dart';
 
@@ -26,19 +27,50 @@ class ProductListController extends GetxController {
   final FocusNode searchFocusNode = FocusNode();
 
   @override
-  void onInit() async {
+  void onInit() {
     pagingController.addPageRequestListener((pageKey) {
       getProductListRequest(pageKey);
     });
 
-    await getCategoryListRequest();
+    getCategoryListRequest();
+
+    //
+    ever(ProfileController.to.taxIdUpdateTrigger, (_) {
+      onTaxIdUpdated();
+    });
     super.onInit();
+  }
+
+  void resetAndReload() {
+    selectedType.value = false;
+
+    searchQuery = "";
+    selectedCategory = null;
+    selectedSubCategory = null;
+    hasFilter.value = false;
+
+    pagingController.refresh();
+    getCategoryListRequest();
   }
 
   @override
   void onClose() {
     pagingController.dispose();
     super.onClose();
+  }
+
+  final taxIDUpdated = false.obs;
+  void onTaxIdUpdated() {
+    taxIDUpdated.value = true;
+
+    selectedType.value = false; // or recompute wholesale flag
+
+    pagingController.refresh(); // 🔥 reload products
+
+    searchQuery = "";
+    selectedCategory = null;
+    selectedSubCategory = null;
+    hasFilter.value = false;
   }
 
   void applyFilters({
