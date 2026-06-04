@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -300,16 +303,17 @@ class HomeController extends GetxController {
 
       debugPrint(' response in home Contr product list : $response');
 
+      log("response of list : ${JsonEncoder.withIndent('').convert(response)}");
       if (response['success'] == true) {
-        final newProducts = (response['data'] as List)
-            .map((e) => ProductModel.fromJson(e))
-            .toList();
+        final rawData = response['data'];
 
-// // 👇 duplicate for testing
-//         final expandedList = List.generate(
-//           5, // multiply factor
-//           (_) => newProducts,
-//         ).expand((e) => e).toList();
+        if (rawData == null || rawData is! List) {
+          pagingController.error = 'Invalid data format';
+          return;
+        }
+
+        final newProducts =
+            (rawData).map((e) => ProductModel.fromJson(e)).toList();
 
         final isLastPage =
             pageKey >= (response['pagination']?['totalPages'] ?? 1);
@@ -317,14 +321,35 @@ class HomeController extends GetxController {
         if (isLastPage) {
           pagingController.appendLastPage(newProducts);
         } else {
-          final nextPageKey = pageKey + 1;
-          pagingController.appendPage(newProducts, nextPageKey);
+          pagingController.appendPage(newProducts, pageKey + 1);
         }
-      } else {
-        pagingController.error = response['message'];
       }
-    } catch (e) {
-      pagingController.error = e;
+//       if (response['success'] == true) {
+//         final newProducts = (response['data'] as List)
+//             .map((e) => ProductModel.fromJson(e))
+//             .toList();
+
+// // // 👇 duplicate for testing
+// //         final expandedList = List.generate(
+// //           5, // multiply factor
+// //           (_) => newProducts,
+// //         ).expand((e) => e).toList();
+
+//         final isLastPage =
+//             pageKey >= (response['pagination']?['totalPages'] ?? 1);
+
+//         if (isLastPage) {
+//           pagingController.appendLastPage(newProducts);
+//         } else {
+//           final nextPageKey = pageKey + 1;
+//           pagingController.appendPage(newProducts, nextPageKey);
+//         }
+//       } else {
+//         pagingController.error = response['message'];
+//       }
+    } catch (e, st) {
+      debugPrint('Product list exception: $e\n$st');
+      pagingController.error = e.toString(); // convert to String
     }
   }
 }

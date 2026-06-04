@@ -259,8 +259,9 @@ class HomePage extends StatelessWidget {
                             category: category,
                             search: search,
                             subCategory: subCategory)),
-                firstPageErrorIndicatorBuilder: (context) =>
-                    CustomText(text: 'Something went wrong!'),
+                firstPageErrorIndicatorBuilder: (context) => CustomText(
+                    text: hCtrl.pagingController.error?.toString() ??
+                        'Something went wrong!'),
                 newPageErrorIndicatorBuilder: (context) =>
                     CustomText(text: 'Failed to load more products!'),
               ),

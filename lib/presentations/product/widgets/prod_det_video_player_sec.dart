@@ -68,11 +68,24 @@ class ProdDetVideoPlayerSec extends StatelessWidget {
 }
 */
 
-class ProdDetVideoPlayerSec extends StatelessWidget {
-  const ProdDetVideoPlayerSec({Key? key}) : super(key: key);
+class ProdDetVideoPlayerSec extends StatefulWidget {
+  const ProdDetVideoPlayerSec({super.key});
+
+  @override
+  State<ProdDetVideoPlayerSec> createState() => _ProdDetVideoPlayerSecState();
+}
+
+class _ProdDetVideoPlayerSecState extends State<ProdDetVideoPlayerSec>
+    with AutomaticKeepAliveClientMixin {
+  // ← add this
+
+  @override
+  bool get wantKeepAlive => true; // ← add this
 
   @override
   Widget build(BuildContext context) {
+    super.build(context); // ← required when using mixin
+
     final controller = ProductController.to;
 
     return Obx(() {
@@ -125,16 +138,20 @@ class ProdDetVideoPlayerSec extends StatelessWidget {
 class _VideoPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SizedBox.expand(
-      child: Container(
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: Colors.blue.shade200,
-          image: const DecorationImage(
-            image: AssetImage("assets/icons/video.png"),
-            fit: BoxFit.fitHeight,
-            alignment: Alignment.center,
-          ),
+    return Container(
+      color: Colors.grey.shade200,
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.videocam_off_outlined,
+                color: Colors.grey.shade900, size: 48.r),
+            SizedBox(height: 8.h),
+            Text(
+              'No video is available',
+              style: TextStyle(color: Colors.grey.shade900, fontSize: 13.sp),
+            ),
+          ],
         ),
       ),
     );

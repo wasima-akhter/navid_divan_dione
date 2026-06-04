@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -52,8 +50,8 @@ class _CustomNetworkImageState extends State<CustomNetworkImage> {
   Widget build(BuildContext context) {
     // final cleanedUrl = finalImageUrl.replaceAll(RegExp(r'/+'), '/');
 
-    log("imageUrl: ${widget.imageUrl}");
-
+    //  log("imageUrl: ${widget.imageUrl}");
+//
     final finalImageUrl = getImageUrl(widget.imageUrl);
 
     bool isSvgUrl(String url) {

@@ -51,10 +51,10 @@ class ProductCardItemWidget extends StatelessWidget {
 
     var productColors = product.colors ?? [];
 
-    debugPrint('Product Price: ${product.priceAfterDiscount}');
-    debugPrint('Product previousPrice: ${product.price}');
-    debugPrint('Product discount: ${product.discount}');
-    debugPrint('Product finalImageUrl: ${finalImageUrl}');
+    // debugPrint('Product Price: ${product.priceAfterDiscount}');
+    // debugPrint('Product previousPrice: ${product.price}');
+    // debugPrint('Product discount: ${product.discount}');
+    // debugPrint('Product finalImageUrl: ${finalImageUrl}');
 
     //
     return DefaultFadeContainerWidget(

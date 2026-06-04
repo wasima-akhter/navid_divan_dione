@@ -257,7 +257,6 @@ class ProductController extends GetxController {
       looping: false,
       fit: BoxFit.contain,
       handleLifecycle: true,
-      autoDispose: true,
       expandToFill: true,
       allowedScreenSleep: false,
       deviceOrientationsOnFullScreen: const [

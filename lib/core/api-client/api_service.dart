@@ -46,8 +46,9 @@ class ApiService {
     }
 
     try {
-      final response =
-          await http.get(Uri.parse('https://www.google.com')).timeout(const Duration(seconds: 5));
+      final response = await http
+          .get(Uri.parse('https://www.google.com'))
+          .timeout(const Duration(seconds: 5));
 
       return response.statusCode == 200;
     } catch (_) {
@@ -136,6 +137,17 @@ class ApiService {
 
       // Parse response
       var responseData = json.decode(response.body);
+
+      debugPrint(
+        '--- Response Body: ${response.body}',
+      );
+
+      debugPrint("token: $_authToken");
+
+      debugPrint("\n--- responseData: \n");
+
+      const encoder = JsonEncoder.withIndent('  ');
+      print(encoder.convert(responseData));
       // logger.d(responseData);
       // Check status code
       if (response.statusCode >= 200 && response.statusCode < 300) {
@@ -143,8 +155,8 @@ class ApiService {
       } else {
         return {
           'success': false,
-          'message':
-              responseData['message'] ?? 'Request failed with status: ${response.statusCode}',
+          'message': responseData['message'] ??
+              'Request failed with status: ${response.statusCode}',
           'statusCode': response.statusCode,
           'data': responseData,
         };
@@ -182,7 +194,8 @@ class ApiService {
     required String endpoint,
     required String method,
     required Map<String, String> fields,
-    required Map<String, dynamic> files, // Use dynamic to support both single files and lists
+    required Map<String, dynamic>
+        files, // Use dynamic to support both single files and lists
   }) async {
     // Check internet connection first
     bool isConnected = await checkInternetConnection();
@@ -222,10 +235,11 @@ class ApiService {
         case 'doc':
           return MediaType('application', 'msword');
         case 'docx':
-          return MediaType(
-              'application', 'vnd.openxmlformats-officedocument.wordprocessingml.document');
+          return MediaType('application',
+              'vnd.openxmlformats-officedocument.wordprocessingml.document');
         default:
-          return MediaType('application', 'octet-stream'); // Default binary data
+          return MediaType(
+              'application', 'octet-stream'); // Default binary data
       }
     }
 
@@ -278,8 +292,8 @@ class ApiService {
       } else {
         return {
           'success': false,
-          'message':
-              jsonResponse['message'] ?? 'Request failed with status: ${response.statusCode}',
+          'message': jsonResponse['message'] ??
+              'Request failed with status: ${response.statusCode}',
           'statusCode': response.statusCode,
           'data': jsonResponse,
         };

@@ -34,10 +34,18 @@ class ProductListController extends GetxController {
 
     getCategoryListRequest();
 
+    // ✅ Reset wholesale toggle for guests
+    if (!CommonController.to.isLoggedIn.value) {
+      selectedType.value = false;
+    }
+
     //
-    ever(ProfileController.to.taxIdUpdateTrigger, (_) {
-      onTaxIdUpdated();
-    });
+    // ✅ Only listen for tax ID changes when logged in
+    if (CommonController.to.isLoggedIn.value) {
+      ever(ProfileController.to.taxIdUpdateTrigger, (_) {
+        onTaxIdUpdated();
+      });
+    }
     super.onInit();
   }
 
@@ -202,8 +210,57 @@ class ProductListController extends GetxController {
     }
   }
 
+//
+
+  Future<void> onRefresh() async {
+    _requestGeneration++;
+    selectedType.value = false;
+    searchQuery = "";
+    selectedCategory = null;
+    selectedSubCategory = null;
+    hasFilter.value = false;
+    pagingController.refresh();
+    await getCategoryListRequest();
+  }
+
   final selectedType = RxBool(false);
+
+// Add this to ProductListController
+  int _requestGeneration = 0;
+
+  void onTypeChanged(bool value) async {
+    selectedType.value = value;
+
+    // ✅ Invalidate any in-flight requests
+    _requestGeneration++;
+    final myGeneration = _requestGeneration;
+
+    pagingController.refresh();
+
+    if (value == true && !CommonController.to.isLoggedIn.value) {
+      await Future.delayed(const Duration(milliseconds: 100));
+      // ✅ Only set error if no newer request has started
+      if (myGeneration == _requestGeneration) {
+        pagingController.error = 'Please login to view wholesale products.';
+      }
+      return;
+    }
+  }
+
+/*
   Future<void> getProductListRequest(int pageKey) async {
+    debugPrint('📡 getProductListRequest called — pageKey: $pageKey');
+    debugPrint('🛒 selectedType: ${selectedType.value}');
+    debugPrint('🔐 isLoggedIn: ${CommonController.to.isLoggedIn.value}');
+    debugPrint('📡 getProductListRequest called — pageKey: $pageKey');
+
+    // ✅ Bail immediately — error will be set by onTypeChanged
+    if (selectedType.value == true && !CommonController.to.isLoggedIn.value) {
+      debugPrint('🚫 bailing out — not logged in');
+      return;
+    }
+
+    //
     final response = await ApiService().request(
       endpoint: productGetAllEndPoint,
       method: 'GET',
@@ -248,6 +305,71 @@ class ProductListController extends GetxController {
     }
 
     /// 🟢 VALID DATA
+    final newItems =
+        (data as List).map((e) => ProductModel.fromJson(e)).toList();
+
+    final isLastPage =
+        pageKey >= ((response['pagination']?['totalPages'] ?? 1) as int);
+
+    if (isLastPage) {
+      pagingController.appendLastPage(newItems);
+    } else {
+      pagingController.appendPage(newItems, pageKey + 1);
+    }
+  }
+*/
+  Future<void> getProductListRequest(int pageKey) async {
+    // ✅ Capture generation at start of this request
+    final myGeneration = _requestGeneration;
+
+    if (selectedType.value == true && !CommonController.to.isLoggedIn.value) {
+      return;
+    }
+
+    final response = await ApiService().request(
+      endpoint: productGetAllEndPoint,
+      method: 'GET',
+      useAuth: CommonController.to.isLoggedIn.value,
+      queryParams: {
+        if (CommonController.to.isLoggedIn.value)
+          "whole_sale": selectedType.value.toString(),
+        'page': pageKey.toString(),
+        'limit': '10',
+        if (searchQuery.isNotEmpty) 'search': searchQuery,
+        if (selectedCategory != null) 'category': selectedCategory!,
+        if (selectedSubCategory != null) 'sub_category': selectedSubCategory!,
+      },
+    );
+
+    // ✅ Discard response if a newer request has taken over
+    if (myGeneration != _requestGeneration) {
+      debugPrint('🗑 Discarding stale response for generation $myGeneration');
+      return;
+    }
+
+    if (response == null) {
+      pagingController.error = 'No result found. Please try again.';
+      return;
+    }
+
+    final success = response['success'] == true || response['status'] == true;
+    if (!success) {
+      pagingController.error =
+          response['message'] ?? 'Something went wrong. Try again.';
+      return;
+    }
+
+    final data = response['data'];
+    if (data == null) {
+      pagingController.error = 'No result found. Please try again.';
+      return;
+    }
+
+    if (data is List && data.isEmpty) {
+      pagingController.appendLastPage([]);
+      return;
+    }
+
     final newItems =
         (data as List).map((e) => ProductModel.fromJson(e)).toList();
 

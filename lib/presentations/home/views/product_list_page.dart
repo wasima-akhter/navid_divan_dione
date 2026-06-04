@@ -54,7 +54,7 @@ class _ProductListPageState extends State<ProductListPage> {
       child: DefaultScaffoldStructureWidget(
           appBarTitle: 'Products',
           onRefresh: () async {
-            controller.pagingController.refresh();
+            await controller.onRefresh();
           },
           children: [
             Column(
@@ -84,10 +84,7 @@ class _ProductListPageState extends State<ProductListPage> {
                 Obx(
                   () => UserTypeRadioGroup(
                     selectedValue: controller.selectedType.value,
-                    onChanged: (value) {
-                      controller.selectedType.value = value;
-                      controller.pagingController.refresh();
-                    },
+                    onChanged: (value) => controller.onTypeChanged(value),
                   ),
                 ),
               ],

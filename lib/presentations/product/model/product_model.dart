@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class ProductModel {
   String? id;
   String? name;
@@ -35,22 +37,42 @@ class ProductModel {
   factory ProductModel.fromJson(Map<String, dynamic>? json) {
     if (json == null) return ProductModel();
 
-    return ProductModel(
-      id: json['_id'],
-      name: json['name'],
-      description: json['description'],
-      price: (json['price'] as dynamic?)?.toDouble(),
-      priceAfterDiscount: (json['price_after_discount'] as dynamic)?.toDouble(),
-      discount: (json['discount'] as dynamic?)?.toDouble(),
-      category: json['category'] != null ? Category.fromJson(json['category']) : null,
-      subCategoryId: json['sub_category'],
-      subCategory:
-          json['sub_categories'] != null ? SubCategory.fromJson(json['sub_categories']) : null,
-      wholeSale: json['whole_sale'],
-      image: json['img'],
-      colors: json['colors'] != null ? List<String>.from(json['colors']) : [],
-      size: json['size'] != null ? List<String>.from(json['size']) : [],
-    );
+    try {
+      return ProductModel(
+        id: json['_id'],
+        name: json['name'],
+        description: json['description'],
+        price: (json['price'] as dynamic)?.toDouble(),
+        priceAfterDiscount:
+            (json['price_after_discount'] as dynamic)?.toDouble(),
+        discount: (json['discount'] as dynamic)?.toDouble(),
+        category: json['category'] != null
+            ? Category.fromJson(json['category'])
+            : null,
+        subCategory: json['sub_categories'] != null
+            ? SubCategory.fromJson(json['sub_categories'])
+            : null,
+        subCategoryId: json['sub_category'] is String
+            ? json['sub_category']
+            : json['sub_category']?['_id'],
+        wholeSale: json['whole_sale'],
+        image: json['img'],
+        colors: (json['colors'] as List?)
+                ?.where((e) => e != null)
+                .map((e) => e.toString())
+                .toList() ??
+            [],
+        size: (json['size'] as List?)
+                ?.where((e) => e != null)
+                .map((e) => e.toString())
+                .toList() ??
+            [],
+      );
+    } catch (e) {
+      debugPrint('ProductModel.fromJson failed on json: $json');
+      debugPrint('Error: $e');
+      rethrow;
+    }
   }
 
   Map<String, dynamic> toJson() {
