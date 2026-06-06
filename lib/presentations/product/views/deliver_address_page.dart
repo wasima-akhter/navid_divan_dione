@@ -28,7 +28,8 @@ class DeliverAddressPage extends StatefulWidget {
   State<DeliverAddressPage> createState() => _DeliverAddressPageState();
 }
 
-class _DeliverAddressPageState extends State<DeliverAddressPage> {
+class _DeliverAddressPageState extends State<DeliverAddressPage>
+    with WidgetsBindingObserver {
   Map<String, dynamic>? arg;
 
   bool isFromCart = false;
@@ -39,10 +40,30 @@ class _DeliverAddressPageState extends State<DeliverAddressPage> {
   void initState() {
     super.initState();
 
+    WidgetsBinding.instance.addObserver(this);
+
     arg = Get.arguments as Map<String, dynamic>?;
     isFromCart = arg?["isFromCart"] ?? false;
     selectColor = arg?["color"];
     selectSize = arg?["size"];
+
+    // initial load
+    AddressOrderController.to.getShippingAddressRequest();
+    AddressOrderController.to.getPickUpAddressRequest();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      AddressOrderController.to.getShippingAddressRequest();
+      AddressOrderController.to.getPickUpAddressRequest();
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   // ✅ Compute shipping based on subTotal (float-safe)
@@ -50,7 +71,8 @@ class _DeliverAddressPageState extends State<DeliverAddressPage> {
     final subtotal = double.tryParse(
           isFromCart
               ? CartController.to.subTotal.value
-              : ((ProductController.to.getSelectedVariantForCart()?.price ?? 0) *
+              : ((ProductController.to.getSelectedVariantForCart()?.price ??
+                          0) *
                       ProductController.to.cartQuantity.value)
                   .toString(),
         ) ??
@@ -126,7 +148,8 @@ class _DeliverAddressPageState extends State<DeliverAddressPage> {
                       price: (cart.variant?.price ?? 0.0).toString(),
                       description: '',
                       size: cart.variant?.size ?? '',
-                      quantity: (CartController.to.localQty[cart.product?.sId ?? ''] ??
+                      quantity: (CartController
+                                  .to.localQty[cart.product?.sId ?? ''] ??
                               cart.quantity ??
                               1)
                           .toString(),
@@ -136,8 +159,14 @@ class _DeliverAddressPageState extends State<DeliverAddressPage> {
               )
             : _buildProductItem(
                 name: ProductController.to.productDetailsModel.value.name ?? '',
-                price: ProductController.to.getSelectedVariantForCart()?.price.toString() ?? '0',
-                description: ProductController.to.productDetailsModel.value.description ?? '',
+                price: ProductController.to
+                        .getSelectedVariantForCart()
+                        ?.price
+                        .toString() ??
+                    '0',
+                description: ProductController
+                        .to.productDetailsModel.value.description ??
+                    '',
                 quantity: ProductController.to.cartQuantity.value.toString(),
                 color: selectColor,
                 size: selectSize,
@@ -147,7 +176,8 @@ class _DeliverAddressPageState extends State<DeliverAddressPage> {
         Obx(() {
           final subtotal = isFromCart
               ? (double.tryParse(CartController.to.subTotal.value) ?? 0)
-              : (ProductController.to.getSelectedVariantForCart()?.price ?? 0).toDouble() *
+              : (ProductController.to.getSelectedVariantForCart()?.price ?? 0)
+                      .toDouble() *
                   ProductController.to.cartQuantity.value;
 
           final tax = isFromCart
@@ -168,7 +198,8 @@ class _DeliverAddressPageState extends State<DeliverAddressPage> {
             spacing: 6.h,
             children: [
               const Divider(),
-              _summaryRow(AppStaticStrings.subTotal, '\$${subtotal.toStringAsFixed(2)}'),
+              _summaryRow(AppStaticStrings.subTotal,
+                  '\$${subtotal.toStringAsFixed(2)}'),
               _summaryRow(
                 '${AppStaticStrings.salesTax}\n${AppStaticStrings.includedTax}',
                 '\$${tax.toStringAsFixed(2)}',
@@ -198,33 +229,42 @@ class _DeliverAddressPageState extends State<DeliverAddressPage> {
               isLoading: AddressOrderController.to.isLoadingOrder.value ||
                   AddressOrderController.to.isPaymentLoading.value,
               onTap: () {
-                if (AddressOrderController.to.selectedShippingAddress.value.isNotEmpty &&
+                if (AddressOrderController
+                        .to.selectedShippingAddress.value.isNotEmpty &&
                     CartController.to.cartList.isNotEmpty) {
                   final items = CartController.to.buildOrderItems();
 
                   final userId = AddressOrderController.to.shippingAddressList
                           .firstWhereOrNull((e) =>
-                              e.sId == AddressOrderController.to.selectedShippingAddress.value)
+                              e.sId ==
+                              AddressOrderController
+                                  .to.selectedShippingAddress.value)
                           ?.user ??
                       '';
 
                   final subtotal = isFromCart
                       ? (double.tryParse(CartController.to.subTotal.value) ?? 0)
-                      : ((ProductController.to.getSelectedVariantForCart()?.price ?? 0) *
+                      : ((ProductController.to
+                                      .getSelectedVariantForCart()
+                                      ?.price ??
+                                  0) *
                               ProductController.to.cartQuantity.value)
                           .toDouble();
                   final tax = isFromCart
                       ? (double.tryParse(CartController.to.salesTax.value) ?? 0)
                       : subtotal * 0.06625;
                   final shipping = isFromCart
-                      ? (double.tryParse(CartController.to.shippingCharge.value) ?? 0)
+                      ? (double.tryParse(
+                              CartController.to.shippingCharge.value) ??
+                          0)
                       : shippingPrice;
                   final totalAmount = subtotal + tax + shipping;
 
                   AddressOrderController.to.orderRequest(
                     userId: userId,
                     totalAmount: totalAmount,
-                    deliveryAddress: AddressOrderController.to.selectedShippingAddress.value,
+                    deliveryAddress:
+                        AddressOrderController.to.selectedShippingAddress.value,
                     items: items,
                   );
                 } else {
@@ -270,8 +310,8 @@ class _DeliverAddressPageState extends State<DeliverAddressPage> {
               ),
             ),
             IconButton(
-              onPressed: () =>
-                  AddressOrderController.to.deleteAddress(id: pickAddress.sId.toString()),
+              onPressed: () => AddressOrderController.to
+                  .deleteAddress(id: pickAddress.sId.toString()),
               icon: Icon(CupertinoIcons.delete, color: Colors.red),
             ),
           ],
@@ -285,13 +325,17 @@ class _DeliverAddressPageState extends State<DeliverAddressPage> {
         CustomText(
           text: title,
           fontSize: isTotal ? getFontSizeDefault() : getFontSizeSmall(),
-          color: isTotal ? AppColors.kSplashBackgroundColor : AppColors.kExtraLightGreyTextColor,
+          color: isTotal
+              ? AppColors.kSplashBackgroundColor
+              : AppColors.kExtraLightGreyTextColor,
           style: isTotal ? poppinsSemiBold : poppinsRegular,
         ),
         CustomText(
           text: value,
           fontSize: isTotal ? getFontSizeDefault() : getFontSizeSmall(),
-          color: isTotal ? AppColors.kSplashBackgroundColor : AppColors.kExtraLightGreyTextColor,
+          color: isTotal
+              ? AppColors.kSplashBackgroundColor
+              : AppColors.kExtraLightGreyTextColor,
           style: isTotal ? poppinsSemiBold : poppinsRegular,
         ),
       ],

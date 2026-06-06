@@ -28,7 +28,8 @@ class PickupAddressPage extends StatefulWidget {
   State<PickupAddressPage> createState() => _PickupAddressPageState();
 }
 
-class _PickupAddressPageState extends State<PickupAddressPage> {
+class _PickupAddressPageState extends State<PickupAddressPage>
+    with WidgetsBindingObserver {
   Map<String, dynamic>? arg;
 
   bool isFromCart = false;
@@ -38,13 +39,27 @@ class _PickupAddressPageState extends State<PickupAddressPage> {
   void initState() {
     super.initState();
 
-    arg = Get.arguments as Map<String, dynamic>?;
+    WidgetsBinding.instance.addObserver(this);
 
+    arg = Get.arguments as Map<String, dynamic>?;
     isFromCart = arg?["isFromCart"] ?? false;
     selectColor = arg?["color"];
     selectSize = arg?["size"];
 
-    // logger.d("img: $selectColor , size: $selectSize");
+    AddressOrderController.to.refreshData(); // initial load
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      AddressOrderController.to.refreshData();
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override
@@ -54,8 +69,7 @@ class _PickupAddressPageState extends State<PickupAddressPage> {
         appBarTitle: AppStaticStrings.pickUpAddress,
         onRefresh: () async {
           final controller = Get.find<AddressOrderController>();
-          controller.getPickUpAddressRequest();
-          controller.getShippingAddressRequest();
+          controller.refreshData();
         },
         children: [
           _buildSectionTitle(AppStaticStrings.pickUpFromLabel),

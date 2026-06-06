@@ -46,6 +46,23 @@ class AddressOrderController extends GetxController {
   }
 
   @override
+  void onReady() {
+    super.onReady();
+
+    if (CommonController.to.isLoggedIn.value) {
+      getPickUpAddressRequest();
+      getShippingAddressRequest();
+    }
+  }
+
+  void refreshData() {
+    if (CommonController.to.isLoggedIn.value) {
+      getPickUpAddressRequest();
+      getShippingAddressRequest();
+    }
+  }
+
+  @override
   void onClose() {
     nameController.dispose();
     phoneController.dispose();
@@ -68,17 +85,21 @@ class AddressOrderController extends GetxController {
   Future<void> getPickUpAddressRequest() async {
     try {
       isLoadingPickUpAddress.value = true;
-      final response = await ApiService().request(endpoint: pickAddressEndPoint, method: 'GET');
+      final response = await ApiService()
+          .request(endpoint: pickAddressEndPoint, method: 'GET');
       if (response['success'] == true) {
-        pickAddressList.value =
-            (response["data"] as List).map((e) => PickAddressModel.fromJson(e)).toList();
+        pickAddressList.value = (response["data"] as List)
+            .map((e) => PickAddressModel.fromJson(e))
+            .toList();
         if (pickAddressList.isNotEmpty) {
           selectedPickAddress.value = pickAddressList.first.sId ?? '';
           fetchPickUpAddress();
         }
       } else {
         showCustomSnackbar(
-            title: 'Failed', message: response['message'], type: SnackBarType.failed);
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed);
       }
     } catch (e) {
       debugPrint('getPickUpAddressRequest error: $e');
@@ -91,17 +112,20 @@ class AddressOrderController extends GetxController {
   Future<void> getShippingAddressRequest() async {
     try {
       isLoadingShippingAddress.value = true;
-      final response =
-          await ApiService().request(endpoint: shippingAddressGetEndPoint, method: 'GET');
+      final response = await ApiService()
+          .request(endpoint: shippingAddressGetEndPoint, method: 'GET');
       if (response['success'] == true) {
-        shippingAddressList.value =
-            (response["data"] as List).map((e) => PickAddressModel.fromJson(e)).toList();
+        shippingAddressList.value = (response["data"] as List)
+            .map((e) => PickAddressModel.fromJson(e))
+            .toList();
         if (shippingAddressList.isNotEmpty) {
           selectedShippingAddress.value = shippingAddressList.first.sId ?? '';
         }
       } else {
         showCustomSnackbar(
-            title: 'Failed', message: response['message'], type: SnackBarType.failed);
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed);
       }
     } catch (e) {
       debugPrint('getShippingAddressRequest error: $e');
@@ -128,7 +152,9 @@ class AddressOrderController extends GetxController {
         showCustomSnackbar(title: 'Success', message: response['message']);
       } else {
         showCustomSnackbar(
-            title: 'Failed', message: response['message'], type: SnackBarType.failed);
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed);
       }
     } catch (e) {
       debugPrint('addShippingAddressRequest error: $e');
@@ -152,7 +178,9 @@ class AddressOrderController extends GetxController {
         showCustomSnackbar(title: 'Success', message: response['message']);
       } else {
         showCustomSnackbar(
-            title: 'Failed', message: response['message'], type: SnackBarType.failed);
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed);
       }
     } catch (e) {
       isLoadingDeleteAddress[id] = false;
@@ -190,7 +218,9 @@ class AddressOrderController extends GetxController {
         showCustomSnackbar(title: 'Success', message: response['message']);
       } else {
         showCustomSnackbar(
-            title: 'Failed', message: response['message'], type: SnackBarType.failed);
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed);
       }
     } catch (e) {
       debugPrint("Order error: $e");
@@ -214,7 +244,9 @@ class AddressOrderController extends GetxController {
         showCustomSnackbar(title: 'Success', message: response['message']);
       } else {
         showCustomSnackbar(
-            title: 'Failed', message: response['message'], type: SnackBarType.failed);
+            title: 'Failed',
+            message: response['message'],
+            type: SnackBarType.failed);
       }
     } catch (e) {
       debugPrint('paymentRequest error: $e');

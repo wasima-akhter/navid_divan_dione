@@ -62,9 +62,12 @@ class ProfileController extends GetxController {
 
   RxList<String> docPhotosList = <String>[].obs;
 
+  RxBool isEditMode = false.obs;
+
   @override
   void onInit() {
     getUserProfileRequest();
+    isEditMode.value = false;
     super.onInit();
   }
 
