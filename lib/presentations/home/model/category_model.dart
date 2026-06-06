@@ -10,43 +10,68 @@ class CategoryModel {
   int? iV;
   int? subTotal;
   bool? isService;
+
   RxBool isLoadingSub = false.obs;
 
-  CategoryModel(
-      {this.sId,
-      this.name,
-      this.img,
-      this.isActive,
-      this.createdAt,
-      this.updatedAt,
-      this.iV,
-      this.subTotal,
-      this.isService});
+  CategoryModel({
+    this.sId,
+    this.name,
+    this.img,
+    this.isActive,
+    this.createdAt,
+    this.updatedAt,
+    this.iV,
+    this.subTotal,
+    this.isService,
+  });
 
-  CategoryModel.fromJson(Map<String, dynamic> json) {
-    sId = json['_id'];
-    name = json['name'];
-    img = json['img'];
-    isActive = json['is_active'];
-    createdAt = json['createdAt'];
-    updatedAt = json['updatedAt'];
-    iV = json['__v'];
-    subTotal = json['subTotal'] ?? json['sub_total'] ?? json['subCategoriesCount'];
-    isService = json['is_service'];
+  factory CategoryModel.fromJson(Map<String, dynamic>? json) {
+    if (json == null) return CategoryModel();
+
+    return CategoryModel(
+      sId: json['_id']?.toString() ?? '',
+      name: json['name']?.toString() ?? '',
+      img: json['img']?.toString() ?? '',
+      isActive: _toBool(json['is_active']),
+      isService: _toBool(json['is_service']),
+      createdAt: json['createdAt']?.toString(),
+      updatedAt: json['updatedAt']?.toString(),
+      iV: _toInt(json['__v']),
+      subTotal: _toInt(
+        json['subTotal'] ?? json['sub_total'] ?? json['subCategoriesCount'],
+      ),
+    );
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['_id'] = sId;
-    data['name'] = name;
-    data['img'] = img;
-    data['is_active'] = isActive;
-    data['createdAt'] = createdAt;
-    data['updatedAt'] = updatedAt;
-    data['__v'] = iV;
-    data['subTotal'] = subTotal;
-    data['is_service'] = isService;
-    return data;
+    return {
+      '_id': sId,
+      'name': name,
+      'img': img,
+      'is_active': isActive,
+      'createdAt': createdAt,
+      'updatedAt': updatedAt,
+      '__v': iV,
+      'subTotal': subTotal,
+      'is_service': isService,
+    };
+  }
+
+  // ---------------- SAFE HELPERS ----------------
+
+  static int _toInt(dynamic value) {
+    if (value is int) return value;
+    if (value is double) return value.toInt();
+    return int.tryParse(value?.toString() ?? '') ?? 0;
+  }
+
+  static bool _toBool(dynamic value) {
+    if (value is bool) return value;
+    if (value is num) return value == 1;
+    if (value is String) {
+      return value.toLowerCase() == 'true' || value == '1';
+    }
+    return false;
   }
 }
 
@@ -55,20 +80,28 @@ class SubCategoryModel {
   String? name;
   String? img;
 
-  SubCategoryModel({this.sId, this.name, this.img});
+  SubCategoryModel({
+    this.sId,
+    this.name,
+    this.img,
+  });
 
-  SubCategoryModel.fromJson(Map<String, dynamic> json) {
-    sId = json['_id'];
-    name = json['name'];
-    img = json['img'];
+  factory SubCategoryModel.fromJson(Map<String, dynamic>? json) {
+    if (json == null) return SubCategoryModel();
+
+    return SubCategoryModel(
+      sId: json['_id']?.toString() ?? '',
+      name: json['name']?.toString() ?? '',
+      img: json['img']?.toString() ?? '',
+    );
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['_id'] = sId;
-    data['name'] = name;
-    data['img'] = img;
-    return data;
+    return {
+      '_id': sId,
+      'name': name,
+      'img': img,
+    };
   }
 }
 
@@ -76,17 +109,24 @@ class BannerModel {
   String? sId;
   String? img;
 
-  BannerModel({this.sId, this.img});
+  BannerModel({
+    this.sId,
+    this.img,
+  });
 
-  BannerModel.fromJson(Map<String, dynamic> json) {
-    sId = json['_id'];
-    img = json['img'];
+  factory BannerModel.fromJson(Map<String, dynamic>? json) {
+    if (json == null) return BannerModel();
+
+    return BannerModel(
+      sId: json['_id']?.toString() ?? '',
+      img: json['img']?.toString() ?? '',
+    );
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['_id'] = sId;
-    data['img'] = img;
-    return data;
+    return {
+      '_id': sId,
+      'img': img,
+    };
   }
 }

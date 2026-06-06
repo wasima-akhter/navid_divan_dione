@@ -408,3 +408,56 @@ String capEach(String text) {
     return word[0].toUpperCase() + word.substring(1).toLowerCase();
   }).join(' ');
 }
+
+//----------------->>>>>>>
+class SafeParser {
+  static String str(dynamic v, [String fallback = '']) {
+    return v is String ? v : v?.toString() ?? fallback;
+  }
+
+  static double dbl(dynamic v, [double fallback = 0.0]) {
+    if (v is num) return v.toDouble();
+    return double.tryParse(v?.toString() ?? '') ?? fallback;
+  }
+
+  static int intVal(dynamic v, [int fallback = 0]) {
+    if (v is num) return v.toInt();
+    return int.tryParse(v?.toString() ?? '') ?? fallback;
+  }
+
+  static bool boolVal(dynamic v, [bool fallback = false]) {
+    if (v is bool) return v;
+    if (v is num) return v == 1;
+    return v?.toString().toLowerCase() == 'true' ? true : fallback;
+  }
+
+  static List<T> list<T>(
+    dynamic v,
+    T Function(Map<String, dynamic>) fromJson,
+  ) {
+    if (v is! List) return [];
+
+    return v
+        .whereType<Map>()
+        .map((e) => fromJson(Map<String, dynamic>.from(e)))
+        .toList();
+  }
+
+  static List<String> stringList(dynamic v) {
+    if (v is! List) return [];
+    return v
+        .map((e) => e?.toString() ?? '')
+        .where((e) => e.isNotEmpty)
+        .toList();
+  }
+
+  static DateTime? date(dynamic v) {
+    return DateTime.tryParse(v?.toString() ?? '');
+  }
+
+  static Map<String, dynamic>? map(dynamic v) {
+    if (v is Map<String, dynamic>) return v;
+    if (v is Map) return Map<String, dynamic>.from(v);
+    return null;
+  }
+}

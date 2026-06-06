@@ -32,6 +32,9 @@ class ProfilePage extends StatelessWidget {
     ProfileController.to.isEditMode.value = false;
     // final argument = Get.arguments;
     return DefaultScaffoldStructureWidget(
+        onRefresh: () async {
+          ProfileController.to.getUserProfileRequest();
+        },
         appBarTitle: AppStaticStrings.myProfile,
         action: [
           Obx(() => !ProfileController.to.isEditMode.value

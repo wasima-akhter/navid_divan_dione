@@ -5,7 +5,8 @@ import '../model/product_details_model.dart';
 class ProdDetSizeRow extends StatelessWidget {
   final ProductController controller;
   final ProductVariantModel selectedVariant;
-  const ProdDetSizeRow({Key? key, required this.controller, required this.selectedVariant})
+  const ProdDetSizeRow(
+      {Key? key, required this.controller, required this.selectedVariant})
       : super(key: key);
 
   @override
@@ -14,6 +15,10 @@ class ProdDetSizeRow extends StatelessWidget {
       () {
         debugPrint('  : ');
         final variant = controller.selectedVariant.value;
+        debugPrint(' selectedVariant.size: ${selectedVariant.size} ');
+        final sizeText = (selectedVariant.size.trim().isNotEmpty ?? false)
+            ? selectedVariant.size.trim()
+            : 'N/A';
 
         if (variant == null) return const SizedBox.shrink();
         return SingleChildScrollView(
@@ -26,10 +31,11 @@ class ProdDetSizeRow extends StatelessWidget {
                 textColor: controller.selectedSize.value == selectedVariant.size
                     ? AppColors.kWhiteColor
                     : AppColors.kPrimaryColor,
-                containerColor: controller.selectedSize.value == selectedVariant.size
-                    ? AppColors.kPrimaryColor
-                    : Colors.transparent,
-                color: selectedVariant.size ?? '',
+                containerColor:
+                    controller.selectedSize.value == selectedVariant.size
+                        ? AppColors.kPrimaryColor
+                        : Colors.transparent,
+                color: sizeText,
               )
             ],
           ),
