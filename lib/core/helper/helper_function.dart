@@ -399,3 +399,12 @@ Future<String> selectDate(
   }
   return ''; // Return null if no date is selected
 }
+
+String capEach(String text) {
+  if (text.trim().isEmpty) return text;
+
+  return text.split(' ').map((word) {
+    if (word.isEmpty) return '';
+    return word[0].toUpperCase() + word.substring(1).toLowerCase();
+  }).join(' ');
+}

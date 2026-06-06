@@ -11,8 +11,13 @@ import '../../product/controllers/address_order_controller.dart';
 class OrderController extends GetxController {
   static OrderController get to => Get.find();
 
-  RxList<String> labelTabs =
-      [AppStaticStrings.pending, AppStaticStrings.shipped, AppStaticStrings.delivered].obs;
+  RxList<String> labelTabs = [
+    AppStaticStrings.all,
+    AppStaticStrings.pending,
+    AppStaticStrings.shipped,
+    AppStaticStrings.delivered,
+    // AppStaticStrings.cancelled,
+  ].obs;
   RxInt selectedIndex = 0.obs;
   RxBool isLoadingOrder = false.obs;
   RxList<OrderModel> orderList = <OrderModel>[].obs;
@@ -41,14 +46,35 @@ class OrderController extends GetxController {
         isLoadingOrder.value = true;
         currentOrderPage.value = 1;
       }
+      final queryParams = <String, String>{
+        'page': currentOrderPage.value.toString(),
+      };
 
+      switch (selectedIndex.value) {
+        case 1:
+          queryParams['delivery_status'] = 'pending';
+          break;
+
+        case 2:
+          queryParams['delivery_status'] = 'shipped';
+          break;
+
+        case 3:
+          queryParams['delivery_status'] = 'delivered';
+          break;
+
+        // case 4:
+        //   queryParams['delivery_status'] = 'cancelled';
+        //   break;
+
+        default:
+          // ALL => no delivery_status
+          break;
+      }
       final response = await ApiService().request(
         endpoint: getOrderEndPoint,
         method: 'GET',
-        queryParams: {
-          'page': currentOrderPage.value.toString(),
-          'delivery_status': labelTabs[selectedIndex.value].toLowerCase(),
-        },
+        queryParams: queryParams,
       );
 
       isLoadingOrder.value = false;
@@ -59,10 +85,13 @@ class OrderController extends GetxController {
         if (response['pagination'] != null) {
           currentOrderPage.value = response['pagination']['currentPage'] ?? 1;
           totalOrderPages.value = response['pagination']['totalPages'] ?? 1;
-          itemsOrderPerPage.value = response['pagination']['itemsPerPage'] ?? 10;
+          itemsOrderPerPage.value =
+              response['pagination']['itemsPerPage'] ?? 10;
         }
 
-        final newOrders = (response['data'] as List).map((e) => OrderModel.fromJson(e)).toList();
+        final newOrders = (response['data'] as List)
+            .map((e) => OrderModel.fromJson(e))
+            .toList();
 
         if (loadMore) {
           orderList.addAll(newOrders);

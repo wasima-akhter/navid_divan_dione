@@ -15,7 +15,8 @@ class OrderPage extends StatefulWidget {
   State<OrderPage> createState() => _OrderPageState();
 }
 
-class _OrderPageState extends State<OrderPage> with SingleTickerProviderStateMixin {
+class _OrderPageState extends State<OrderPage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final ScrollController _scrollController = ScrollController();
 
@@ -37,7 +38,8 @@ class _OrderPageState extends State<OrderPage> with SingleTickerProviderStateMix
 
     // Pagination on scroll
     _scrollController.addListener(() {
-      if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
         OrderController.to.getOrderListRequest(loadMore: true);
       }
     });
@@ -92,13 +94,25 @@ class _OrderPageState extends State<OrderPage> with SingleTickerProviderStateMix
         headerSliverBuilder: (context, _) => [
           // ✅ Tab bar built statically — no addAll() in build
           SliverToBoxAdapter(
-            child: TabBar(
-              controller: _tabController,
-              isScrollable: false,
-              indicatorColor: AppColors.kPrimaryColor,
-              labelColor: AppColors.kPrimaryColor,
-              unselectedLabelColor: AppColors.kExtraLightGreyTextColor,
-              tabs: controller.labelTabs.map((label) => Tab(text: label)).toList(),
+            child: Container(
+              // color: Colors.amber,
+              child: TabBar(
+                controller: _tabController,
+                isScrollable: true,
+                labelPadding:
+                    EdgeInsets.symmetric(horizontal: 14.w), // optional spacing
+                padding: EdgeInsets.zero, tabAlignment: TabAlignment.center,
+                indicatorColor: AppColors.kPrimaryColor,
+                labelColor: AppColors.kPrimaryColor,
+                unselectedLabelColor: AppColors.kExtraLightGreyTextColor,
+                labelStyle: TextStyle(
+                  fontSize: 13.sp,
+                  fontFamily: 'Poppins',
+                ),
+                tabs: controller.labelTabs
+                    .map((label) => Tab(text: label))
+                    .toList(),
+              ),
             ),
           ),
         ],
@@ -112,7 +126,8 @@ class _OrderPageState extends State<OrderPage> with SingleTickerProviderStateMix
               child: Column(
                 children: [
                   Container(
-                      padding: EdgeInsets.symmetric(horizontal: 12.w), child: _buildTabContent()),
+                      padding: EdgeInsets.symmetric(horizontal: 12.w),
+                      child: _buildTabContent()),
                   // Pagination loader
                   Obx(() => controller.isOrderLoadingMore.value
                       ? PaginationLoadingWidget()

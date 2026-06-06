@@ -8,6 +8,7 @@ import 'package:navid_e_commerce/presentations/auth/views/signup_page.dart';
 import 'package:navid_e_commerce/presentations/home/views/category_list_page.dart';
 import 'package:navid_e_commerce/presentations/home/views/product_list_page.dart';
 import 'package:navid_e_commerce/presentations/navigation/views/navigation_page.dart';
+import 'package:navid_e_commerce/presentations/orders/views/order_details_page.dart';
 import 'package:navid_e_commerce/presentations/product/views/deliver_address_page.dart';
 import 'package:navid_e_commerce/presentations/product/views/edit_address_page.dart';
 import 'package:navid_e_commerce/presentations/product/views/payment_page.dart';
@@ -82,6 +83,12 @@ class AppRoutes {
             name: ProductDetailsPage.routeName,
             page: () => ProductDetailsPage(),
             binding: ProductBinding()),
+
+//
+        GetPage(
+            name: OrderDetailsPage.routeName,
+            page: () => OrderDetailsPage(),
+            binding: OrderDetailsBinding()),
 
         ////
         GetPage(

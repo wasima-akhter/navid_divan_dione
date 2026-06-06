@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:navid_e_commerce/presentations/auth/controllers/auth_controller.dart';
 import 'package:navid_e_commerce/presentations/cart/controllers/cart_controller.dart';
 import 'package:navid_e_commerce/presentations/navigation/controllers/navigation_controller.dart';
+import 'package:navid_e_commerce/presentations/orders/controllers/order_details_controller.dart';
 import 'package:navid_e_commerce/presentations/product/controllers/product_controller.dart';
 import 'package:navid_e_commerce/presentations/profile/controllers/profile_controller.dart';
 import 'package:navid_e_commerce/presentations/settings/controllers/settings_controller.dart';
@@ -31,6 +32,15 @@ class ProductBinding extends Bindings {
   void dependencies() {
     // ✅ fenix: true — recreates when needed, but doesn't create a new instance every time
     Get.lazyPut<ProductController>(() => ProductController(), fenix: true);
+  }
+}
+
+class OrderDetailsBinding extends Bindings {
+  @override
+  void dependencies() {
+    // ✅ fenix: true — recreates when needed, but doesn't create a new instance every time
+    Get.lazyPut<OrderDetailsController>(() => OrderDetailsController(),
+        fenix: true);
   }
 }
 

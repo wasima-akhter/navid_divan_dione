@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:navid_e_commerce/core/constants/color_constants.dart';
 import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
 
-
 class CustomText extends StatelessWidget {
   final String text;
   final TextStyle? style; // Allows full dynamic styling
@@ -34,14 +33,14 @@ class CustomText extends StatelessWidget {
       /*overflow: overflow ?? TextOverflow.ellipsis,*/
       style: style?.copyWith(
             color: color ?? style?.color,
-            fontSize: fontSize ?? style?.fontSize,
+            fontSize: (fontSize ?? style?.fontSize),
             fontWeight: fontWeight ?? style?.fontWeight,
           ) ??
           TextStyle(
             color: color ?? AppColors.kLightTextColor,
             fontSize: fontSize ?? getFontSizeSemiSmall(),
             fontFamily: 'Poppins',
-            fontWeight: fontWeight??FontWeight.w500,
+            fontWeight: fontWeight ?? FontWeight.w500,
           ),
     );
   }
