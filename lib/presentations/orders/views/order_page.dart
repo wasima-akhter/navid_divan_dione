@@ -87,48 +87,48 @@ class _OrderPageState extends State<OrderPage>
   Widget build(BuildContext context) {
     final controller = OrderController.to;
 
-    return CustomRefreshIndicatorWidget(
-      onRefresh: () => controller.getOrderListRequest(),
-      child: NestedScrollView(
-        controller: _scrollController,
-        headerSliverBuilder: (context, _) => [
-          // ✅ Tab bar built statically — no addAll() in build
-          SliverToBoxAdapter(
-            child: Container(
-              // color: Colors.amber,
-              child: TabBar(
-                controller: _tabController,
-                isScrollable: true,
-                labelPadding:
-                    EdgeInsets.symmetric(horizontal: 14.w), // optional spacing
-                padding: EdgeInsets.zero, tabAlignment: TabAlignment.center,
-                indicatorColor: AppColors.kPrimaryColor,
-                labelColor: AppColors.kPrimaryColor,
-                unselectedLabelColor: AppColors.kExtraLightGreyTextColor,
-                labelStyle: TextStyle(
-                  fontSize: 13.sp,
-                  fontFamily: 'Poppins',
-                ),
-                tabs: controller.labelTabs
-                    .map((label) => Tab(text: label))
-                    .toList(),
+    return NestedScrollView(
+      controller: _scrollController,
+      headerSliverBuilder: (context, _) => [
+        // ✅ Tab bar built statically — no addAll() in build
+        SliverToBoxAdapter(
+          child: Container(
+            // color: Colors.amber,
+            child: TabBar(
+              controller: _tabController,
+              isScrollable: true,
+              labelPadding:
+                  EdgeInsets.symmetric(horizontal: 14.w), // optional spacing
+              padding: EdgeInsets.zero, tabAlignment: TabAlignment.center,
+              indicatorColor: AppColors.kPrimaryColor,
+              labelColor: AppColors.kPrimaryColor,
+              unselectedLabelColor: AppColors.kExtraLightGreyTextColor,
+              labelStyle: TextStyle(
+                fontSize: 13.sp,
+                fontFamily: 'Poppins',
               ),
+              tabs: controller.labelTabs
+                  .map((label) => Tab(text: label))
+                  .toList(),
             ),
           ),
-        ],
-        body: TabBarView(
-          controller: _tabController,
-          // ✅ All tabs share the same reactive widget — data driven by selectedIndex
-          children: List.generate(
-            controller.labelTabs.length,
-            (_) => SingleChildScrollView(
+        ),
+      ],
+      body: TabBarView(
+        controller: _tabController,
+        children: List.generate(
+          controller.labelTabs.length,
+          (_) => CustomRefreshIndicatorWidget(
+            onRefresh: () => controller.getOrderListRequest(),
+            child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
               child: Column(
                 children: [
                   Container(
-                      padding: EdgeInsets.symmetric(horizontal: 12.w),
-                      child: _buildTabContent()),
-                  // Pagination loader
+                    alignment: Alignment.topCenter,
+                    padding: EdgeInsets.symmetric(horizontal: 12.w),
+                    child: _buildTabContent(),
+                  ),
                   Obx(() => controller.isOrderLoadingMore.value
                       ? PaginationLoadingWidget()
                       : const SizedBox.shrink()),
