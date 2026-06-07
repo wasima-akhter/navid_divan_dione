@@ -523,6 +523,8 @@ class CartController extends GetxController {
 
 //
   RxMap<String, bool> isBuyNowLoading = <String, bool>{}.obs;
+  bool _isBuyNowFlow = false; // ✅ internal flag
+
   Future<void> buyNow({
     required String productId,
     required String variantId,
@@ -532,14 +534,14 @@ class CartController extends GetxController {
       isBuyNowLoading[productId] = true;
       isBuyNowLoading.refresh();
 
+      _isBuyNowFlow = true; // ✅ tell addToCart to skip its own loading
       await addToCart(
         productId: productId,
         variant: variantId,
         quantity: quantity,
       );
-
-      await getCartListRequest();
     } finally {
+      _isBuyNowFlow = false; // ✅ always reset
       isBuyNowLoading[productId] = false;
       isBuyNowLoading.refresh();
     }
@@ -599,6 +601,56 @@ class CartController extends GetxController {
     required String variant,
   }) async {
     try {
+      // ✅ Only manage addToCart loading when NOT called from buyNow
+      if (!_isBuyNowFlow) {
+        isLoadingAddCart[productId] = true;
+      }
+
+      await ProfileController.to.getUserProfileRequest();
+      final userId = ProfileController.to.userId.value;
+
+      final response = await ApiService().request(
+        endpoint: addToCartEndPoint,
+        method: 'POST',
+        body: {
+          "user": userId,
+          "product_id": productId,
+          "variant": variant,
+          "quantity": quantity,
+        },
+      );
+
+      if (!_isBuyNowFlow) {
+        isLoadingAddCart[productId] = false;
+      }
+
+      if (response['success'] == true) {
+        await getCartListRequest();
+        calculateTotalPrice();
+        showCustomSnackbar(
+          title: 'Success',
+          message: response['message'],
+        );
+      } else {
+        showCustomSnackbar(
+          title: 'Failed',
+          message: response['message'],
+          type: SnackBarType.failed,
+        );
+      }
+    } catch (e) {
+      if (!_isBuyNowFlow) {
+        isLoadingAddCart[productId] = false;
+      }
+    }
+  }
+/*
+  Future<void> addToCart({
+    required String productId,
+    required num quantity,
+    required String variant,
+  }) async {
+    try {
       isLoadingAddCart[productId] = true;
 
       await ProfileController.to.getUserProfileRequest();
@@ -637,14 +689,7 @@ class CartController extends GetxController {
       isLoadingAddCart[productId] = false;
     }
   }
-  // Future<void> addToCart({
-  //   required String productId,
-  //   required num quantity,
-  //   required String variant,
-  // }) async {
-  //   //
-  //   try {
-  //     isLoadingAddCart[productId] = true;
+*/
 
   //     // first retrieve the user Id
 
