@@ -97,6 +97,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 /////////     video play section
 
                 ////////////////////////////////
+                /*
                 Obx(
                   () {
                     debugPrint(
@@ -140,11 +141,59 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     );
                   },
                 ),
+*/
+                Obx(
+                  () {
+                    final videoPath =
+                        controller.productDetailsModel.value.video;
+                    final hasVideo = videoPath.isNotEmpty;
 
+                    if (controller.currentBannerImages.isEmpty && !hasVideo) {
+                      return const AspectRatio(
+                        aspectRatio: 1,
+                        child: ProdDetVideoPlayerSec(),
+                      );
+                    }
+
+                    // ✅ Total pages: video (if exists) + images
+                    final imageCount = controller.currentBannerImages.length;
+                    final totalPages = (hasVideo ? 1 : 0) + imageCount;
+
+                    return AspectRatio(
+                      aspectRatio: 1,
+                      child: PageView.builder(
+                        controller: controller.pageController.value,
+                        itemCount: totalPages,
+                        itemBuilder: (context, index) {
+                          // ✅ Only show video at index 0 when video exists
+                          if (hasVideo && index == 0) {
+                            return const ProdDetVideoPlayerSec();
+                          }
+
+                          // ✅ Image index shifts by 1 only when video exists
+                          final imageIndex = hasVideo ? index - 1 : index;
+
+                          return InteractiveViewer(
+                            panEnabled: false,
+                            boundaryMargin: const EdgeInsets.all(100),
+                            minScale: 0.5,
+                            maxScale: 2,
+                            child: CustomNetworkImage(
+                              isPreview: true,
+                              imageUrl:
+                                  '${controller.currentBannerImages[imageIndex]}',
+                              width: double.infinity,
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  },
+                ),
                 // Preview images
 
                 Obx(() {
-                  final hasVariants = variants != null && variants.isNotEmpty;
+                  final hasVariants = variants.isNotEmpty;
 
                   final selectedVariant = hasVariants
                       ? variants.firstWhere(

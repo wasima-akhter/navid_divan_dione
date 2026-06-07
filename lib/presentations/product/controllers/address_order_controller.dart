@@ -196,6 +196,7 @@ class AddressOrderController extends GetxController {
     String? deliveryAddress,
   }) async {
     try {
+      debugPrint('pickupAddress:${pickupAddress}  ');
       isLoadingOrder.value = true;
       final response = await ApiService().request(
         endpoint: orderCreateEndPoint,

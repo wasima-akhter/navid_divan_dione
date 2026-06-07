@@ -78,6 +78,7 @@ class ProductCardItemWidget extends StatelessWidget {
             children: [
               ///===================dynamic img=================///
               Expanded(
+                flex: 8,
                 child: CustomNetworkImage(
                   imageUrl: finalImageUrl,
                   // imageUrl:
@@ -85,6 +86,7 @@ class ProductCardItemWidget extends StatelessWidget {
                 ),
               ),
               Expanded(
+                flex: 4,
                 child: SingleChildScrollView(
                   child: Column(
                     spacing: 6.h,

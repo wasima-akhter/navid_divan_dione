@@ -21,8 +21,10 @@ class ProdDetBuyCartBtnRow extends StatelessWidget {
     return Row(
       spacing: 12.w,
       children: [
+        /*
         Expanded(
           child: CustomButton(
+            /*
             onTap: () {
 // check if logged in.
 // not--> login Page// yes, --> go ahead
@@ -40,10 +42,108 @@ class ProdDetBuyCartBtnRow extends StatelessWidget {
                 selectedSize: ProductController.to.selectedSize.value,
               );
             },
+            */
+            onTap: () async {
+              final isLoggedIn = CommonController.to.isLoggedIn.value;
+
+              if (!isLoggedIn) {
+                Get.toNamed(LoginPage.routeName);
+                return;
+              }
+
+              final selectedVariant =
+                  ProductController.to.getSelectedVariantForCart();
+
+              if (selectedVariant == null) {
+                showCustomSnackbar(
+                  title: "Warning",
+                  message: "No variant available for this product!",
+                );
+                return;
+              }
+
+              final stock = selectedVariant.quantity ?? 0;
+              final qty = ProductController.to.cartQuantity.value;
+
+              if (qty > stock) {
+                showCustomSnackbar(
+                  title: "Stock Limit",
+                  message: "Only $stock item(s) available",
+                );
+                return;
+              }
+
+              // Refresh cart data if needed
+              await CartController.to.buyNow(
+                productId: productId,
+                variantId: selectedVariant.id ?? '',
+                quantity: qty,
+              );
+
+              buyProductDialog(
+                context,
+                selectedColor: ProductController.to.selectedColor.value,
+                selectedSize: ProductController.to.selectedSize.value,
+              );
+            },
             title: AppStaticStrings.buyNow,
           ),
         ),
+*/
 
+        Expanded(
+          child: Obx(() {
+            final isLoading =
+                CartController.to.isBuyNowLoading[productId] ?? false;
+
+            return CustomButton(
+              isLoading: isLoading,
+              onTap: () async {
+                final isLoggedIn = CommonController.to.isLoggedIn.value;
+
+                if (!isLoggedIn) {
+                  Get.toNamed(LoginPage.routeName);
+                  return;
+                }
+
+                final selectedVariant =
+                    ProductController.to.getSelectedVariantForCart();
+
+                if (selectedVariant == null) {
+                  showCustomSnackbar(
+                    title: "Warning",
+                    message: "No variant available for this product!",
+                  );
+                  return;
+                }
+
+                final stock = selectedVariant.quantity ?? 0;
+                final qty = ProductController.to.cartQuantity.value;
+
+                if (qty > stock) {
+                  showCustomSnackbar(
+                    title: "Stock Limit",
+                    message: "Only $stock item(s) available",
+                  );
+                  return;
+                }
+
+                await CartController.to.buyNow(
+                  productId: productId,
+                  variantId: selectedVariant.id ?? '',
+                  quantity: qty,
+                );
+
+                buyProductDialog(
+                  context,
+                  selectedColor: ProductController.to.selectedColor.value,
+                  selectedSize: ProductController.to.selectedSize.value,
+                );
+              },
+              title: AppStaticStrings.buyNow,
+            );
+          }),
+        ),
         /*
         Expanded(
           child: Obx(() {

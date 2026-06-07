@@ -521,6 +521,30 @@ class CartController extends GetxController {
     }
   }
 
+//
+  RxMap<String, bool> isBuyNowLoading = <String, bool>{}.obs;
+  Future<void> buyNow({
+    required String productId,
+    required String variantId,
+    required int quantity,
+  }) async {
+    try {
+      isBuyNowLoading[productId] = true;
+      isBuyNowLoading.refresh();
+
+      await addToCart(
+        productId: productId,
+        variant: variantId,
+        quantity: quantity,
+      );
+
+      await getCartListRequest();
+    } finally {
+      isBuyNowLoading[productId] = false;
+      isBuyNowLoading.refresh();
+    }
+  }
+
   ///------------------------------- add to cart ----------------------------///
 
 // const data = {

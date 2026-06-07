@@ -136,7 +136,7 @@ class ProductController extends GetxController {
   /// Call this to get the variant to use for Add to Cart
   ProductVariantModel? getSelectedVariantForCart() {
     final variants = productDetailsModel.value.variants;
-    if (variants == null || variants.isEmpty) return null;
+    if (variants.isEmpty) return null;
 
     // Return selected variant if exists, otherwise default to first variant
     return selectedColor.value != null
@@ -240,7 +240,7 @@ class ProductController extends GetxController {
   // Initialize BetterPlayer with HLS link
   void initializeBetterPlayerOnce() {
     final videoPath = productDetailsModel.value.video;
-    if (videoPath == null || videoPath.isEmpty) return;
+    if (videoPath.isEmpty) return;
 
     // ✅ Guard: don't reinitialize if already set
     if (betterPlayerController.value != null) return;
@@ -489,6 +489,7 @@ class ProductController extends GetxController {
   }
 
 //
+/*
   void onColorSelected(String color, List<ProductVariantModel> variants) {
     final product = productDetailsModel.value;
 
@@ -504,8 +505,8 @@ class ProductController extends GetxController {
     selectedSize.value = variant.size;
 
     // Use variant images if available
-    if (variant.img != null && variant.img!.isNotEmpty) {
-      currentBannerImages.value = variant.img!; // ✅ update reactively
+    if (variant.img.isNotEmpty) {
+      currentBannerImages.value = variant.img; // ✅ update reactively
     } else {
       currentBannerImages.value = product.banners ?? [];
     }
@@ -514,6 +515,40 @@ class ProductController extends GetxController {
     // Reset page to 0 whenever color changes
     pageController.value.jumpToPage(0);
     currentPreviewPage.value = 0;
+  }
+*/
+  void onColorSelected(String color, List<ProductVariantModel> variants) {
+    final product = productDetailsModel.value;
+
+    selectedColor.value = color;
+
+    final variant = variants.firstWhere(
+      (v) => v.color == color,
+      orElse: () => variants.first,
+    );
+
+    selectedVariant.value = variant;
+    selectedSize.value = variant.size;
+
+    if (variant.img.isNotEmpty) {
+      currentBannerImages.value = variant.img;
+    } else {
+      currentBannerImages.value = product.banners ?? [];
+    }
+
+    refreshCartState();
+
+    // ✅ If video exists, first image is at page 1; otherwise page 0
+    final hasVideo = productDetailsModel.value.video.isNotEmpty;
+    final targetPage = hasVideo ? 1 : 0;
+
+    currentPreviewPage.value = targetPage;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (pageController.value.hasClients) {
+        pageController.value.jumpToPage(targetPage);
+      }
+    });
   }
 
   RxString cartButtonLabel = AppStaticStrings.addToCard.obs;

@@ -20,7 +20,7 @@ class ProdDetPreviewRow extends StatelessWidget {
       return Row(
         children: [
           // VIDEO (always first)
-          if (videoPath != null && videoPath.isNotEmpty)
+          if (videoPath.isNotEmpty)
             _PreviewItem(
               isSelected: currentPage == 0,
               onTap: () => controller.pageController.value.jumpToPage(0),
