@@ -267,6 +267,32 @@ class _ProductListPageState extends State<ProductListPage> {
                     Obx(() {
                       return AnimatedSlide(
                         duration: const Duration(milliseconds: 250),
+                        offset: _showScrollToTop.value
+                            ? Offset.zero
+                            : const Offset(0, 1),
+                        curve: Curves.easeOut,
+                        child: AnimatedOpacity(
+                          duration: const Duration(milliseconds: 250),
+                          opacity: _showScrollToTop.value ? 1 : 0,
+                          child: IgnorePointer(
+                            ignoring: !_showScrollToTop.value,
+                            child: FloatingActionButton(
+                              heroTag: "scrolltotopAllProds",
+                              mini: true,
+                              backgroundColor: AppColors.kPrimaryColor,
+                              onPressed: _scrollToTop,
+                              child: const Icon(
+                                Icons.keyboard_arrow_up_rounded,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
+                    Obx(() {
+                      return AnimatedSlide(
+                        duration: const Duration(milliseconds: 250),
                         offset: _showScrollToBottom.value
                             ? Offset.zero
                             : const Offset(0, -1),
@@ -287,32 +313,6 @@ class _ProductListPageState extends State<ProductListPage> {
                                   Icons.keyboard_arrow_down_rounded,
                                   color: Colors.white,
                                 ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    }),
-                    Obx(() {
-                      return AnimatedSlide(
-                        duration: const Duration(milliseconds: 250),
-                        offset: _showScrollToTop.value
-                            ? Offset.zero
-                            : const Offset(0, 1),
-                        curve: Curves.easeOut,
-                        child: AnimatedOpacity(
-                          duration: const Duration(milliseconds: 250),
-                          opacity: _showScrollToTop.value ? 1 : 0,
-                          child: IgnorePointer(
-                            ignoring: !_showScrollToTop.value,
-                            child: FloatingActionButton(
-                              heroTag: "scrolltotopAllProds",
-                              mini: true,
-                              backgroundColor: AppColors.kPrimaryColor,
-                              onPressed: _scrollToTop,
-                              child: const Icon(
-                                Icons.keyboard_arrow_up_rounded,
-                                color: Colors.white,
                               ),
                             ),
                           ),

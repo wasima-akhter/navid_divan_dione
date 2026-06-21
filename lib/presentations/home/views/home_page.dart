@@ -359,6 +359,34 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  // Scroll to top
+                  Obx(() {
+                    return AnimatedSlide(
+                      duration: const Duration(milliseconds: 250),
+                      offset: _showScrollToTop.value
+                          ? Offset.zero
+                          : const Offset(0, 1),
+                      curve: Curves.easeOut,
+                      child: AnimatedOpacity(
+                        duration: const Duration(milliseconds: 250),
+                        opacity: _showScrollToTop.value ? 1 : 0,
+                        child: IgnorePointer(
+                          ignoring: !_showScrollToTop.value,
+                          child: FloatingActionButton(
+                            heroTag: "scrolltotop",
+                            mini: true,
+                            backgroundColor: AppColors.kPrimaryColor,
+                            onPressed: _scrollToTop,
+                            child: const Icon(
+                              Icons.keyboard_arrow_up_rounded,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+
                   // Scroll to bottom
                   Obx(() {
                     return AnimatedSlide(
@@ -383,34 +411,6 @@ class _HomePageState extends State<HomePage> {
                                 Icons.keyboard_arrow_down_rounded,
                                 color: Colors.white,
                               ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  }),
-
-                  // Scroll to top
-                  Obx(() {
-                    return AnimatedSlide(
-                      duration: const Duration(milliseconds: 250),
-                      offset: _showScrollToTop.value
-                          ? Offset.zero
-                          : const Offset(0, 1),
-                      curve: Curves.easeOut,
-                      child: AnimatedOpacity(
-                        duration: const Duration(milliseconds: 250),
-                        opacity: _showScrollToTop.value ? 1 : 0,
-                        child: IgnorePointer(
-                          ignoring: !_showScrollToTop.value,
-                          child: FloatingActionButton(
-                            heroTag: "scrolltotop",
-                            mini: true,
-                            backgroundColor: AppColors.kPrimaryColor,
-                            onPressed: _scrollToTop,
-                            child: const Icon(
-                              Icons.keyboard_arrow_up_rounded,
-                              color: Colors.white,
                             ),
                           ),
                         ),
