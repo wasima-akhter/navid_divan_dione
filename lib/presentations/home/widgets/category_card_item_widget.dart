@@ -19,12 +19,27 @@ class CategoryCardItemWidget extends StatelessWidget {
     required this.categoryModel,
   });
 
+  // void _applyFilterAndGo({String? categoryId, String? subCategoryId}) {
+  //   ProductListController controller;
+  //   if (Get.isRegistered<ProductListController>()) {
+  //     controller = ProductListController.to;
+  //   } else {
+  //     controller = Get.put(ProductListController(), permanent: true);
+  //   }
+  //   controller.applyFilters(
+  //     category: categoryId,
+  //     subCategory: subCategoryId,
+  //   );
+  //   Get.toNamed(ProductListPage.routeName);
+  // }
+
   void _applyFilterAndGo({String? categoryId, String? subCategoryId}) {
     ProductListController controller;
     if (Get.isRegistered<ProductListController>()) {
-      controller = Get.find<ProductListController>();
+      controller = ProductListController.to;
     } else {
-      controller = Get.put(ProductListController(), permanent: true);
+      controller =
+          Get.put(ProductListController()); // 👈 remove permanent: true
     }
     controller.applyFilters(
       category: categoryId,

@@ -33,12 +33,15 @@ class CustomHomeAppbar extends StatelessWidget {
                   Obx(() {
                     debugPrint(
                         'user image:   ${ProfileController.to.userModel.value.img ?? ''}   ');
-                    return CustomNetworkImage(
-                      imageUrl:
-                          '${ProfileController.to.userModel.value.img ?? ''}',
-                      boxShape: BoxShape.circle,
-                      height: kToolbarHeight - 6,
-                      width: kToolbarHeight - 6,
+                    return Container(
+                      // color: Colors.amber,
+                      child: CustomNetworkImage(
+                        imageUrl:
+                            '${ProfileController.to.userModel.value.img ?? ''}',
+                        boxShape: BoxShape.circle,
+                        height: kToolbarHeight - 6,
+                        width: kToolbarHeight - 6,
+                      ),
                     );
                   }),
                   Expanded(
@@ -75,12 +78,11 @@ class CustomHomeAppbar extends StatelessWidget {
                 child: Row(
                   spacing: 12.w,
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(100.r),
+                    ClipOval(
                       child: Image.asset(
                         'assets/icons/app_logo.png',
-                        height: 35.h,
-                        width: 32.w,
+                        height: 35.w,
+                        width: 35.w,
                         fit: BoxFit.cover,
                       ),
                     ),

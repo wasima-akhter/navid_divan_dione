@@ -1,11 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:navid_e_commerce/core/components/custom_textfield.dart';
-import 'package:navid_e_commerce/core/constants/color_constants.dart';
-import 'package:navid_e_commerce/core/constants/fontsize_constant.dart';
 import 'package:navid_e_commerce/core/constants/image_constants.dart';
 import 'package:navid_e_commerce/core/constants/padding_constant.dart';
 import 'package:navid_e_commerce/core/constants/text_style_constant.dart';
+import 'package:navid_e_commerce/core/export/ui_export.dart';
 import 'package:navid_e_commerce/presentations/home/controllers/home_controller.dart';
 
 class SearchTextFieldWidget extends StatefulWidget {
@@ -52,7 +50,9 @@ class _SearchTextFieldWidgetState extends State<SearchTextFieldWidget> {
       cursorColor: AppColors.kPrimaryColor,
       prefixIcon: Padding(
         padding: padding8,
-        child: SvgPicture.asset(searchIcon),
+        child: SvgPicture.asset(
+          searchIcon,
+        ),
       ),
       fillColor: AppColors.kPrimaryExtraLightColor,
       // ✅ hintText disappears when focused

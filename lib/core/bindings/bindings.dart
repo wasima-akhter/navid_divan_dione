@@ -55,6 +55,7 @@ class NavigationBinding extends Bindings {
   @override
   void dependencies() {
     Get.put(NavigationController());
+    Get.put(HomeController());
     Get.put(CartController());
 
     // ✅ Persistent — survives tab switches, never recreated with wrong args
@@ -74,14 +75,22 @@ class AddressOrderBinding extends Bindings {
 class HomeBinding extends Bindings {
   @override
   void dependencies() {
-    Get.put(HomeController(), permanent: true);
+    Get.put(
+      HomeController(),
+    );
   }
 }
 
+// class ProductListBinding extends Bindings {
+//   @override
+//   void dependencies() {
+//     Get.put(ProductListController(), permanent: true);
+//   }
+// }
 class ProductListBinding extends Bindings {
   @override
   void dependencies() {
-    Get.put(ProductListController(), permanent: true);
+    Get.lazyPut<ProductListController>(() => ProductListController());
   }
 }
 

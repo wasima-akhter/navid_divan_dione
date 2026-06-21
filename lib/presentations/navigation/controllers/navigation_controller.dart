@@ -39,7 +39,10 @@ class NavigationController extends GetxController {
 
       Get.put(NotificationController());
     }
-    Get.put(HomeController());
+    if (!Get.isRegistered<HomeController>()) {
+      Get.put(
+          HomeController()); // 👈 guarded — won't duplicate what HomeBinding already created
+    }
 
     super.onInit();
   }

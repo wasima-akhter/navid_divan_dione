@@ -34,6 +34,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final ScrollController _scrollController = ScrollController();
   final RxBool _showScrollToTop = false.obs;
+  final RxBool _showScrollToBottom = true.obs; //
 
   @override
   void initState() {
@@ -42,10 +43,19 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _onScroll() {
-    //  --> show button after scrolling past ~2 screen heights worth of content
-    final shouldShow = _scrollController.offset > 400;
-    if (shouldShow != _showScrollToTop.value) {
-      _showScrollToTop.value = shouldShow;
+    final offset = _scrollController.offset;
+    final maxScroll = _scrollController.position.maxScrollExtent;
+
+    // show "scroll to top" after scrolling past ~2 screen heights worth of content
+    final shouldShowTop = offset > 400;
+    if (shouldShowTop != _showScrollToTop.value) {
+      _showScrollToTop.value = shouldShowTop;
+    }
+
+    // hide "scroll to bottom" once user is within 300px of the actual bottom
+    final shouldShowBottom = maxScroll > 0 && (maxScroll - offset) > 300;
+    if (shouldShowBottom != _showScrollToBottom.value) {
+      _showScrollToBottom.value = shouldShowBottom;
     }
   }
 
@@ -57,12 +67,22 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void _scrollToBottom() {
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeOutCubic,
+    );
+  }
+
   @override
   void dispose() {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     super.dispose();
   }
+
+  // ... build() unchanged until the Stack's FAB section ...
 
   @override
   Widget build(BuildContext context) {
@@ -332,31 +352,73 @@ class _HomePageState extends State<HomePage> {
             ),
 
             // 👇 Scroll-to-top FAB
+            // 👇 Scroll-to-bottom + Scroll-to-top FABs
             Positioned(
               right: 16.w,
               bottom: 24.h,
-              child: Obx(() {
-                return AnimatedSlide(
-                  duration: const Duration(milliseconds: 250),
-                  offset:
-                      _showScrollToTop.value ? Offset.zero : const Offset(0, 2),
-                  curve: Curves.easeOut,
-                  child: AnimatedOpacity(
-                    duration: const Duration(milliseconds: 250),
-                    opacity: _showScrollToTop.value ? 1 : 0,
-                    child: IgnorePointer(
-                      ignoring: !_showScrollToTop.value,
-                      child: FloatingActionButton(
-                        mini: true,
-                        backgroundColor: AppColors.kPrimaryColor,
-                        onPressed: _scrollToTop,
-                        child: const Icon(Icons.keyboard_arrow_up_rounded,
-                            color: Colors.white),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Scroll to bottom
+                  Obx(() {
+                    return AnimatedSlide(
+                      duration: const Duration(milliseconds: 250),
+                      offset: _showScrollToBottom.value
+                          ? Offset.zero
+                          : const Offset(0, -1),
+                      curve: Curves.easeOut,
+                      child: AnimatedOpacity(
+                        duration: const Duration(milliseconds: 250),
+                        opacity: _showScrollToBottom.value ? 1 : 0,
+                        child: IgnorePointer(
+                          ignoring: !_showScrollToBottom.value,
+                          child: Padding(
+                            padding: EdgeInsets.only(bottom: 8.h),
+                            child: FloatingActionButton(
+                              heroTag: "scrolltobottom",
+                              mini: true,
+                              backgroundColor: AppColors.kPrimaryColor,
+                              onPressed: _scrollToBottom,
+                              child: const Icon(
+                                Icons.keyboard_arrow_down_rounded,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                );
-              }),
+                    );
+                  }),
+
+                  // Scroll to top
+                  Obx(() {
+                    return AnimatedSlide(
+                      duration: const Duration(milliseconds: 250),
+                      offset: _showScrollToTop.value
+                          ? Offset.zero
+                          : const Offset(0, 1),
+                      curve: Curves.easeOut,
+                      child: AnimatedOpacity(
+                        duration: const Duration(milliseconds: 250),
+                        opacity: _showScrollToTop.value ? 1 : 0,
+                        child: IgnorePointer(
+                          ignoring: !_showScrollToTop.value,
+                          child: FloatingActionButton(
+                            heroTag: "scrolltotop",
+                            mini: true,
+                            backgroundColor: AppColors.kPrimaryColor,
+                            onPressed: _scrollToTop,
+                            child: const Icon(
+                              Icons.keyboard_arrow_up_rounded,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+                ],
+              ),
             ),
           ],
         ),

@@ -11,6 +11,20 @@ import '../model/category_model.dart';
 
 class ProductListController extends GetxController {
   static ProductListController get to => Get.find();
+
+  final String _instanceId = DateTime.now().millisecondsSinceEpoch.toString();
+
+  //
+  int _requestGeneration = 0; // 👈 single source of truth, already exists
+
+  // 👇 centralize: every refresh-triggering action bumps generation FIRST
+  void _bumpGenerationAndRefresh() {
+    _requestGeneration++;
+    debugPrint(
+        '🔄 Generation bumped to $_requestGeneration — caller refresh triggered');
+    pagingController.refresh();
+  }
+
   //
   final PagingController<int, ProductModel> pagingController =
       PagingController(firstPageKey: 1);
@@ -22,30 +36,42 @@ class ProductListController extends GetxController {
 
   final RxBool hasFilter = false.obs;
 
+  // 👇 sort order state — 'asc' or 'dsc' (matches backend's exact spelling)
+  final RxString sortOrder = 'dsc'.obs; // default: newest first
+
+  bool _listenerAttached = false; // 👈 guard
+
+  void toggleSortOrder() {
+    sortOrder.value = sortOrder.value == 'dsc' ? 'asc' : 'dsc';
+    _bumpGenerationAndRefresh(); // 👈 fix missing bump
+  }
+
   /// ✅ controller
   final TextEditingController searchController = TextEditingController();
   final FocusNode searchFocusNode = FocusNode();
 
   @override
   void onInit() {
-    pagingController.addPageRequestListener((pageKey) {
-      getProductListRequest(pageKey);
-    });
+    if (!_listenerAttached) {
+      pagingController.addPageRequestListener((pageKey) {
+        getProductListRequest(pageKey);
+      });
+      _listenerAttached = true;
+    }
 
     getCategoryListRequest();
 
-    // ✅ Reset wholesale toggle for guests
     if (!CommonController.to.isLoggedIn.value) {
       selectedType.value = false;
     }
 
-    //
-    // ✅ Only listen for tax ID changes when logged in
     if (CommonController.to.isLoggedIn.value) {
       ever(ProfileController.to.taxIdUpdateTrigger, (_) {
         onTaxIdUpdated();
       });
     }
+
+    debugPrint('🆕 ProductListController instance created: $_instanceId');
     super.onInit();
   }
 
@@ -57,12 +83,14 @@ class ProductListController extends GetxController {
     selectedSubCategory = null;
     hasFilter.value = false;
 
-    pagingController.refresh();
+    // pagingController.refresh();
+    _bumpGenerationAndRefresh(); // 👈 was: pagingController.refresh();
     getCategoryListRequest();
   }
 
   @override
   void onClose() {
+    debugPrint('🗑 ProductListController instance closed: $_instanceId');
     pagingController.dispose();
     super.onClose();
   }
@@ -73,7 +101,8 @@ class ProductListController extends GetxController {
 
     selectedType.value = false; // or recompute wholesale flag
 
-    pagingController.refresh(); // 🔥 reload products
+    // pagingController.refresh(); // 🔥 reload products
+    _bumpGenerationAndRefresh(); // 👈 was: pagingController.refresh();
 
     searchQuery = "";
     selectedCategory = null;
@@ -94,7 +123,8 @@ class ProductListController extends GetxController {
         selectedCategory != null ||
         selectedSubCategory != null;
 
-    pagingController.refresh();
+    // pagingController.refresh();
+    _bumpGenerationAndRefresh(); // 👈 was: pagingController.refresh();
   }
 
   void clearFilters() {
@@ -104,7 +134,8 @@ class ProductListController extends GetxController {
 
     hasFilter.value = false;
 
-    pagingController.refresh();
+    // pagingController.refresh();
+    _bumpGenerationAndRefresh(); // 👈 was: pagingController.refresh();
   }
 
   RxList<CategoryModel> catList = <CategoryModel>[].obs;
@@ -219,34 +250,26 @@ class ProductListController extends GetxController {
     selectedCategory = null;
     selectedSubCategory = null;
     hasFilter.value = false;
-    pagingController.refresh();
+    // pagingController.refresh();
+    _bumpGenerationAndRefresh(); // 👈 was: pagingController.refresh();
     await getCategoryListRequest();
   }
 
   final selectedType = RxBool(false);
 
-// Add this to ProductListController
-  int _requestGeneration = 0;
-
   void onTypeChanged(bool value) async {
     selectedType.value = value;
-
-    // ✅ Invalidate any in-flight requests
-    _requestGeneration++;
-    final myGeneration = _requestGeneration;
-
+    final myGeneration = ++_requestGeneration; // bump first, capture after
     pagingController.refresh();
 
     if (value == true && !CommonController.to.isLoggedIn.value) {
       await Future.delayed(const Duration(milliseconds: 100));
-      // ✅ Only set error if no newer request has started
       if (myGeneration == _requestGeneration) {
         pagingController.error = 'Please login to view wholesale products.';
       }
       return;
     }
   }
-
 /*
   Future<void> getProductListRequest(int pageKey) async {
     debugPrint('📡 getProductListRequest called — pageKey: $pageKey');
@@ -318,9 +341,10 @@ class ProductListController extends GetxController {
     }
   }
 */
+
   Future<void> getProductListRequest(int pageKey) async {
-    // ✅ Capture generation at start of this request
     final myGeneration = _requestGeneration;
+    debugPrint('📡 Request started — page $pageKey, generation $myGeneration');
 
     if (selectedType.value == true && !CommonController.to.isLoggedIn.value) {
       return;
@@ -338,15 +362,20 @@ class ProductListController extends GetxController {
         if (searchQuery.isNotEmpty) 'search': searchQuery,
         if (selectedCategory != null) 'category': selectedCategory!,
         if (selectedSubCategory != null) 'sub_category': selectedSubCategory!,
+        'sort': 'createdAt',
+        'order': sortOrder.value, // 👈 now dynamic
       },
     );
 
-    // ✅ Discard response if a newer request has taken over
+    // 👇 THIS is the actual guard that stops stale responses from being applied
     if (myGeneration != _requestGeneration) {
-      debugPrint('🗑 Discarding stale response for generation $myGeneration');
+      debugPrint(
+          '🗑 Discarding stale response for generation $myGeneration (page $pageKey)');
       return;
     }
+    debugPrint('✅ ACCEPTED — page $pageKey, generation $myGeneration');
 
+    //
     if (response == null) {
       pagingController.error = 'No result found. Please try again.';
       return;
