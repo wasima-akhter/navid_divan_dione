@@ -92,7 +92,7 @@ class _ProdDetVideoPlayerSecState extends State<ProdDetVideoPlayerSec>
       final videoPath = controller.productDetailsModel.value.video;
 
       // No video available
-      if (videoPath == null || videoPath.isEmpty) {
+      if (videoPath.isEmpty) {
         return _VideoPlaceholder();
       }
 
@@ -159,68 +159,6 @@ class _VideoPlaceholder extends StatelessWidget {
 }
 
 // ── Error + Retry UI ────────────────────────────────────────────────────────
-
-/*
-class VideoErrorWidget extends StatelessWidget {
-  final String? errorMessage;
-  final VoidCallback onRetry;
-
-  const VideoErrorWidget({
-    required this.onRetry,
-    this.errorMessage,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 16 / 9,
-      child: Container(
-        color: Colors.grey.shade100,
-        alignment: Alignment.center,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.play_circle_outline, color: Colors.grey, size: 48),
-            const SizedBox(height: 12),
-            // Text(
-            //   "Video cannot be played",
-            //   style: TextStyle(color: Colors.grey.shade400, fontSize: 14),
-            // ),
-            if (errorMessage != null) ...[
-              const SizedBox(height: 4),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Text(
-                  errorMessage!,
-                  style: TextStyle(color: Colors.grey.shade400, fontSize: 14),
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-            const SizedBox(height: 16),
-            ElevatedButton.icon(
-              onPressed: onRetry,
-              icon: const Icon(Icons.refresh, size: 18),
-              label: const Text("Try Again"),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey.shade200,
-                foregroundColor: Colors.blue.shade500,
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  side: const BorderSide(color: Colors.white30),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-*/
 
 class VideoErrorWidget extends StatelessWidget {
   final bool isUnsupported;

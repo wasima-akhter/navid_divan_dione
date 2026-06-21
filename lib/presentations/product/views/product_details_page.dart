@@ -97,51 +97,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 /////////     video play section
 
                 ////////////////////////////////
-                /*
-                Obx(
-                  () {
-                    debugPrint(
-                        'currentBannerImages[index] :  ${controller.currentBannerImages.toString()} ');
-                    if (controller.currentBannerImages.isEmpty) {
-                      // Still show video even if no images
-                      return const AspectRatio(
-                        aspectRatio: 1,
-                        child: ProdDetVideoPlayerSec(),
-                      );
-                    }
 
-                    return AspectRatio(
-                      aspectRatio: 1,
-                      child: PageView.builder(
-                        controller: controller.pageController.value,
-                        itemCount: controller.currentBannerImages.length + 1,
-                        itemBuilder: (context, index) {
-                          // VIDEO PAGE
-                          if (index == 0) {
-                            return const ProdDetVideoPlayerSec();
-                          }
-
-                          // IMAGE PAGE
-                          final imageIndex = index - 1;
-
-                          return InteractiveViewer(
-                            panEnabled: false,
-                            boundaryMargin: const EdgeInsets.all(100),
-                            minScale: 0.5,
-                            maxScale: 2,
-                            child: CustomNetworkImage(
-                              isPreview: true,
-                              imageUrl:
-                                  '${controller.currentBannerImages[imageIndex]}',
-                              width: double.infinity,
-                            ),
-                          );
-                        },
-                      ),
-                    );
-                  },
-                ),
-*/
                 Obx(
                   () {
                     final videoPath =
@@ -261,7 +217,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                       else
                         _emptyPlaceholder("Out of stock — can't order"),
 
-                      4.verticalSpace,
+                      16.verticalSpace,
 ////////////   Related Product section
                       ///
                       ProductDetRelatedProducts(),

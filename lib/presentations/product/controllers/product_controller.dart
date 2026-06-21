@@ -245,11 +245,15 @@ class ProductController extends GetxController {
     // ✅ Guard: don't reinitialize if already set
     if (betterPlayerController.value != null) return;
 
-    final fullUrl = videoPath.startsWith("http")
+    final normalizedPath =
+        videoPath.startsWith('/') ? videoPath.substring(1) : videoPath;
+
+    final fullUrl = videoPath.startsWith('http')
         ? videoPath
-        : "${ApiService().baseUrl}$videoPath";
+        : '${ApiService().baseUrl}/$normalizedPath';
 
     debugPrint('fullUrl  : $fullUrl');
+    debugPrint('videoPath  : $videoPath');
 
     final config = BetterPlayerConfiguration(
       aspectRatio: 16 / 9,
