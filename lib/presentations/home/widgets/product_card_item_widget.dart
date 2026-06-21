@@ -50,6 +50,7 @@ class ProductCardItemWidget extends StatelessWidget {
     String finalImageUrl = getFullImageUrl(product.image);
 
     var productColors = product.colors ?? [];
+    debugPrint('Product productColors: ${productColors}');
 
     // debugPrint('Product Price: ${product.priceAfterDiscount}');
     // debugPrint('Product previousPrice: ${product.price}');
@@ -78,7 +79,7 @@ class ProductCardItemWidget extends StatelessWidget {
             children: [
               ///===================dynamic img=================///
               Expanded(
-                flex: 8,
+                flex: 7,
                 child: CustomNetworkImage(
                   imageUrl: finalImageUrl,
                   // imageUrl:

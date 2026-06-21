@@ -14,50 +14,55 @@ class ProdDetPreviewRow extends StatelessWidget {
     return Obx(() {
       final currentPage = controller.currentPreviewPage.value;
       final bannerImages = controller.currentBannerImages;
-
       final videoPath = controller.productDetailsModel.value.video;
+      final hasVideo = videoPath.isNotEmpty;
 
-      return Row(
-        children: [
-          // VIDEO (always first)
-          if (videoPath.isNotEmpty)
-            _PreviewItem(
-              isSelected: currentPage == 0,
-              onTap: () => controller.pageController.value.jumpToPage(0),
-              child: Stack(
-                alignment: Alignment.center,
+      // 👇 offset depends on whether video actually occupies page 0
+      final imageStartIndex = hasVideo ? 1 : 0;
+
+      return SingleChildScrollView(
+        scrollDirection:
+            Axis.horizontal, // 👈 fix #1 — was defaulting to vertical
+        child: Row(
+          children: [
+            if (hasVideo) ...[
+              _PreviewItem(
+                isSelected: currentPage == 0,
+                onTap: () => controller.pageController.value.jumpToPage(0),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Container(color: Colors.black12),
+                    const Icon(Icons.play_circle_fill, size: 26),
+                  ],
+                ),
+              ),
+              8.horizontalSpace,
+            ],
+            if (bannerImages.isNotEmpty)
+              for (int i = 0; i < bannerImages.length; i++) ...[
+                _PreviewItem(
+                  isSelected: currentPage == i + imageStartIndex, // 👈 fix #2
+                  onTap: () => controller.pageController.value
+                      .jumpToPage(i + imageStartIndex), // 👈 fix #2
+                  child: CustomNetworkImage(
+                    imageUrl: "${bannerImages[i]}",
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                if (i != bannerImages.length - 1) 8.horizontalSpace,
+              ]
+            else
+              Row(
                 children: [
-                  Container(color: Colors.black12),
-                  const Icon(Icons.play_circle_fill, size: 26),
+                  CustomText(
+                    text: "No banners available",
+                    style: TextStyle(color: Colors.black),
+                  ),
                 ],
               ),
-            ),
-          8.horizontalSpace,
-
-          if (bannerImages.isNotEmpty)
-
-            // IMAGE PREVIEWS
-            for (int i = 0; i < bannerImages.length; i++) ...[
-              _PreviewItem(
-                isSelected: currentPage == i + 1,
-                onTap: () => controller.pageController.value.jumpToPage(i + 1),
-                child: CustomNetworkImage(
-                  imageUrl: "${bannerImages[i]}",
-                  fit: BoxFit.cover,
-                ),
-              ),
-              if (i != bannerImages.length - 1) 8.horizontalSpace,
-            ]
-          else
-            Row(
-              children: [
-                CustomText(
-                  text: "No banners available",
-                  style: TextStyle(color: Colors.black),
-                ),
-              ],
-            ),
-        ],
+          ],
+        ),
       );
     });
   }
