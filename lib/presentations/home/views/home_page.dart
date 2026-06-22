@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -23,6 +24,7 @@ import 'package:navid_e_commerce/presentations/profile/widgets/custom_loading_wi
 import '../widgets/category_grid_item_widget.dart';
 import '../widgets/no_product_widget.dart';
 import '../widgets/pagination_loading_widget.dart';
+import '../widgets/sort_order_toggle.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -287,6 +289,12 @@ class _HomePageState extends State<HomePage> {
                                     color: AppColors.kPrimaryTextDarkColor,
                                   ),
                                 ),
+                                if (kDebugMode)
+                                  SortOrderToggle(
+                                    sortOrder: hCtrl.sortOrder,
+                                    onToggle: hCtrl.toggleSortOrder,
+                                  ),
+                                8.horizontalSpace,
                                 CustomTextButton(
                                   onPressed: () {
                                     Get.toNamed(ProductListPage.routeName);

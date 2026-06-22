@@ -36,7 +36,7 @@ class HomeController extends GetxController {
       PagingController(firstPageKey: 1);
 
   // 👇 sort order — same pattern as ProductListController
-  final RxString sortOrder = 'dsc'.obs;
+  final RxString sortOrder = 'asc'.obs;
 
   void toggleSortOrder() {
     sortOrder.value = sortOrder.value == 'dsc' ? 'asc' : 'dsc';

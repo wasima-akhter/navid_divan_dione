@@ -15,6 +15,7 @@ import '../widgets/category_list_card_item_widget.dart';
 import '../widgets/dynamic_product_list.dart';
 import '../widgets/pagination_loading_widget.dart';
 import '../widgets/search_text_field_widget.dart';
+import '../widgets/sort_order_toggle.dart';
 /*
 class ProductListPage extends StatefulWidget {
   static const String routeName = '/product-list';
@@ -229,7 +230,10 @@ class _ProductListPageState extends State<ProductListPage> {
                                 ),
                               ),
                               12.horizontalSpace,
-                              SortOrderToggle(controller: controller),
+                              SortOrderToggle(
+                                sortOrder: controller.sortOrder,
+                                onToggle: controller.toggleSortOrder,
+                              ),
                             ],
                           ),
                         ],
@@ -650,6 +654,7 @@ class FilterIcon extends StatelessWidget {
 }
 
 //
+/*
 class SortOrderToggle extends StatelessWidget {
   final ProductListController controller;
   const SortOrderToggle({super.key, required this.controller});
@@ -692,3 +697,4 @@ class SortOrderToggle extends StatelessWidget {
     });
   }
 }
+*/
